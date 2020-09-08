@@ -178,9 +178,15 @@ cla.makePDF("left","testleft.pdf")
 PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw()
 plt.savefig("SquareHiC.pdf")
 
-PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw("IS")
+PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="One sample",chr="chr21").draw("IS")
 plt.savefig("ISsingle.pdf")
 
-diffsq = DiffDraw("./Rad21KD_1/observed.KR.chr21.matrix.gz","./Control_1/observed.KR.chr21.matrix.gz",25000,\
-                    startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparable two samples",chr="chr21")
-#diffsq.draw_diffCI()
+diffsq = DiffDraw("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,\
+                    startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparison of two samples",chr="chr21")
+diffsq.draw_DRF()
+plt.savefig("DRFtwo.pdf")
+
+leftTAD,rightTAD,_ = cla.extractRegion()
+leftTAD
+leftTAD.to_csv("leftTAD" + ".bedGraph", sep="\t", header=False, index=False)
+rightTAD.to_csv("rightTAD" + ".bedGraph", sep="\t", header=False, index=False)
