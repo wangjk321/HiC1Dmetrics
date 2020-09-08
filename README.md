@@ -25,3 +25,5 @@ Basically, HiC1Dmetrics mainly provide three types of function:
 # Quick Start
 # Input file
 # Usage
+## 1-D metrics of ONE sample
+- Calculation (The output format is bedGraph): 
