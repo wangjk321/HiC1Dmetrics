@@ -16,6 +16,6 @@ Basically, HiC1Dmetrics mainly provide three types of function:
     - More in building..
 
 - Calculate and visulize 1-D metrics for comparing two Hi-C samples 
-    - * Directional Ratio Frequency *, DRF (Original metric)
+    - *Directional Ratio Frequency*, DRF (Original metric)
     - Differential DLR
     - More in building ..
