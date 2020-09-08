@@ -7,7 +7,7 @@ from calculateMetrics import *
 
 class PlotCommon(object):
     def __init__(self,path,resolution,startSite=0,endSite=0,clmin=0,clmax=50, \
-                title="", chr=""):
+                title="", chr="",other_parameter=0):
         self.path = path
         self.matrix = loadDenseMatrix(path).values
         self.resolution = resolution
@@ -18,15 +18,16 @@ class PlotCommon(object):
         sbin = int(startSite/resolution)
         ebin = int(endSite/resolution)
         self.chr = chr
+        self.other_parameter = other_parameter
 
         if endSite == 0:
-            self.matrixRegion = self.matrix.copy()
+            self.matrixRegion = np.nan_to_num(self.matrix.copy())
             ebin = self.matrix.shape[0]
         elif (ebin - sbin) < 5:
             print("The region you choosed is too small")
             exit(1)
         else:
-            self.matrixRegion = self.matrix[sbin:ebin+1,sbin:ebin+1]
+            self.matrixRegion = np.nan_to_num(self.matrix[sbin:ebin+1,sbin:ebin+1])
 
         self.sbin = sbin
         self.ebin = ebin
@@ -52,6 +53,7 @@ class PlotSquare(PlotCommon):
 class PlotTri(PlotCommon):
     def draw(self):
         tri_matrix = ndimage.rotate(self.matrixRegion,45)
+        plt.plot(dpi=300)
         plt.imshow(tri_matrix,clim= self.clim,cmap=cmap,interpolation="nearest", aspect=1)
         plt.title(self.title,fontsize=20)
         tri_shape = tri_matrix.shape[0]

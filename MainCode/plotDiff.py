@@ -10,7 +10,7 @@ cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3
 
 class DiffDraw(object):
     def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-50,clmax=50, \
-                title="", chr="",startDRF=0,sizeDRF=2000000,sizeDCI=300000):
+                title="", chr="",startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
         self.path = path
         self.control_path = control_path
         treat = loadWithNorm(path,log = True).values
@@ -31,6 +31,7 @@ class DiffDraw(object):
         self.sizeDCI = sizeDCI
         self.sizeDRF = sizeDRF
         self.startDRF = startDRF
+        self.sizeIS = sizeIS
 
         if endSite == 0:
             self.matrixRegion = self.matrix.copy()
@@ -76,7 +77,8 @@ class DiffDraw(object):
         plt.yticks([])
 
     def draw_DRF(self):
-        score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr,start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
+        score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
+                start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
         title = "DirectionalRelativeFreq"
         scoreRegion = score[self.sbin:self.ebin+1]
 
