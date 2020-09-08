@@ -171,7 +171,16 @@ class DirectionalTAD(DiffDraw):
 
     def makePDF(self,type,outname):
         self.plotAlldirec(type)
-        plt.savefig(outname,pad_inches = 0,bbox_inches='tight')
+        plt.savefig(outname,bbox_inches='tight')
 
 cla = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21")
-cla.makePDF("right","test.pdf")
+cla.makePDF("left","testleft.pdf")
+PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw()
+plt.savefig("SquareHiC.pdf")
+
+PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw("IS")
+plt.savefig("ISsingle.pdf")
+
+diffsq = DiffDraw("./Rad21KD_1/observed.KR.chr21.matrix.gz","./Control_1/observed.KR.chr21.matrix.gz",25000,\
+                    startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparable two samples",chr="chr21")
+#diffsq.draw_diffCI()
