@@ -21,3 +21,7 @@ Basically, HiC1Dmetrics mainly provide three types of function:
     - More in building ..
 
 3. Extract and visulzie all "directional TAD" sites, which are defined by DFR metrics.
+
+# Quick Start
+# Input file
+# Usage
