@@ -7,7 +7,7 @@ This repository contain code and basic tutorial for "HiC1Dmetrics"
 
 Basically, HiC1Dmetrics mainly provide three types of function:
 
-- Calculate and visulize multiple 1-D metrics for one Hi-C samples (Already published idea).
+1. Calculate and visulize multiple 1-D metrics for one Hi-C samples (Already published idea).
     - Directional Index (DI)
     - Insulation Score (IS)
     - Contrast Index (CI)
@@ -15,7 +15,9 @@ Basically, HiC1Dmetrics mainly provide three types of function:
     - Distal-to-Local Ratio (DLR)
     - More in building..
 
-- Calculate and visulize 1-D metrics for comparing two Hi-C samples 
-    - *Directional Ratio Frequency*, DRF (Original metric)
+2. Calculate and visulize 1-D metrics for comparing two Hi-C samples 
+    - **Directional Frequency Ratio**, DFR (Original metric)
     - Differential DLR
     - More in building ..
+
+3. Extract and visulzie all "directional TAD" sites, which are defined by DFR metrics.
