@@ -23,7 +23,9 @@ Basically, HiC1Dmetrics mainly provide three types of function:
 3. Extract and visulzie all "directional TAD" sites, which are defined by DFR metrics.
 
 # Quick Start
+
 # Input file
+
 # Usage
 ### 1-D metrics of ONE sample
-    - Calculation (The output format is bedGraph): 
+- Calculation (The output format is bedGraph): 
