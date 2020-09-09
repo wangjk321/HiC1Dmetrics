@@ -5,27 +5,31 @@ This repository contain code and basic tutorial for "HiC1Dmetrics"
 
 # Introduction
 
-Basically, HiC1Dmetrics mainly provide three types of function:
+Basically, HiC1Dmetrics mainly provide three kinds of functions:
 
-1. Calculate and visulize multiple 1-D metrics for one Hi-C samples (Already published idea).
+1. Calculate and visualize multiple 1-D metrics for one Hi-C samples.
     - Directional Index (DI)
     - Insulation Score (IS)
     - Contrast Index (CI)
     - TAD separation score (TADsep)
     - Distal-to-Local Ratio (DLR)
-    - More in building..
+    - More in building ...
 
 2. Calculate and visulize 1-D metrics for comparing two Hi-C samples 
     - **Directional Frequency Ratio**, DFR (Original metric)
     - Differential DLR
-    - More in building ..
+    - More in building ...
 
-3. Extract and visulzie all "directional TAD" sites, which are defined by DFR metrics.
+3. Extract and visualize all "directional TAD" sites, which are defined by DFR metrics.
 
 # Quick Start
 
+The key function of "HiC1Dmetrics" is annotating and plotting "directional TAD". Here the example shows the right directional TAD on chromosome 21. The analysis is performed by comparing si-Rad21 with control RPE cells.
+
 ```python
-DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21").plotAlldirec("right")
+from callDirectionalTAD import *
+DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz", \
+               25000,chr="chr21").plotAlldirec("right")
 ```
 
 ![figure2](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure2.png)
@@ -42,7 +46,7 @@ We use zipped dense matrix as the input file. The format is like:
 | 75000 |  0   |   5   |   4   |   0   | ...  |
 |  ...  | ...  |  ...  |  ...  |  ...  | ...  |
 
-The esaist way to generate input file is using JuicerTools:
+The easy way to generate input file is using JuicerTools:
 
 ```shell
 java -jar juicer_tools.jar dump observed KR RPE.hic chr21 chr21 BP 25000 output.txt
@@ -51,11 +55,12 @@ java -jar juicer_tools.jar dump observed KR RPE.hic chr21 chr21 BP 25000 output.
 
 
 # Usage
-1. #### Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
+#### 1. Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
 
 ```python
 from calculateMetrics import *
-IS = InsulationScore("./Rad21KD_1/observed.KR.chr21.matrix.gz",25000,"chr21",out_name="InsulationScore",square_size=150000)
+IS = InsulationScore("./Rad21KD_1/observed.KR.chr21.matrix.gz",25000,"chr21",\
+                     out_name="InsulationScore",square_size=150000)
 IS.getCSV()
 ```
 
