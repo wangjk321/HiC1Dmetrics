@@ -115,7 +115,7 @@ class DirectionalTAD(DiffDraw):
 
         #region = region.iloc[0:2,:]
         num = region.shape[0]
-        plt.figure(figsize=(7*num, 7+7*(10/6)),dpi=300)
+        plt.figure(figsize=(7*num, 7+7*(10/6)))
 
         for i in range(num):
             TADleft = region.iloc[i,1] # directional TAD region
@@ -199,3 +199,13 @@ leftTAD,rightTAD,_ = direcTAD.extractRegion()
 rightTAD
 plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
 plotDirecTAD.plotAlldirec("right")
+plotDirecTAD.makePDF("right","Figure2.png")
+
+
+PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Square matrix",chr="chr21",clmin=0,clmax=50).draw()
+plt.savefig("Figure7-1.png")
+
+PlotTri("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Tri matrix",chr="chr21",clmin=0,clmax=50).draw()
+plt.savefig("Figure7-2.png")
+PlotTAD("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Plot TAD",chr="chr21",clmin=0,clmax=50).drawTAD()
+plt.savefig("Figure7-3.png")

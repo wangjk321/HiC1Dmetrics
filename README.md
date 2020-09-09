@@ -32,6 +32,24 @@ DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_dat
 
 # Input file
 
+We use zipped dense matrix as the input file. The format is like:
+
+|       |  0   | 25000 | 50000 | 75000 | ...  |
+| :---: | :--: | :---: | :---: | :---: | ---- |
+|   0   |  0   |   0   |   0   |   0   | ...  |
+| 25000 |  0   |   8   |   3   |   5   | ...  |
+| 50000 |  0   |   3   |   8   |   4   | ...  |
+| 75000 |  0   |   5   |   4   |   0   | ...  |
+|  ...  | ...  |  ...  |  ...  |  ...  | ...  |
+
+The esaist way to generate input file is using JuicerTools:
+
+```shell
+java -jar juicer_tools.jar dump observed KR RPE.hic chr21 chr21 BP 25000 output.txt
+```
+
+
+
 # Usage
 1. Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
 
@@ -104,4 +122,17 @@ plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.g
 plotDirecTAD.plotAlldirec("right")
 plotDirecTAD.makePDF("right","rightTAD.pdf")
 ```
+
+7. Others. HiC1Dmetrics all provide function to simply visualize Hi-C data.
+
+```python
+#1 plot contact matrix (square)
+PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Square matrix",chr="chr21",clmin=0,clmax=50).draw()
+#2 plot contact matrix (triangle)
+PlotTri("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Tri matrix",chr="chr21",clmin=0,clmax=50).draw()
+#3 plot TAD (TAD regions are calculated within HiC1Dmetrics)
+PlotTAD("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Plot TAD",chr="chr21",clmin=0,clmax=50).drawTAD()
+```
+
+![figure7](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure7.png)
 

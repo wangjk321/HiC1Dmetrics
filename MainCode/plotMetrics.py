@@ -41,7 +41,7 @@ class PlotSquare(PlotCommon):
     def draw(self):
         fig = plt.figure(figsize=(5,5))
         plt.imshow(self.matrixRegion,clim= self.clim,cmap=cmap,interpolation="nearest", aspect=1)
-        plt.title(self.title)
+        plt.title(self.title,fontsize=20)
 
         ticks_pos = list(range(0,self.ebin-self.sbin+1,int((self.ebin-self.sbin)/5)))
 
