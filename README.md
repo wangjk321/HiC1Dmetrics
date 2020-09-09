@@ -100,7 +100,7 @@ dplot.draw_tri()
 dplot.draw_DRF()
 ```
 
-![figure4](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure4.png){:height="50%" width="50%"}
+<img src="https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure4.png" width = "300">
 
 5. Extract regions of "directional TAD" from differential contact matrix.
 
