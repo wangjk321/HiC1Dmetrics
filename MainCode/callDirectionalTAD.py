@@ -173,6 +173,7 @@ class DirectionalTAD(DiffDraw):
         self.plotAlldirec(type)
         plt.savefig(outname,bbox_inches='tight')
 
+"""
 cla = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21")
 cla.makePDF("left","testleft.pdf")
 PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw()
@@ -184,9 +185,17 @@ plt.savefig("ISsingle.pdf")
 diffsq = DiffDraw("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,\
                     startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparison of two samples",chr="chr21")
 diffsq.draw_DRF()
-plt.savefig("DRFtwo.pdf")
+plt.savefig("DRFtwo.pdf")"""
 
-leftTAD,rightTAD,_ = cla.extractRegion()
-leftTAD
-leftTAD.to_csv("leftTAD" + ".bedGraph", sep="\t", header=False, index=False)
-rightTAD.to_csv("rightTAD" + ".bedGraph", sep="\t", header=False, index=False)
+#leftTAD,rightTAD,_ = cla.extractRegion()
+#leftTAD
+#leftTAD.to_csv("leftTAD" + ".bedGraph", sep="\t", header=False, index=False)
+#rightTAD.to_csv("rightTAD" + ".bedGraph", sep="\t", header=False, index=False)
+
+IS = InsulationScore("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",25000,"chr21")
+IS.getIS()
+direcTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
+leftTAD,rightTAD,_ = direcTAD.extractRegion()
+rightTAD
+plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
+plotDirecTAD.plotAlldirec("right")
