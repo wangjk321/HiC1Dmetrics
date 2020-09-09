@@ -1,6 +1,3 @@
-import os
-os.chdir("MainCode")
-
 from calculateMetrics import *
 from scipy.signal import argrelextrema
 from plotMetrics import *
@@ -172,40 +169,3 @@ class DirectionalTAD(DiffDraw):
     def makePDF(self,type,outname):
         self.plotAlldirec(type)
         plt.savefig(outname,bbox_inches='tight')
-
-"""
-cla = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21")
-cla.makePDF("left","testleft.pdf")
-PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,chr="chr21").draw()
-plt.savefig("SquareHiC.pdf")
-
-PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="One sample",chr="chr21").draw("IS")
-plt.savefig("ISsingle.pdf")
-
-diffsq = DiffDraw("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,\
-                    startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparison of two samples",chr="chr21")
-diffsq.draw_DRF()
-plt.savefig("DRFtwo.pdf")"""
-
-#leftTAD,rightTAD,_ = cla.extractRegion()
-#leftTAD
-#leftTAD.to_csv("leftTAD" + ".bedGraph", sep="\t", header=False, index=False)
-#rightTAD.to_csv("rightTAD" + ".bedGraph", sep="\t", header=False, index=False)
-
-IS = InsulationScore("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",25000,"chr21")
-IS.getIS()
-direcTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
-leftTAD,rightTAD,_ = direcTAD.extractRegion()
-rightTAD
-plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
-plotDirecTAD.plotAlldirec("right")
-plotDirecTAD.makePDF("right","Figure2.png")
-
-
-PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Square matrix",chr="chr21",clmin=0,clmax=50).draw()
-plt.savefig("Figure7-1.png")
-
-PlotTri("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Tri matrix",chr="chr21",clmin=0,clmax=50).draw()
-plt.savefig("Figure7-2.png")
-PlotTAD("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="Plot TAD",chr="chr21",clmin=0,clmax=50).drawTAD()
-plt.savefig("Figure7-3.png")

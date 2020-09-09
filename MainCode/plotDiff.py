@@ -124,11 +124,3 @@ class DiffDraw(object):
 
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
-
-#diffsq = DiffDraw("./Rad21KD_1/observed.KR.chr21.matrix.gz","./Control_1/observed.KR.chr21.matrix.gz",25000,\
-#                    startSite=1000*25000,endSite=1500*25000, clmin=-3,clmax=3,title="HiC test",chr="chr21")
-#diffsq.draw_diffCI()
-
-#diffsq = DiffDraw("./Control_1/observed.KR.chr20.matrix.gz","./Rad21KD_1/observed.KR.chr20.matrix.gz",25000,\
-#                    startSite=1500*25000,endSite=1900*25000, clmin=-3,clmax=3,title="HiC test",chr="chr20")
-#diffsq.draw_diffCI()

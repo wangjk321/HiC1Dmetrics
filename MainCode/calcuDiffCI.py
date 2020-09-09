@@ -41,5 +41,3 @@ class DiffCI(BasePara):
 
     #def getCSV(self):
     #    super().makeCSV(self.getDRF())
-#diffci = DiffCI("./Rad21KD_1/observed.KR.chr20.matrix.gz","./Control_1/observed.KR.chr20.matrix.gz",25000,"chr20")
-#diffci.getDiffCI().diffCI

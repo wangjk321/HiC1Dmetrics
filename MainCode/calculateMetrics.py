@@ -166,11 +166,3 @@ class DirectionalRelativeFreq(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getDRF())
-
-#test = ContrastIndex("./Rad21KD_1/observed.KR.chr20.matrix.gz",25000,"chr20")
-
-#test.getCI()
-
-#import seaborn as sns
-#np.sort(a[a>0])
-#sns.distplot(a,rug=True)

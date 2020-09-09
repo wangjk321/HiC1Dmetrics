@@ -14,8 +14,3 @@ def loadWithNorm(filename,method= "RPM",log = False):
         return np.log1p(data)
     else:
         return data
-
-#from generateCmap import *
-#a = loadDenseMatrix("./Rad21KD_1/observed.KR.chr20.matrix.gz")
-#import matplotlib.pyplot as plt
-#plt.imshow(a,clim=(0,5),aspect=1,interpolation="nearest",cmap=generate_cmap(['#FFFFFF', '#d10a3f']))

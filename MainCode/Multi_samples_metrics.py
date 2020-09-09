@@ -26,11 +26,3 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     metricMT = metricMT.iloc[:,3:]
     metricMT.columns = labels
     return metricMT
-
-##Usage
-samples = ["./Rad21KD_1/observed.KR.chr20.matrix.gz","./Control_1/observed.KR.chr20.matrix.gz"]
-labels = ["Rad21KD","Control"]
-
-IS = getMultiSamplesScore(samples,labels,25000,"chr20","IS",500000)
-di = getMultiSamplesScore(samples,labels,25000,"chr20","DI",1000000)
-ci = getMultiSamplesScore(samples,labels,25000,"chr20","CI",150000)

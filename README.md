@@ -87,6 +87,7 @@ IS.getCSV() #export bedGraph file
 #### 2. Plot 1-D metrics of one sample:
 
 ```python
+from plotMetrics import *
 plotm = PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,\
                      chr="chr21",startSite=1100*25000,endSite=1300*25000,\
                      title="One sample",clmin=0,clmax=50,other_parameter=0)
@@ -96,9 +97,23 @@ plotm.makePDF("IS","outputname") #export pdf
 
 <img src="https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure3.png" width = "50%">
 
-#### 3. Calculate 1-D metrics of two samples:
+It is also possible to calculate 1-D metrics of multiple sample simultaneously:
 
 ```python
+from Multi_samples_metrics import *
+samples = ["../test_data/Rad21KD_1/observed.KR.chr20.matrix.gz",\
+           "../test_data/Control_1/observed.KR.chr20.matrix.gz"]
+labels = ["Rad21KD","Control"]
+IS = getMultiSamplesScore(samples,labels,25000,"chr20","IS",150000)
+CI = getMultiSamplesScore(samples,labels,25000,"chr20","CI",150000)
+```
+
+
+
+#### 3. Calculate 1-D metrics of two paired samples:
+
+```python
+from calculateMetrics import *
 drf = DirectionalRelativeFreq("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",\
                               "../test_data/Control_1/observed.KR.chr21.matrix.gz",\
                               25000,"chr21",out_name="DRF",
@@ -109,6 +124,7 @@ drf.makeCSV() # export bedGraph file of DRF
 #### 4. Plot 1-D metrics of two samples:
 
 ```python
+from plotDiff import *
 dplot = DiffDraw("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",\
                  "../test_data/Control_1/observed.KR.chr21.matrix.gz",\
                  25000,startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,\
@@ -124,6 +140,7 @@ dplot.draw_DRF() #plot DRF score
 #### 5. Extract regions of "directional TAD" from differential contact matrix.
 
 ```python
+from callDirectionalTAD import *
 direcTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",\
                           "../test_data/Control_1/observed.KR.chr21.matrix.gz",\
                           25000,chr="chr21",startDRF=500000,sizeDRF=1000000,\
@@ -145,6 +162,7 @@ leftTAD,rightTAD,_ = direcTAD.extractRegion() # The result is [leftTAD,rightTAD,
 #### 6. Plot "directional TAD"
 
 ``` python
+from callDirectionalTAD import *
 plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz",\
                               "../test_data/Control_1/observed.KR.chr21.matrix.gz",\
                               25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",\
@@ -158,6 +176,7 @@ plotDirecTAD.makePDF("right","rightTAD.pdf") #export to .pdf
 #### 7. In addition. HiC1Dmetrics also provide simply function to visualize Hi-C data.
 
 ```python
+from plotMetrics import *
 #1 plot contact matrix (square)
 PlotSquare("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,,chr="chr21",\
            startSite=1100*25000,endSite=1300*25000,title="Square matrix",\
