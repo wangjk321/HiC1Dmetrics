@@ -81,6 +81,8 @@ plotm.draw("IS")
 plotm.makePDF("IS","outputname")
 ```
 
+![figure3](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure3.png)
+
 3. Calculate 1-D metrics of two samples:
 
 ```python
@@ -97,6 +99,8 @@ dplot.draw_square()
 dplot.draw_tri()
 dplot.draw_DRF()
 ```
+
+![figure4](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure4.png)
 
 5. Extract regions of "directional TAD" from differential contact matrix.
 
