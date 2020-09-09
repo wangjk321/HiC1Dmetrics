@@ -24,8 +24,84 @@ Basically, HiC1Dmetrics mainly provide three types of function:
 
 # Quick Start
 
+```python
+DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21").plotAlldirec("right")
+```
+
+
+
 # Input file
 
 # Usage
-### 1-D metrics of ONE sample
-- Calculation (The output format is bedGraph): 
+1. Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
+
+```python
+from calculateMetrics import *
+IS = InsulationScore("./Rad21KD_1/observed.KR.chr21.matrix.gz",25000,"chr21",out_name="InsulationScore",square_size=150000)
+IS.getCSV()
+```
+
+|      |   chr |    start |      end | InsulationScore |
+| :--- | ----: | -------: | -------: | --------------- |
+| 0    | chr21 |        0 |    25000 | 0.0             |
+| 1    | chr21 |    25000 |    50000 | 0.0             |
+| 2    | chr21 |    50000 |    75000 | 0.0             |
+| ...  |   ... |      ... |      ... | ...             |
+| 1866 | chr21 | 46650000 | 46675000 | 0.0             |
+| 1867 | chr21 | 46675000 | 46700000 | 0.0             |
+| 1868 | chr21 | 46700000 | 46725000 | 0.0             |
+
+`ContrastIndex`, `DirectionalityIndex`, `SeparationScore`, `DistalToLocal` is responsible for calculate CI,DI,TADsep,DLR, respectively.
+
+
+
+2. Plot 1-D metrics of one sample:
+
+```python
+plotm = PlotBedGraph("../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000,title="One sample",chr="chr21",clmin=0,clmax=50,other_parameter=0)
+plotm.draw("IS")
+plotm.makePDF("IS","outputname")
+```
+
+3. Calculate 1-D metrics of two samples:
+
+```python
+drf = DirectionalRelativeFreq("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,"chr21",out_name="DRF",
+                start_distance=500000, end_distance=1000000)
+drf.makeCSV()
+```
+
+4. Plot 1-D metrics of two samples:
+
+```python
+dplot = DiffDraw("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,startSite=1100*25000,endSite=1300*25000, clmin=-3,clmax=3,title="Comparison of two samples",chr="chr21",startDRF=500000,sizeDRF=1000000)
+dplot.draw_square()
+dplot.draw_tri()
+dplot.draw_DRF()
+```
+
+5. Extract regions of "directional TAD" from differential contact matrix.
+
+```python
+direcTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
+leftTAD,rightTAD,_ = direcTAD.extractRegion()
+rightTAD
+```
+
+|  chr  | TADstart |  TADend  |
+| :---: | :------: | :------: |
+| chr21 | 15575000 | 15875000 |
+| chr21 | 19000000 | 19450000 |
+| chr21 | 22400000 | 22800000 |
+| chr21 | 25375000 | 25575000 |
+| chr21 | 28325000 | 28750000 |
+| chr21 | 36100000 | 36375000 |
+
+6. Plot "directional TAD"
+
+``` python
+plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
+plotDirecTAD.plotAlldirec("right")
+plotDirecTAD.makePDF("right","rightTAD.pdf")
+```
+
