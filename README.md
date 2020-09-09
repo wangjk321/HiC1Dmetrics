@@ -58,6 +58,8 @@ java -jar juicer_tools.jar dump observed KR RPE.hic chr21 chr21 BP 25000 output.
 
 # Usage
 
+HiC1Dmetrics could be used in python and shell (will be added in version 0.2)
+
 #### 1. Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
 
 ```python
