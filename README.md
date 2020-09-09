@@ -28,7 +28,7 @@ Basically, HiC1Dmetrics mainly provide three types of function:
 DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21").plotAlldirec("right")
 ```
 
-![figure2](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure2pdf.pdf)
+![figure2](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure2.png)
 
 # Input file
 
