@@ -121,8 +121,9 @@ rightTAD
 plotDirecTAD = DirectionalTAD("../test_data/Rad21KD_1/observed.KR.chr21.matrix.gz","../test_data/Control_1/observed.KR.chr21.matrix.gz",25000,chr="chr21",clmin=-2,clmax=2,title="Directional TAD on chr21",startDRF=500000,sizeDRF=1000000,sizeIS=150000)
 plotDirecTAD.plotAlldirec("right")
 plotDirecTAD.makePDF("right","rightTAD.pdf")
-![figure6](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure6.png)
 ```
+
+![figure6](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure6.png)
 
 7. Others. HiC1Dmetrics all provide function to simply visualize Hi-C data.
 
