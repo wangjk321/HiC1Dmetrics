@@ -51,7 +51,7 @@ java -jar juicer_tools.jar dump observed KR RPE.hic chr21 chr21 BP 25000 output.
 
 
 # Usage
-1. Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
+1. #### Calculate 1-D metrics of ONE sample  (The output format is bedGraph): 
 
 ```python
 from calculateMetrics import *
@@ -81,7 +81,7 @@ plotm.draw("IS")
 plotm.makePDF("IS","outputname")
 ```
 
-![figure3](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure3.png)
+<img src="https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure3.png" width = "50%">
 
 3. Calculate 1-D metrics of two samples:
 
