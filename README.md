@@ -8,16 +8,16 @@ This repository contain code and basic tutorial for "HiC1Dmetrics"
 Basically, HiC1Dmetrics mainly provide three kinds of functions:
 
 1. Calculate and visualize multiple 1-D metrics for one Hi-C samples.
-    - Directional Index (DI)
-    - Insulation Score (IS)
-    - Contrast Index (CI)
-    - TAD separation score (TADsep)
-    - Distal-to-Local Ratio (DLR)
+    - Directional Index (DI) ([PMID: 22495300](https://pubmed.ncbi.nlm.nih.gov/22495300/))
+    - Insulation Score (IS) ([PMID: 26030525](https://pubmed.ncbi.nlm.nih.gov/26030525/))
+    - Contrast Index (CI) ([PMID: 24981874](https://pubmed.ncbi.nlm.nih.gov/24981874/))
+    - TAD separation score (TADsep) ([PMID: 29335486](https://pubmed.ncbi.nlm.nih.gov/29335486/))
+    - Distal-to-Local Ratio (DLR)  ([PMID: 30146161](https://pubmed.ncbi.nlm.nih.gov/30146161/))
     - More in building ...
 2. Calculate and visulize 1-D metrics for comparing two Hi-C samples 
     - **Directional Ratio Frequency**, DRF (Original metric)
-    - Differential DLR
-    - Insulation score changes [PMID 31495782](https://pubmed.ncbi.nlm.nih.gov/31495782/)
+    - Differential DLR ([PMID: 30146161](https://pubmed.ncbi.nlm.nih.gov/30146161/))
+    - Insulation score changes ([PMID: 31495782](https://pubmed.ncbi.nlm.nih.gov/31495782/))
     - More in building ...
 3. Extract and visualize all "directional TAD" sites, which are defined by DRF metrics.
 
