@@ -17,6 +17,7 @@ Basically, HiC1Dmetrics mainly provide three kinds of functions:
 2. Calculate and visulize 1-D metrics for comparing two Hi-C samples 
     - **Directional Ratio Frequency**, DRF (Original metric)
     - Differential DLR
+    - Insulation score changes [PMID 31495782](https://pubmed.ncbi.nlm.nih.gov/31495782/)
     - More in building ...
 3. Extract and visualize all "directional TAD" sites, which are defined by DRF metrics.
 
