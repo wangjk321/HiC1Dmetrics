@@ -48,8 +48,9 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000):
     TADout["chr"] = chrlist
     TADout["TADstart"] = TADstart
     TADout["TADend"] = TADend
-    #Maximum TAD size 2MB
-    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<2000000]
+    #Maximum TAD size 5MB, Minimum 0.3MB
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
 
     return(TADout)
 
