@@ -13,9 +13,10 @@ Basically, HiC1Dmetrics mainly provide three kinds of functions:
     - Contrast Index (CI) ([PMID: 24981874](https://pubmed.ncbi.nlm.nih.gov/24981874/))
     - TAD separation score (TADsep) ([PMID: 29335486](https://pubmed.ncbi.nlm.nih.gov/29335486/))
     - Distal-to-Local Ratio (DLR)  ([PMID: 30146161](https://pubmed.ncbi.nlm.nih.gov/30146161/))
+    - Compartment PC1 ([PMID: 19815776](https://pubmed.ncbi.nlm.nih.gov/19815776/))
     - More in building ...
 2. Calculate and visulize 1-D metrics for comparing two Hi-C samples 
-    - **Directional Ratio Frequency**, DRF (Original metric)
+    - **Directional Ratio Frequency, DRF (Original metric)**
     - Differential DLR ([PMID: 30146161](https://pubmed.ncbi.nlm.nih.gov/30146161/))
     - Insulation score changes ([PMID: 31495782](https://pubmed.ncbi.nlm.nih.gov/31495782/))
     - More in building ...
