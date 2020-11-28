@@ -7,7 +7,7 @@ from scipy import ndimage
 class BasePara:
     def __init__(self,path,resolution,chromosome,out_name="noName"):
         self.path = path
-        self.matrix = loadDenseMatrix(path).values
+        self.matrix = np.nan_to_num(loadDenseMatrix(path).values)
         self.matrix_shape = self.matrix.shape[0]
         self.resolution = resolution
         self.chromosome = chromosome
@@ -57,7 +57,7 @@ class InsulationScore(BasePara):
         super().makeCSV(self.getIS())
 
 class ContrastIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",CI_size=150000):
+    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",CI_size=300000):
         super().__init__(path,resolution,chromosome,out_name)
         self.CI_size = CI_size
 
@@ -87,6 +87,37 @@ class ContrastIndex(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getCI())
+
+class SeparationScore(BasePara):
+    def __init__(self,path,resolution,chromosome,out_name="SeparationScore",TADss_size=300000):
+        super().__init__(path,resolution,chromosome,out_name)
+        self.TADss_size = TADss_size
+
+    def __str__(self):
+        return "SeparationScore(matrix_path = '" + str(self.path) +"',\n" + \
+                "resolution = " + str(self.resolution) + ", chromosome = '" + \
+                self.chromosome + "', " + "out_name = '" + self.out_name + \
+                "' \n, TADss_size = " + str(self.TADss_size) + ")"
+    __repr__ = __str__
+
+    def getTADss(self):
+        TADss_Bin = round(self.TADss_size/self.resolution)
+
+        array = np.zeros(self.matrix_shape)
+        for i in range(self.matrix_shape):
+            if(i - TADss_Bin < 0 or i + TADss_Bin >= self.matrix_shape): continue
+            matA = self.matrix[i-TADss_Bin:i,i-TADss_Bin:i]
+            matB = self.matrix[i+1:i+TADss_Bin+1,i+1:i+TADss_Bin+1]
+            A = np.triu(matA,1).sum()
+            B = np.triu(matB,1).sum()
+            C = self.matrix[i-TADss_Bin: i, i+1: i+TADss_Bin+1].sum()
+            if np.isnan(A) or np.isnan(B) or np.isnan(C) or (min(A,B)==0): continue
+            array[i] = C/(min(C+A,C+B))
+
+        return super().makeDF(array,"SeparationScore")
+
+    def getCSV(self):
+        super().makeCSV(self.getTADss())
 
 class DirectionalityIndex(BasePara):
     def __init__(self,path,resolution,chromosome,out_name="noName",DI_distance=1000000):
@@ -121,6 +152,28 @@ class DirectionalityIndex(BasePara):
     def getCSV(self):
         super().makeCSV(self.getDI())
 
+class DistalToLocalRatio(BasePara):
+    def __init__(self,path,resolution,chromosome,out_name="noName",sizeDLR=3000000):
+        super().__init__(path,resolution,chromosome,out_name)
+        self.sizeDLR = sizeDLR
+
+    def getDLR(self):
+        sizeBin = round(self.sizeDLR/self.resolution)
+        array = np.zeros(self.matrix_shape)
+
+        for i in range(self.matrix_shape):
+            if(i - sizeBin < 0 or i + sizeBin >= self.matrix_shape): continue
+            A = self.matrix[i,i-sizeBin:i].sum()
+            B = self.matrix[i,i+1:i+sizeBin+1].sum()
+            Aout = self.matrix[i,0:i-sizeBin].sum()
+            Bout = self.matrix[i,i+sizeBin+1:].sum()
+
+            if np.isnan(A+B) or np.isnan(Aout+Bout): continue #skip NaN value
+            array[i] = np.log1p(Aout+Bout)-np.log1p(A+B)
+        return super().makeDF(array,"DistalToLocalRatio")
+
+    def getCSV(self):
+        super.makeCSV(self.getDLR())
 
 class DirectionalRelativeFreq(BasePara):
     #compare two metrices need normalization

@@ -80,6 +80,12 @@ class PlotBedGraph(PlotTri):
         elif type == "CI":
             score = ContrastIndex(self.path,self.resolution,self.chr).getCI().ContrastIndex
             title = "ContrastIndex"
+        elif type == "TADss":
+            score = SeparationScore(self.path,self.resolution,self.chr).getTADss().SeparationScore
+            title = "SeparationScore"
+        elif type == "DLR":
+            score = DistalToLocalRatio(self.path,self.resolution,self.chr).getDLR().DistalToLocalRatio
+            title = "DistalToLocalRatio"
 
         scoreRegion = score[self.sbin:self.ebin+1]
 
