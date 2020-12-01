@@ -86,6 +86,9 @@ class PlotBedGraph(PlotTri):
         elif type == "DLR":
             score = DistalToLocalRatio(self.path,self.resolution,self.chr).getDLR().DistalToLocalRatio
             title = "DistalToLocalRatio"
+        elif type == "PC1":
+            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1().CompartmentPC1
+            title = "CompartmentPC1"
 
         scoreRegion = score[self.sbin:self.ebin+1]
 

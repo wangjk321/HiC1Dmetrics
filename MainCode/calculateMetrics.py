@@ -3,10 +3,13 @@ import numpy as np
 import pandas as pd
 import argparse
 from scipy import ndimage
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
 
 class BasePara:
     def __init__(self,path,resolution,chromosome,out_name="noName"):
         self.path = path
+        #self.matrixNA = loadDenseMatrix(path).values
         self.matrix = np.nan_to_num(loadDenseMatrix(path).values)
         self.matrix_shape = self.matrix.shape[0]
         self.resolution = resolution
@@ -175,47 +178,50 @@ class DistalToLocalRatio(BasePara):
     def getCSV(self):
         super.makeCSV(self.getDLR())
 
-class DirectionalRelativeFreq(BasePara):
-    #compare two metrices need normalization
-    def __init__(self,path,control_path,resolution,chromosome,out_name="DRF",
-                start_distance=0, end_distance=2000000):
-        super().__init__(path,resolution,chromosome,out_name)
-        self.matrix = loadWithNorm(self.path,log = True).values
-        self.control_path = control_path
-        self.control_matrix = loadWithNorm(self.control_path,log = True).values
-        self.start_distance = start_distance
-        self.end_distance = end_distance
+class CompartmentPC1(BasePara):
+    #def __init__(self,path,resolution,chromosome,out_name="noName"):
+    #    super().__init__(path,resolution,chromosome,out_name)
+    #    self.matrix = loadWithNorm(path,log = True).values
 
-    def __str__(self):
-        return "DirectionalRelativeFreq(matrix_path = '" + str(self.path) +"',\n" + \
-                "control_path = '" + str(self.control_path) + "',\n" + \
-                "resolution = " + str(self.resolution) + ", chromosome = '" + \
-                self.chromosome + "', " + "out_name = '" + self.out_name + \
-                "' \n, start_distance = " + str(self.start_distance) + \
-                ", end_distance = " + str(self.end_distance) + ")"
-    __repr__ = __str__
+    def makeExpect(self,df):
+        num = df.shape[0]
+        avg=[]
+        for i in range(num):  #间隔为i，格数为num-i
+            dig=[]
+            for j in range(num):
+                if (j+i) < num: dig.append(df[j,j+i])
+            avg.append(np.mean(dig))
 
-    def getDRF(self):
-        if self.matrix.shape[0] != self.control_matrix.shape[0]:
-            print("Error: Input/control matrix have different shape")
-            exit(1)
+        for i in range(num):
+            if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
+                for flank in range(num):
+                    biggerBin = avg[i-flank:i+flank+1]
+                    if np.sum(biggerBin)>=10:
+                        avg[i] = np.mean(biggerBin)
+                        break
 
-        smooth = 3
-        control = ndimage.median_filter(self.control_matrix,smooth)
-        logratio = ndimage.median_filter(self.matrix - control, smooth)
+        expected = np.zeros((num, num))
+        for i in range(num):
+            for j in range(num):
+                if np.isnan(df[i,j]):
+                    expected[i,j] = np.NaN
+                else:
+                    distance = abs(i-j)
+                    expected[i,j] = avg[distance]
 
-        array = np.zeros(self.matrix_shape)
-        startDistanceBin = int(self.start_distance / self.resolution)+1
-        endDistanceBin = int(self.end_distance / self.resolution)
+        return(expected)
 
-        for i in range(endDistanceBin, self.matrix_shape - endDistanceBin):
-            right = logratio[i+startDistanceBin:i+endDistanceBin+1, i].mean()
-            left = logratio[i, i-endDistanceBin:i-startDistanceBin+1].mean()
-            if np.isnan(right - left):continue
-            array[i] = right - left
+    def getPC1(self):
+        rawMT = self.matrix
+        expectMT = self.makeExpect(rawMT)
+        oeMT = rawMT / expectMT
+        pearsonMT = np.corrcoef(oeMT)
 
-
-        return super().makeDF(array,"DirectionalRelativeFreq")
+        pca = PCA(n_components=5)
+        trained = pca.fit(np.nan_to_num(pearsonMT))
+        pc1 = trained.components_
+        array = pc1[0,:]
+        return super().makeDF(array,"CompartmentPC1")
 
     def getCSV(self):
-        super().makeCSV(self.getDRF())
+        super.makeCSV(self.getPC1())
