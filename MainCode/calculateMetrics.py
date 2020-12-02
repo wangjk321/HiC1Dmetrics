@@ -171,7 +171,7 @@ class DistalToLocalRatio(BasePara):
             Aout = self.matrix[i,0:i-sizeBin].sum()
             Bout = self.matrix[i,i+sizeBin+1:].sum()
 
-            if np.isnan(A+B) or np.isnan(Aout+Bout): continue #skip NaN value
+            if np.isnan(A+B): continue #skip NaN value
             array[i] = np.log1p(Aout+Bout)-np.log1p(A+B)
         return super().makeDF(array,"DistalToLocalRatio")
 
@@ -212,7 +212,7 @@ class CompartmentPC1(BasePara):
         return(expected)
 
     def getPC1(self):
-        rawMT = self.matrix
+        rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT)
         oeMT = rawMT / expectMT
         pearsonMT = np.corrcoef(oeMT)

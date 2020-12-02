@@ -44,3 +44,37 @@ class DirectionalRelativeFreq(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getDRF())
+
+class InsulationScoreChange(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="InsulationScore",square_size=150000):
+        super().__init__(path,resolution,chromosome,out_name)
+        self.control_path = control_path
+        self.square_size = square_size
+        self.IStreat = InsulationScore(path,resolution,chromosome,out_name="InsulationScore",
+                                        square_size=self.square_size).getIS()
+        self.IScontrol = InsulationScore(control_path,resolution,chromosome,out_name="InsulationScore",
+                                        square_size=self.square_size).getIS()
+
+    def getISC(self):
+        isc = np.array(self.IStreat.InsulationScore - self.IScontrol.InsulationScore)
+        return super().makeDF(isc,"InsulationScoreChange")
+
+    def getCSV(self):
+        super().makeCSV(self.getISC())
+
+class deltaDLR(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="DLR",sizeDLR=3000000):
+        super().__init__(path,resolution,chromosome,out_name)
+        self.control_path = control_path
+        self.sizeDLR = sizeDLR
+        self.DLRtreat = DistalToLocalRatio(path,resolution,chromosome,out_name="DLR",
+                                            sizeDLR=self.sizeDLR).getDLR()
+        self.DLRcontrol= DistalToLocalRatio(control_path,resolution,chromosome,out_name="DLR",
+                                            sizeDLR=self.sizeDLR).getDLR()
+
+    def getDeltaDLR(self):
+        dDLR = np.array(self.DLRtreat.DistalToLocalRatio - self.DLRcontrol.DistalToLocalRatio)
+        return super().makeDF(dDLR,"deltaDLR")
+
+    def getCSV(self):
+        super().makeCSV(self.getDeltaDLR())
