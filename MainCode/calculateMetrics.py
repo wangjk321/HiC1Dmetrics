@@ -217,7 +217,7 @@ class CompartmentPC1(BasePara):
         oeMT = np.nan_to_num(rawMT / expectMT)
         if logOE == True:
             oelog = np.log(oeMT)
-            oelog[np.isinf[oelog]] = 0
+            oelog[np.isinf(oelog)] = 0
             pearsonMT = np.corrcoef(oelog)
         else:
             pearsonMT = np.corrcoef(oeMT)
