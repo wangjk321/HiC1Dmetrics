@@ -193,7 +193,7 @@ class CompartmentPC1(BasePara):
             avg.append(np.mean(dig))
 
         for i in range(num):
-            if avg[i] < 40: #25000res 为10， 50000应该是10*（50000/25000)^2
+            if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
                 for flank in range(num):
                     biggerBin = avg[i-flank:i+flank+1]
                     if np.sum(biggerBin)>=10:
