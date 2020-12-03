@@ -192,13 +192,13 @@ class CompartmentPC1(BasePara):
                 if (j+i) < num: dig.append(df[j,j+i])
             avg.append(np.mean(dig))
 
-        #for i in range(num):
-        #    if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
-        #        for flank in range(num):
-        #            biggerBin = avg[i-flank:i+flank+1]
-        #            if np.sum(biggerBin)>=10:
-        #                avg[i] = np.mean(biggerBin)
-        #                break
+        for i in range(num):
+            if avg[i] < 40: #25000res 为10， 50000应该是10*（50000/25000)^2
+                for flank in range(num):
+                    biggerBin = avg[i-flank:i+flank+1]
+                    if np.sum(biggerBin)>=10:
+                        avg[i] = np.mean(biggerBin)
+                        break
 
         expected = np.zeros((num, num))
         for i in range(num):
