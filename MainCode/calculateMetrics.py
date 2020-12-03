@@ -192,13 +192,13 @@ class CompartmentPC1(BasePara):
                 if (j+i) < num: dig.append(df[j,j+i])
             avg.append(np.mean(dig))
 
-        for i in range(num):
-            if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
-                for flank in range(num):
-                    biggerBin = avg[i-flank:i+flank+1]
-                    if np.sum(biggerBin)>=10:
-                        avg[i] = np.mean(biggerBin)
-                        break
+        #for i in range(num):
+        #    if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
+        #        for flank in range(num):
+        #            biggerBin = avg[i-flank:i+flank+1]
+        #            if np.sum(biggerBin)>=10:
+        #                avg[i] = np.mean(biggerBin)
+        #                break
 
         expected = np.zeros((num, num))
         for i in range(num):
@@ -211,16 +211,23 @@ class CompartmentPC1(BasePara):
 
         return(expected)
 
-    def getPC1(self):
+    def getPC1(self, logOE = False):
         rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT)
-        oeMT = rawMT / expectMT
-        pearsonMT = np.corrcoef(oeMT)
+        oeMT = np.nan_to_num(rawMT / expectMT)
+        if logOE = True:
+            oelog = np.log(oe)
+            oelog[np.isinf[oelog]] = 0
+            pearsonMT = np.corrcoef(oelog)
+        else:
+            pearsonMT = np.corrcoef(oeMT)
+        naPos = np.isnan(pearsonMT).all(axis=1)
 
         pca = PCA(n_components=5)
         trained = pca.fit(np.nan_to_num(pearsonMT))
         pc1 = trained.components_
         array = pc1[0,:]
+        array[naPos] = np.NaN
         return super().makeDF(array,"CompartmentPC1")
 
     def getCSV(self):
