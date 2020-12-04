@@ -215,12 +215,17 @@ class CompartmentPC1(BasePara):
         rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT)
         oeMT = np.nan_to_num(rawMT / expectMT)
+
         if logOE == True:
-            oelog = np.log(oeMT)
-            oelog[np.isinf(oelog)] = 0
-            pearsonMT = np.corrcoef(oelog)
-        else:
-            pearsonMT = np.corrcoef(oeMT)
+            oeMT = np.log(oeMT)
+            oeMT[np.isinf(oeMT)] = 0
+
+        allzero = oeMT.sum(axis=1) == 0
+        allzeroindex = np.array(range(oeMT.shape[0]))[allzero]
+        oeMT[allzeroindex,:] = np.NaN #把0值变成NA
+        oeMT[:,allzeroindex] = np.NaN
+
+        pearsonMT = np.array(pd.DataFrame(oeMT).corr())
         naPos = np.isnan(pearsonMT).all(axis=1)
 
         pca = PCA(n_components=5)
