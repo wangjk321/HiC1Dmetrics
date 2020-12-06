@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import argparse
 from scipy import ndimage
+from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
 
@@ -211,7 +212,7 @@ class CompartmentPC1(BasePara):
 
         return(expected)
 
-    def getPC1(self, logOE = False):
+    def getPC1(self, logOE = False, signCorr = "No correction"):
         rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT)
         oeMT = np.nan_to_num(rawMT / expectMT)
@@ -232,6 +233,15 @@ class CompartmentPC1(BasePara):
         trained = pca.fit(np.nan_to_num(pearsonMT))
         pc1 = trained.components_
         array = pc1[0,:]
+        
+        if signCorr == "No correction":
+            pass
+        else:
+            geneDensity = pd.read_csv(signCorr,header=None,sep='\t')
+            gd = geneDensity[geneDensity[0] == self.chromosome][3]
+            cor2gd = stats.spearmanr(gd,array)[0]
+            if cor2gd <0: array = -array
+
         array[naPos] = np.NaN
         return super().makeDF(array,"CompartmentPC1")
 
