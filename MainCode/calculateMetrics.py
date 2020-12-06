@@ -31,7 +31,7 @@ class BasePara:
         df.to_csv(self.out_name + ".bedGraph", sep="\t", header=False, index=False)
 
 class InsulationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",square_size=150000):
+    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",square_size=200000):
         super().__init__(path,resolution,chromosome,out_name)
         self.square_size = square_size
         #The default size in Homer IS is 150000
@@ -61,7 +61,7 @@ class InsulationScore(BasePara):
         super().makeCSV(self.getIS())
 
 class ContrastIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",CI_size=300000):
+    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",CI_size=200000):
         super().__init__(path,resolution,chromosome,out_name)
         self.CI_size = CI_size
 

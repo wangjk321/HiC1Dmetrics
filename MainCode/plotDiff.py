@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
 from calculateMetrics import *
+from calculateTwoSample import *
 from calcuDiffCI import *
 
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
@@ -75,6 +76,39 @@ class DiffDraw(object):
 
         plt.xticks(ticks_pos,self.mark)
         plt.yticks([])
+
+    def draw_2sampleMetric(self,type):
+        if type == "deltaDLR":
+            score = deltaDLR(self.path,self.control_path,self.resolution,self.chr, \
+                    sizeDLR=3000000).DeltaDLR().deltaDLR
+            title = "deltaDLR"
+        elif type == "ISC":
+            score = InsulationScoreChange(self.path,self.control_path,self.resolution,self.chr, \
+                    square_size=self.sizeIS).getISC().InsulationScoreChange
+            title = "InsulationScoreChange"
+        elif type == "DRF":
+            score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
+                    start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
+            title = "DirectionalRelativeFreq"
+
+        scoreRegion = score[self.sbin:self.ebin+1]
+        plt.figure(figsize=(10,10))
+        #pad + fraction = -0.1, So the bedGraph figure width should be (1+0.1)*width of HiC
+        plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
+        self.draw_tri()
+        plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
+        plt.title(title,fontsize=20)
+        plt.plot(scoreRegion,c='black')
+        plt.xlim(self.sbin,self.ebin)
+        plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
+                        where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.99)
+
+        plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
+                        where = scoreRegion <0,facecolor='#a1d76a', alpha=0.99)
+
+        ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
+        plt.xticks(ticks_pos,self.mark)
 
     def draw_DRF(self):
         score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
