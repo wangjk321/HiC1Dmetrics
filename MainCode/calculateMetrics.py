@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing
 
 class BasePara:
-    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=False):
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True):
         self.path = path
         #self.matrixNA = loadDenseMatrix(path).values
         self.matrix = loadDenseMatrix(path).values
@@ -16,7 +16,11 @@ class BasePara:
         self.resolution = resolution
         self.chromosome = chromosome
         self.out_name = out_name
-        self.useNA = useNA
+        if useNA == True:
+            self.blankarray = np.zeros(self.matrix_shape) * np.NaN
+        elif useNA == False:
+            self.blankarray = np.zeros(self.matrix_shape)
+
 
     def makeDF(self,array,metrics_name="unknown metrics"):
         array = np.round(array,6)
@@ -32,7 +36,7 @@ class BasePara:
         df.to_csv(self.out_name + ".bedGraph", sep="\t", header=False, index=False)
 
 class InsulationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=False,square_size=200000):
+    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=200000):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.square_size = square_size
         #The default size in Homer IS is 150000
@@ -47,8 +51,8 @@ class InsulationScore(BasePara):
 
     def getIS(self):
         squareBin = round(self.square_size/self.resolution)
+        array = self.blankarray
 
-        array = np.zeros(self.matrix_shape) * np.NaN
         for i in range(self.matrix_shape):
             if(i - squareBin < 0 or i + squareBin >= self.matrix_shape): continue
             score = self.matrix[i-squareBin: i, i+1: i+squareBin+1].mean()
@@ -62,8 +66,8 @@ class InsulationScore(BasePara):
         super().makeCSV(self.getIS())
 
 class ContrastIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",CI_size=200000):
-        super().__init__(path,resolution,chromosome,out_name)
+    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
         self.CI_size = CI_size
 
     #print the instanced class
@@ -76,8 +80,8 @@ class ContrastIndex(BasePara):
 
     def getCI(self):
         CI_Bin = round(self.CI_size/self.resolution)
+        array = self.blankarray
 
-        array = np.zeros(self.matrix_shape)
         for i in range(self.matrix_shape):
             if(i - CI_Bin < 0 or i + CI_Bin >= self.matrix_shape): continue
             matA = self.matrix[i-CI_Bin:i,i-CI_Bin:i]
@@ -85,7 +89,7 @@ class ContrastIndex(BasePara):
             A = np.triu(matA,1).sum()
             B = np.triu(matB,1).sum()
             C = self.matrix[i-CI_Bin: i, i+1: i+CI_Bin+1].sum()
-            if np.isnan(A) or np.isnan(B) or np.isnan(C): continue  #skip NaN value
+            if np.isnan(np.sum(A+B+C)) or min(A,B,C) == 0: continue  #skip NaN value
             array[i] = np.log1p(A+B) - np.log1p(C)
 
         return super().makeDF(array,"ContrastIndex")
