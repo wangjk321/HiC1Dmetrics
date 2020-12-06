@@ -22,6 +22,13 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
                 next = ContrastIndex(path,res,chr,CI_size=UniqueParameter).getCI().iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
+    elif mode == "TADss":
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = SeparationScore(path,res,chr,TADss_size=UniqueParameter).getTADss()
+            else:
+                next = SeparationScore(path,res,chr,TADss_size=UniqueParameter).getTADss().iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
     metricMT.index = metricMT.start.tolist()
     metricMT = metricMT.iloc[:,3:]
     metricMT.columns = labels
