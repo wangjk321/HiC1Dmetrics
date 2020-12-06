@@ -8,14 +8,15 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing
 
 class BasePara:
-    def __init__(self,path,resolution,chromosome,out_name="noName"):
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=False):
         self.path = path
         #self.matrixNA = loadDenseMatrix(path).values
-        self.matrix = np.nan_to_num(loadDenseMatrix(path).values)
+        self.matrix = loadDenseMatrix(path).values
         self.matrix_shape = self.matrix.shape[0]
         self.resolution = resolution
         self.chromosome = chromosome
         self.out_name = out_name
+        self.useNA = useNA
 
     def makeDF(self,array,metrics_name="unknown metrics"):
         array = np.round(array,6)
@@ -31,8 +32,8 @@ class BasePara:
         df.to_csv(self.out_name + ".bedGraph", sep="\t", header=False, index=False)
 
 class InsulationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",square_size=200000):
-        super().__init__(path,resolution,chromosome,out_name)
+    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=False,square_size=200000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
         self.square_size = square_size
         #The default size in Homer IS is 150000
 
@@ -47,11 +48,11 @@ class InsulationScore(BasePara):
     def getIS(self):
         squareBin = round(self.square_size/self.resolution)
 
-        array = np.zeros(self.matrix_shape)
+        array = np.zeros(self.matrix_shape) * np.NaN
         for i in range(self.matrix_shape):
             if(i - squareBin < 0 or i + squareBin >= self.matrix_shape): continue
             score = self.matrix[i-squareBin: i, i+1: i+squareBin+1].mean()
-            if np.isnan(score): continue  #skip NaN value
+            if np.isnan(score) or score == 0: continue  #skip NaN value
             array[i] = score
         array = np.log1p(array/np.nanmean(array)) #normalization
 
