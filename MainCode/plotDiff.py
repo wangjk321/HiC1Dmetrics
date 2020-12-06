@@ -10,7 +10,7 @@ from calcuDiffCI import *
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
 
 class DiffDraw(object):
-    def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-50,clmax=50, \
+    def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-5,clmax=5, \
                 title="", chr="",startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
         self.path = path
         self.control_path = control_path
@@ -80,7 +80,7 @@ class DiffDraw(object):
     def draw_2sampleMetric(self,type):
         if type == "deltaDLR":
             score = deltaDLR(self.path,self.control_path,self.resolution,self.chr, \
-                    sizeDLR=3000000).DeltaDLR().deltaDLR
+                    sizeDLR=3000000).getDeltaDLR().deltaDLR
             title = "deltaDLR"
         elif type == "ISC":
             score = InsulationScoreChange(self.path,self.control_path,self.resolution,self.chr, \
