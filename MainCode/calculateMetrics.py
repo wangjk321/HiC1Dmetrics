@@ -222,18 +222,25 @@ class CompartmentPC1(BasePara):
             oeMT[np.isinf(oeMT)] = 0
 
         allzero = oeMT.sum(axis=1) == 0
-        allzeroindex = np.array(range(oeMT.shape[0]))[allzero]
-        oeMT[allzeroindex,:] = np.NaN #把0值变成NA
-        oeMT[:,allzeroindex] = np.NaN
+        notallzeroindex = np.array(range(ss.matrix_shape))[~allzero]
+        #pandas 比numpy慢很多
+        #allzeroindex = np.array(range(oeMT.shape[0]))[allzero]
+        #oeMT[allzeroindex,:] = np.NaN #把0值变成NA
+        #oeMT[:,allzeroindex] = np.NaN
+        #pearsonMT = np.array(pd.DataFrame(oeMT).corr())
 
-        pearsonMT = np.array(pd.DataFrame(oeMT).corr())
+        nonzeroMT = oeMT[~allzero,:][:,~allzero]
+        nonzeroPearson = np.corrcoef(nonzeroMT)
+        pearsonMT = pd.DataFrame(np.zeros((self.matrix_shape,self.matrix_shape)) *np.NaN)
+        pearsonMT.iloc[notallzeroindex,notallzeroindex] = nonzeroPearson
+        pearsonMT = np.array(pearsonMT)
+
         naPos = np.isnan(pearsonMT).all(axis=1)
-
         pca = PCA(n_components=5)
         trained = pca.fit(np.nan_to_num(pearsonMT))
         pc1 = trained.components_
         array = pc1[0,:]
-        
+
         if signCorr == "No correction":
             pass
         else:
