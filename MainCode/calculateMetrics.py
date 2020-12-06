@@ -222,7 +222,7 @@ class CompartmentPC1(BasePara):
             oeMT[np.isinf(oeMT)] = 0
 
         allzero = oeMT.sum(axis=1) == 0
-        notallzeroindex = np.array(range(ss.matrix_shape))[~allzero]
+        notallzeroindex = np.array(range(self.matrix_shape))[~allzero]
         #pandas 比numpy慢很多
         #allzeroindex = np.array(range(oeMT.shape[0]))[allzero]
         #oeMT[allzeroindex,:] = np.NaN #把0值变成NA
