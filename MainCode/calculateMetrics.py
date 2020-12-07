@@ -6,6 +6,7 @@ from scipy import ndimage
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
+import warnings
 
 class BasePara:
     def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True):
@@ -16,6 +17,7 @@ class BasePara:
         self.resolution = resolution
         self.chromosome = chromosome
         self.out_name = out_name
+        self.useNA = useNA
         if useNA == True:
             self.blankarray = np.zeros(self.matrix_shape) * np.NaN
         elif useNA == False:
@@ -86,9 +88,9 @@ class ContrastIndex(BasePara):
             if(i - CI_Bin < 0 or i + CI_Bin >= self.matrix_shape): continue
             matA = self.matrix[i-CI_Bin:i,i-CI_Bin:i]
             matB = self.matrix[i+1:i+CI_Bin+1,i+1:i+CI_Bin+1]
-            A = np.triu(matA,1).sum()
-            B = np.triu(matB,1).sum()
-            C = self.matrix[i-CI_Bin: i, i+1: i+CI_Bin+1].sum()
+            A = np.sum(np.triu(matA,1))
+            B = np.sum(np.triu(matB,1))
+            C = np.sum(self.matrix[i-CI_Bin: i, i+1: i+CI_Bin+1])
             if np.isnan(np.sum(A+B+C)) or min(A,B,C) == 0: continue  #skip NaN value
             array[i] = np.log1p(A+B) - np.log1p(C)
 
@@ -98,8 +100,8 @@ class ContrastIndex(BasePara):
         super().makeCSV(self.getCI())
 
 class SeparationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="SeparationScore",TADss_size=300000):
-        super().__init__(path,resolution,chromosome,out_name)
+    def __init__(self,path,resolution,chromosome,out_name="SeparationScore",useNA=True,TADss_size=300000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
         self.TADss_size = TADss_size
 
     def __str__(self):
@@ -111,8 +113,8 @@ class SeparationScore(BasePara):
 
     def getTADss(self):
         TADss_Bin = round(self.TADss_size/self.resolution)
+        array = self.blankarray
 
-        array = np.zeros(self.matrix_shape)
         for i in range(self.matrix_shape):
             if(i - TADss_Bin < 0 or i + TADss_Bin >= self.matrix_shape): continue
             matA = self.matrix[i-TADss_Bin:i,i-TADss_Bin:i]
@@ -120,7 +122,7 @@ class SeparationScore(BasePara):
             A = np.triu(matA,1).sum()
             B = np.triu(matB,1).sum()
             C = self.matrix[i-TADss_Bin: i, i+1: i+TADss_Bin+1].sum()
-            if np.isnan(A) or np.isnan(B) or np.isnan(C) or (min(A,B)==0): continue
+            if np.isnan(np.sum(A+B+C)) or (min(A,B,C)==0): continue
             array[i] = C/(min(C+A,C+B))
 
         return super().makeDF(array,"SeparationScore")
@@ -129,8 +131,8 @@ class SeparationScore(BasePara):
         super().makeCSV(self.getTADss())
 
 class DirectionalityIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="noName",DI_distance=1000000):
-        super().__init__(path,resolution,chromosome,out_name)
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,DI_distance=1000000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
         self.DI_distance = DI_distance
         #The default distance in Homer DI is 1000000
 
@@ -144,15 +146,15 @@ class DirectionalityIndex(BasePara):
 
     def getDI(self):
         distanceBin = round(self.DI_distance/self.resolution)
+        array = self.blankarray
 
-        array = np.zeros(self.matrix_shape)
         for i in range(self.matrix_shape):
             if(i - distanceBin < 0 or i + distanceBin >= self.matrix_shape): continue
             A = self.matrix[i,i-distanceBin:i].sum()
             B = self.matrix[i,i+1:i+distanceBin+1].sum()
             E = (A+B)/2
 
-            if np.isnan(A) or np.isnan(B) or (B-A == 0): continue #skip NaN value
+            if np.isnan(np.sum(A+B)) or (B-A == 0) or (min(A,B)==0): continue #skip NaN value
             sign = (B-A)/abs(B-A)
             array[i] = sign * np.log1p(((A-E)**2)/E + ((B-E)**2)/E) #*****?
 
@@ -162,23 +164,23 @@ class DirectionalityIndex(BasePara):
         super().makeCSV(self.getDI())
 
 class DistalToLocalRatio(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="noName",sizeDLR=3000000):
-        super().__init__(path,resolution,chromosome,out_name)
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,sizeDLR=3000000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
         self.sizeDLR = sizeDLR
 
     def getDLR(self):
         sizeBin = round(self.sizeDLR/self.resolution)
-        array = np.zeros(self.matrix_shape)
+        array = self.blankarray
 
         for i in range(self.matrix_shape):
             if(i - sizeBin < 0 or i + sizeBin >= self.matrix_shape): continue
             A = self.matrix[i,i-sizeBin:i].sum()
             B = self.matrix[i,i+1:i+sizeBin+1].sum()
-            Aout = self.matrix[i,0:i-sizeBin].sum()
-            Bout = self.matrix[i,i+sizeBin+1:].sum()
+            Aout = np.nansum(self.matrix[i,0:i-sizeBin])
+            Bout = np.nansum(self.matrix[i,i+sizeBin+1:])
 
-            if np.isnan(A+B): continue #skip NaN value
-            array[i] = np.log1p(Aout+Bout)-np.log1p(A+B)
+            if np.isnan(A+B) or min(A,B,Aout,Bout)==0: continue #skip NaN value
+            array[i] = np.log(Aout+Bout)-np.log(A+B)
         return super().makeDF(array,"DistalToLocalRatio")
 
     def getCSV(self):
@@ -189,7 +191,7 @@ class CompartmentPC1(BasePara):
     #    super().__init__(path,resolution,chromosome,out_name)
     #    self.matrix = loadWithNorm(path,log = True).values
 
-    def makeExpect(self,df):
+    def makeExpect(self,df,smooth):
         num = df.shape[0]
         avg=[]
         for i in range(num):  #间隔为i，格数为num-i
@@ -198,13 +200,14 @@ class CompartmentPC1(BasePara):
                 if (j+i) < num: dig.append(df[j,j+i])
             avg.append(np.mean(dig))
 
-        #for i in range(num):
-        #    if avg[i] < 10: #25000res 为10， 50000应该是10*（50000/25000)^2
-        #        for flank in range(num):
-        #            biggerBin = avg[i-flank:i+flank+1]
-        #            if np.sum(biggerBin)>=10:
-        #                avg[i] = np.mean(biggerBin)
-        #                break
+        if smooth == True:
+            for i in range(num):
+                if avg[i] < df.mean(): #25000res 为10， 50000应该是10*（50000/25000)^2
+                    for flank in range(num):
+                        biggerBin = avg[i-flank:i+flank+1]
+                        if np.sum(biggerBin)>=df.mean():
+                            avg[i] = np.mean(biggerBin)
+                            break
 
         expected = np.zeros((num, num))
         for i in range(num):
@@ -217,10 +220,12 @@ class CompartmentPC1(BasePara):
 
         return(expected)
 
-    def getPC1(self, logOE = False, signCorr = "No correction"):
+    def getPC1(self, logOE = False, signCorr = "No correction", smooth = False):
         rawMT = np.nan_to_num(self.matrix)
-        expectMT = self.makeExpect(rawMT)
+        expectMT = self.makeExpect(rawMT,smooth)
+        warnings.filterwarnings("ignore")
         oeMT = np.nan_to_num(rawMT / expectMT)
+        warnings.filterwarnings("default")
 
         if logOE == True:
             oeMT = np.log(oeMT)
@@ -236,15 +241,22 @@ class CompartmentPC1(BasePara):
 
         nonzeroMT = oeMT[~allzero,:][:,~allzero]
         nonzeroPearson = np.corrcoef(nonzeroMT)
-        pearsonMT = pd.DataFrame(np.zeros((self.matrix_shape,self.matrix_shape)) *np.NaN)
-        pearsonMT.iloc[notallzeroindex,notallzeroindex] = nonzeroPearson
-        pearsonMT = np.array(pearsonMT)
-
-        naPos = np.isnan(pearsonMT).all(axis=1)
         pca = PCA(n_components=5)
-        trained = pca.fit(np.nan_to_num(pearsonMT))
+        trained = pca.fit(nonzeroPearson)
         pc1 = trained.components_
-        array = pc1[0,:]
+        noNAarray = pc1[0,:]
+
+        array = np.zeros(self.matrix_shape)
+        array[notallzeroindex] = noNAarray
+        #pearsonMT = pd.DataFrame(np.zeros((self.matrix_shape,self.matrix_shape)) *np.NaN)
+        #pearsonMT.iloc[notallzeroindex,notallzeroindex] = nonzeroPearson
+        #pearsonMT = np.array(pearsonMT)
+
+        #naPos = np.isnan(pearsonMT).all(axis=1)
+        #pca = PCA(n_components=5)
+        #trained = pca.fit(np.nan_to_num(pearsonMT))
+        #pc1 = trained.components_
+        #array = pc1[0,:]
 
         if signCorr == "No correction":
             pass
@@ -254,7 +266,7 @@ class CompartmentPC1(BasePara):
             cor2gd = stats.spearmanr(gd,array)[0]
             if cor2gd <0: array = -array
 
-        array[naPos] = np.NaN
+        if self.useNA == True: array[allzero] = np.NaN
         return super().makeDF(array,"CompartmentPC1")
 
     def getCSV(self):
