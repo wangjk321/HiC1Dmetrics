@@ -1,4 +1,5 @@
 from calculateMetrics import *
+import seaborn as sns
 
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     if mode == 'IS':
