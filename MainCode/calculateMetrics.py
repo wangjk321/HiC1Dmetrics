@@ -6,6 +6,7 @@ from scipy import ndimage
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
+#from callDirectionalTAD import TADcallIS
 import warnings
 
 class BasePara:
@@ -38,7 +39,7 @@ class BasePara:
         df.to_csv(self.out_name + ".bedGraph", sep="\t", header=False, index=False)
 
 class InsulationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=200000):
+    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=300000):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.square_size = square_size
         #The default size in Homer IS is 150000
@@ -66,6 +67,58 @@ class InsulationScore(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getIS())
+
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000):
+    from scipy.signal import argrelextrema
+
+    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize).getIS()
+    ISone = ISbedgraph.InsulationScore
+
+    # local minimal
+    localMinPos = argrelextrema(np.array(ISone), np.less)
+    localMinIS = ISone.iloc[localMinPos]
+
+    # 0< IS <0.8
+    localMinIS = localMinIS[localMinIS!=0]
+    localMinIS = localMinIS[localMinIS<0.8]
+
+    #Around TAD boundary
+    binNum = int(100000/resolution)
+    localMinAround = []
+    aroundZero=[]
+    diffrightleft=[]
+
+    for i in localMinIS.index:
+        # local minimal around 100kb
+        localMinAround.append(ISone.loc[i-binNum:i+binNum].min())
+
+        #IS_around !=0
+        aroundZero.append(ISone.loc[i-binNum*2:i+binNum*2].min())
+
+        #strong boundary
+        minusbin = ISone.loc[i-binNum] - ISone.loc[i]
+        plusbin = ISone.loc[i+binNum] - ISone.loc[i]
+        diffrightleft.append(minusbin+plusbin)
+
+    bool1 = (np.array(localMinIS)-np.array(localMinAround)) <= 0
+    bool2 = np.array(aroundZero)>0
+    bool3 = np.array(diffrightleft)>0.05
+    localMinIS = localMinIS[bool1 * bool2 * bool3]
+
+    # build a table as output
+    TADnumber = len(localMinIS)
+    chrlist = [chromosome] * (TADnumber-1)
+    TADstart = (np.array(localMinIS.index)[:-1])*resolution
+    TADend = (np.array(localMinIS.index)[1:])*resolution
+    TADout = pd.DataFrame()
+    TADout["chr"] = chrlist
+    TADout["TADstart"] = TADstart
+    TADout["TADend"] = TADend
+    #Maximum TAD size 5MB, Minimum 0.3MB
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
+
+    return(TADout)
 
 class ContrastIndex(BasePara):
     def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000):
@@ -185,6 +238,44 @@ class DistalToLocalRatio(BasePara):
 
     def getCSV(self):
         super.makeCSV(self.getDLR())
+
+class intraTADscore(BasePara):
+    def getIntraS(self):
+        tad = TADcallIS(self.path,self.resolution,self.chromosome)
+        leftBorder =  np.array(tad.TADstart) // self.resolution
+        rightBorder = np.array(tad.TADend) // self.resolution
+        array = self.blankarray
+
+        for i in range(self.matrix_shape):
+            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            if sum(belongTAD) == 0: continue
+
+            startBin = int(leftBorder[belongTAD])
+            endBin = int(rightBorder[belongTAD])
+            A = self.matrix[i,startBin:i].sum()
+            B = self.matrix[i,i+1:endBin+1].sum()
+            if np.isnan(A+B) or min(A,B) == 0: continue
+            array[i] = np.log1p(A+B)
+        return super().makeDF(array,"intraTADscore")
+
+class interTADscore(BasePara):
+    def getInterS(self):
+        tad = TADcallIS(self.path,self.resolution,self.chromosome)
+        leftBorder =  np.array(tad.TADstart) // self.resolution
+        rightBorder = np.array(tad.TADend) // self.resolution
+        array = self.blankarray
+
+        for i in range(self.matrix_shape):
+            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            if sum(belongTAD) == 0: continue
+
+            startBin = int(leftBorder[belongTAD])
+            endBin = int(rightBorder[belongTAD])
+            A = np.nansum(self.matrix[i,0:startBin-1])
+            B = np.nansum(self.matrix[i,endBin+1:])
+            if np.isnan(A+B) or min(A,B) == 0: continue
+            array[i] = np.log1p(A+B)
+        return super().makeDF(array,"interTADscore")
 
 class CompartmentPC1(BasePara):
     #def __init__(self,path,resolution,chromosome,out_name="noName"):

@@ -56,7 +56,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000):
 
 class PlotTAD(PlotTri):
 
-    def drawTAD(self,squareSize=150000):
+    def drawTAD(self,squareSize=300000):
         Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize)
         selectTADbool = np.logical_and(Tad["TADstart"] >= self.startSite,Tad["TADend"] <= self.endSite)
         selectTAD=Tad[selectTADbool]

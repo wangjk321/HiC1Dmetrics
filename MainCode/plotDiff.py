@@ -5,7 +5,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
 from calculateMetrics import *
 from calculateTwoSample import *
-from calcuDiffCI import *
+#from calcuDiffCI import *
 
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
 

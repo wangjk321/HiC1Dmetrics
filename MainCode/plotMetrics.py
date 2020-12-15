@@ -89,6 +89,12 @@ class PlotBedGraph(PlotTri):
         elif type == "PC1":
             score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1().CompartmentPC1
             title = "CompartmentPC1"
+        elif type == "intraScore":
+            score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().intraTADscore
+            title = "intraTADscore"
+        elif type == "interScore":
+            score = interTADscore(self.path,self.resolution,self.chr).getInterS().interTADscore
+            title = "inerTADscore"
 
         scoreRegion = score[self.sbin:self.ebin+1]
 
