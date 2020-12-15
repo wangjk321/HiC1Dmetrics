@@ -48,7 +48,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     return metricMT
 
 class repQC:
-    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
+    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter,method="pearson"):
         self.pathlist = pathlist
         self.namelist = namelist
         self.res = res
@@ -57,12 +57,12 @@ class repQC:
         self.UniqueParameter = UniqueParameter
 
         score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter)
-        self.corrMT = score.corr()
+        self.corrMT = score.corr(method=method)
 
     def corr_plot(self):
         sns.clustermap(self.corrMT ,cmap="RdPu")
 
     def calcuRepScore(self):
         maxCorr = np.nan_to_num(self.corrMT[self.corrMT<1]).max()
-        minCorr = np.array(score.corrMT).min()
+        minCorr = np.array(self.corrMT).min()
         return(maxCorr/minCorr)
