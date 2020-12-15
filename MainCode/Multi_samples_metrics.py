@@ -14,7 +14,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
         for i,path in enumerate(sampleList):
             if i==0: metricMT = pd.DataFrame(loadDenseMatrix(path).values.flatten())
             else:
-                next = loadDenseMatrix(path).values.flatten()
+                next = pd.DataFrame(loadDenseMatrix(path).values.flatten())
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == "DI":
@@ -44,7 +44,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     if mode != "raw":
         metricMT.index = metricMT.start.tolist()
         metricMT = metricMT.iloc[:,3:]
-        metricMT.columns = labels
+    metricMT.columns = labels
     return metricMT
 
 class repQC:
