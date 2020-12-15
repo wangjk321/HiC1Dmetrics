@@ -1,5 +1,6 @@
 from calculateMetrics import *
 import seaborn as sns
+from loadfile import *
 
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     if mode == 'IS':
@@ -7,6 +8,13 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
             if i==0: metricMT = InsulationScore(path,res,chr,square_size=UniqueParameter).getIS()
             else:
                 next = InsulationScore(path,res,chr,square_size=UniqueParameter).getIS().iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
+    elif mode == 'raw':
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = pd.DataFrame(loadDenseMatrix(path).values.flatten())
+            else:
+                next = loadDenseMatrix(path).values.flatten()
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == "DI":
@@ -33,9 +41,10 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     elif mode == "DLR":
         pass
 
-    metricMT.index = metricMT.start.tolist()
-    metricMT = metricMT.iloc[:,3:]
-    metricMT.columns = labels
+    if mode != "raw":
+        metricMT.index = metricMT.start.tolist()
+        metricMT = metricMT.iloc[:,3:]
+        metricMT.columns = labels
     return metricMT
 
 class repQC:
@@ -54,4 +63,6 @@ class repQC:
         sns.clustermap(self.corrMT ,cmap="RdPu")
 
     def calcuRepScore(self):
-        pass
+        maxCorr = np.nan_to_num(self.corrMT[self.corrMT<1]).max()
+        minCorr = np.array(score.corrMT).min()
+        return(maxCorr/minCorr)
