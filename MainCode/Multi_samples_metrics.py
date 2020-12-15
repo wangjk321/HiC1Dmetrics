@@ -36,3 +36,21 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     metricMT = metricMT.iloc[:,3:]
     metricMT.columns = labels
     return metricMT
+
+class repQC:
+    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
+        self.pathlist = pathlist
+        self.namelist = namelist
+        self.res = res
+        self.chr = chr
+        self.mode = mode
+        self.UniqueParameter = UniqueParameter
+
+        score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter)
+        self.corrMT = score.corr()
+
+    def corr_plot(self):
+        sns.clustermap(self.corrMT ,cmap="RdPu")
+
+    def calcuRepScore(self):
+        pass
