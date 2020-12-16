@@ -71,7 +71,7 @@ class InsulationScore(BasePara):
 def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000):
     from scipy.signal import argrelextrema
 
-    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize).getIS()
+    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=False).getIS()
     ISone = ISbedgraph.InsulationScore
 
     # local minimal
