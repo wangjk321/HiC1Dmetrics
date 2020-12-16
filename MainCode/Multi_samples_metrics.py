@@ -39,7 +39,32 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == "DLR":
-        pass
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = DistalToLocalRatio(path,res,chr,sizeDLR=UniqueParameter).getDLR()
+            else:
+                next = DistalToLocalRatio(path,res,chr,sizeDLR=UniqueParameter).getDLR().iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
+    elif mode == "PC1":
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = CompartmentPC1(path,res,chr).getPC1(signCorr = UniqueParameter)
+            else:
+                next = CompartmentPC1(path,res,chr).getPC1(signCorr = UniqueParameter).iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
+    elif mode == "intraScore":
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter)
+            else:
+                next = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter).iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
+    elif mode == "interScore":
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter)
+            else:
+                next = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter).iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
 
     if mode != "raw":
         metricMT.index = metricMT.start.tolist()

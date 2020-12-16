@@ -116,7 +116,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000):
     TADout["TADend"] = TADend
     #Maximum TAD size 5MB, Minimum 0.3MB
     TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
-    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=200000]
 
     return(TADout)
 
@@ -240,8 +240,8 @@ class DistalToLocalRatio(BasePara):
         super.makeCSV(self.getDLR())
 
 class intraTADscore(BasePara):
-    def getIntraS(self):
-        tad = TADcallIS(self.path,self.resolution,self.chromosome)
+    def getIntraS(self,IS_size=300000):
+        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
@@ -259,8 +259,8 @@ class intraTADscore(BasePara):
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
-    def getInterS(self):
-        tad = TADcallIS(self.path,self.resolution,self.chromosome)
+    def getInterS(self,IS_size=300000):
+        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
