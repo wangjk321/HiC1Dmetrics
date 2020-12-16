@@ -70,7 +70,7 @@ class PlotTri(PlotCommon):
 
 class PlotBedGraph(PlotTri):
 
-    def draw(self,type):
+    def draw(self,type,UniqueParameter=None):
         if type == 'IS':
             score = InsulationScore(self.path,self.resolution,self.chr).getIS().InsulationScore
             title = "InsulationScore"

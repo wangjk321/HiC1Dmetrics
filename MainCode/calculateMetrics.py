@@ -247,7 +247,7 @@ class intraTADscore(BasePara):
         array = self.blankarray
 
         for i in range(self.matrix_shape):
-            belongTAD = (i >= leftBorder) * (i <= rightBorder)
+            belongTAD = (i >= leftBorder) * (i < rightBorder)
             if sum(belongTAD) == 0: continue
 
             startBin = int(leftBorder[belongTAD])
