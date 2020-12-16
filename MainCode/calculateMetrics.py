@@ -67,12 +67,11 @@ class InsulationScore(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getIS())
-'''
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
-    from scipy.signal import argrelextrema
 
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
-    ISone = ISbedgraph.InsulationScore
+    ISoneNA = ISbedgraph.InsulationScore
+    ISone = pd.Series(np.nan_to_num(ISoneNA))
 
     # local minimal
     localMinPos = argrelextrema(np.array(ISone), np.less)
@@ -80,7 +79,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
 
     # 0< IS <0.8
     localMinIS = localMinIS[localMinIS!=0]
-    localMinIS = localMinIS[localMinIS<0.8]
+    localMinIS = localMinIS[localMinIS< np.mean(ISoneNA)]
 
     #Around TAD boundary
     binNum = int(100000/resolution)
@@ -116,10 +115,17 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
     TADout["TADend"] = TADend
     #Maximum TAD size 5MB, Minimum 0.3MB
     TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
-    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=200000]
+    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
+
+    withNA=[]
+    for i in range(TADout.shape[0]):
+        s = np.array(TADout.TADstart)[i] // resolution
+        e = np.array(TADout.TADend)[i] // resolution
+        whetherNAIS = np.isnan(sum(ISoneNA[s:e+1]))
+        withNA.append(~whetherNAIS)
+    TADout = TADout[withNA]
 
     return(TADout)
-'''
 
 class ContrastIndex(BasePara):
     def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000):
@@ -241,7 +247,7 @@ class DistalToLocalRatio(BasePara):
         super.makeCSV(self.getDLR())
 
 class intraTADscore(BasePara):
-    def getIntraS(self,IS_size=300000,useNA=False):   #this useNA is for TAD calling
+    def getIntraS(self,IS_size=300000,useNA=True):   #this useNA is for TAD calling
         tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
@@ -260,7 +266,7 @@ class intraTADscore(BasePara):
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
-    def getInterS(self,IS_size=300000,useNA=False):
+    def getInterS(self,IS_size=300000,useNA=True):
         tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
