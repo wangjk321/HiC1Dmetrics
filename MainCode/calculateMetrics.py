@@ -67,7 +67,7 @@ class InsulationScore(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getIS())
-
+'''
 def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
     from scipy.signal import argrelextrema
 
@@ -119,6 +119,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
     TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=200000]
 
     return(TADout)
+'''
 
 class ContrastIndex(BasePara):
     def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000):
