@@ -57,7 +57,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     for i in range(TADout.shape[0]):
         s = np.array(TADout.TADstart)[i] // resolution
         e = np.array(TADout.TADend)[i] // resolution
-        whetherNAIS = np.isnan(np.sum(ISoneNA[s:e+1]))
+        whetherNAIS = np.isnan(sum(ISoneNA[s:e+1]))
         withNA.append(~whetherNAIS)
     TADout = TADout[withNA]
 
