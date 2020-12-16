@@ -68,10 +68,10 @@ class InsulationScore(BasePara):
     def getCSV(self):
         super().makeCSV(self.getIS())
 
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000):
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=False):
     from scipy.signal import argrelextrema
 
-    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=False).getIS()
+    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISone = ISbedgraph.InsulationScore
 
     # local minimal
@@ -240,14 +240,14 @@ class DistalToLocalRatio(BasePara):
         super.makeCSV(self.getDLR())
 
 class intraTADscore(BasePara):
-    def getIntraS(self,IS_size=300000):
-        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size)
+    def getIntraS(self,IS_size=300000,useNA=False):   #this useNA is for TAD calling
+        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
 
         for i in range(self.matrix_shape):
-            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            belongTAD = (i >= leftBorder) * (i <= rightBorder)
             if sum(belongTAD) == 0: continue
 
             startBin = int(leftBorder[belongTAD])
@@ -259,14 +259,14 @@ class intraTADscore(BasePara):
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
-    def getInterS(self,IS_size=300000):
-        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size)
+    def getInterS(self,IS_size=300000,useNA=False):
+        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
 
         for i in range(self.matrix_shape):
-            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            belongTAD = (i >= leftBorder) * (i <= rightBorder)
             if sum(belongTAD) == 0: continue
 
             startBin = int(leftBorder[belongTAD])
