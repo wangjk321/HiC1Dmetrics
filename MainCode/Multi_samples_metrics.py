@@ -84,8 +84,8 @@ class repQC:
         score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter)
         self.corrMT = score.corr(method=method)
 
-    def corr_plot(self,method="pearson"):
-        sns.clustermap(self.corrMT ,cmap="RdPu",method=method)
+    def corr_plot(self):
+        sns.clustermap(self.corrMT ,cmap="RdPu")
 
     def calcuRepScore(self):
         maxCorr = np.nan_to_num(self.corrMT[self.corrMT<1]).max()
