@@ -70,7 +70,7 @@ class InsulationScore(BasePara):
 
 def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     from scipy.signal import argrelextrema
-    
+
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISoneNA = ISbedgraph.InsulationScore
     ISone = pd.Series(np.nan_to_num(ISoneNA))
@@ -264,7 +264,9 @@ class intraTADscore(BasePara):
             A = self.matrix[i,startBin:i].sum()
             B = self.matrix[i,i+1:endBin+1].sum()
             if np.isnan(A+B) or max(A,B) == 0: continue
-            array[i] = np.log1p(A+B)
+            array[i] = A+B
+
+        array = np.log1p(array/np.nanmean(array))
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
@@ -283,7 +285,9 @@ class interTADscore(BasePara):
             A = np.nansum(self.matrix[i,0:startBin-1])
             B = np.nansum(self.matrix[i,endBin+1:])
             if np.isnan(A+B) or max(A,B) == 0: continue
-            array[i] = np.log1p(A+B)
+            array[i] = A+B
+
+        array = np.log1p(array/np.nanmean(array))
         return super().makeDF(array,"interTADscore")
 
 class CompartmentPC1(BasePara):
