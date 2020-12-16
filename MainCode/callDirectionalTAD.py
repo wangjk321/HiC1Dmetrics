@@ -15,7 +15,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
 
     # 0< IS <0.8
     localMinIS = localMinIS[localMinIS!=0]
-    localMinIS = localMinIS[localMinIS<0.8]
+    localMinIS = localMinIS[localMinIS< np.mean(ISoneNA)]
 
     #Around TAD boundary
     binNum = int(100000/resolution)
