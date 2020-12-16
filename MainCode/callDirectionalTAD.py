@@ -4,9 +4,10 @@ from plotMetrics import *
 from plotDiff import *
 import sys
 
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=True):
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
-    ISone = ISbedgraph.InsulationScore
+    ISoneNA = ISbedgraph.InsulationScore
+    ISone = np.nan_to_num(ISoneNA)
 
     # local minimal
     localMinPos = argrelextrema(np.array(ISone), np.less)
@@ -36,7 +37,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=True):
 
     bool1 = (np.array(localMinIS)-np.array(localMinAround)) <= 0
     bool2 = np.array(aroundZero)>0
-    bool3 = np.array(np.nan_to_num(diffrightleft))>0.05
+    bool3 = np.array(diffrightleft)>0.05
     localMinIS = localMinIS[bool1 * bool2 * bool3]
 
     # build a table as output
@@ -51,6 +52,14 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=True):
     #Maximum TAD size 5MB, Minimum 0.3MB
     TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
     TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
+
+    withNA=[]
+    for i in range(TADout.shape[0]):
+        s = np.array(TADout.TADstart)[0] // resolution
+        e = np.array(TADout.TADend)[0] // resolution
+        whetherNAIS = np.isnan(np.sum(ISoneNA[s:e+1]))
+        withNA.append(~whetherNAIS)
+    TADout = TADout[withNA]
 
     return(TADout)
 
