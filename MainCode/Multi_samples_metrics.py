@@ -88,6 +88,6 @@ class repQC:
         sns.clustermap(self.corrMT ,cmap="RdPu")
 
     def calcuRepScore(self):
-        maxCorr = np.nan_to_num(self.corrMT[self.corrMT<1]).max()
-        minCorr = np.array(self.corrMT).min()
-        return(abs(maxCorr)-abs(minCorr))
+        maxCorr = abs(np.nan_to_num(self.corrMT[self.corrMT<1])).max()
+        minCorr = abs(np.array(self.corrMT)).min()
+        return(maxCorr-minCorr)
