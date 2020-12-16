@@ -4,7 +4,7 @@ from plotMetrics import *
 from plotDiff import *
 import sys
 
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=False):
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=True):
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISone = ISbedgraph.InsulationScore
 
@@ -36,7 +36,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=False):
 
     bool1 = (np.array(localMinIS)-np.array(localMinAround)) <= 0
     bool2 = np.array(aroundZero)>0
-    bool3 = np.array(diffrightleft)>0.05
+    bool3 = np.array(np.nan_to_num(diffrightleft))>0.05
     localMinIS = localMinIS[bool1 * bool2 * bool3]
 
     # build a table as output
@@ -56,8 +56,8 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=False):
 
 class PlotTAD(PlotTri):
 
-    def drawTAD(self,squareSize=300000):
-        Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize)
+    def drawTAD(self,squareSize=300000,useNA=True):
+        Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
         selectTADbool = np.logical_and(Tad["TADstart"] >= self.startSite,Tad["TADend"] <= self.endSite)
         selectTAD=Tad[selectTADbool]
 
