@@ -69,6 +69,8 @@ class InsulationScore(BasePara):
         super().makeCSV(self.getIS())
 
 def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
+    from scipy.signal import argrelextrema
+    
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISoneNA = ISbedgraph.InsulationScore
     ISone = pd.Series(np.nan_to_num(ISoneNA))
