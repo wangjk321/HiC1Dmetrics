@@ -4,8 +4,8 @@ from plotMetrics import *
 from plotDiff import *
 import sys
 
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000):
-    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize).getIS()
+def TADcallIS(matrixPath,resolution,chromosome,squareSize=150000,useNA=False):
+    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISone = ISbedgraph.InsulationScore
 
     # local minimal

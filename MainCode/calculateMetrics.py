@@ -254,7 +254,7 @@ class intraTADscore(BasePara):
             endBin = int(rightBorder[belongTAD])
             A = self.matrix[i,startBin:i].sum()
             B = self.matrix[i,i+1:endBin+1].sum()
-            if np.isnan(A+B) or min(A,B) == 0: continue
+            if np.isnan(A+B) or max(A,B) == 0: continue
             array[i] = np.log1p(A+B)
         return super().makeDF(array,"intraTADscore")
 
@@ -273,7 +273,7 @@ class interTADscore(BasePara):
             endBin = int(rightBorder[belongTAD])
             A = np.nansum(self.matrix[i,0:startBin-1])
             B = np.nansum(self.matrix[i,endBin+1:])
-            if np.isnan(A+B) or min(A,B) == 0: continue
+            if np.isnan(A+B) or max(A,B) == 0: continue
             array[i] = np.log1p(A+B)
         return super().makeDF(array,"interTADscore")
 
