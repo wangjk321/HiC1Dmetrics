@@ -90,4 +90,4 @@ class repQC:
     def calcuRepScore(self):
         maxCorr = np.nan_to_num(self.corrMT[self.corrMT<1]).max()
         minCorr = np.array(self.corrMT).min()
-        return((maxCorr-minCorr)
+        return(maxCorr-minCorr)
