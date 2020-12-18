@@ -50,11 +50,26 @@ class multiScore:
         elif mode == "deltaDLR":
             score = deltaDLR(self.path,self.control_path,self.res,self.chr,sizeDLR=parameter).getDeltaDLR()
         elif mode == "intraSC":
-            score = 
+            score = intraScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getIntraSC()
+        elif mode == "interSC":
+            score = interScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getInterSC()
+        elif mode == "DRF":
+            score = DirectionalRelativeFreq(self.path,self.control_path,self.res,self.chr,
+                                            start_distance=parameter[0], end_distance=parameter[1]).getDRF()
+        elif mode == "CorrD":
+            score = CorrelationDifference(self.path,self.control_path,self.res,self.chr,method=parameter).getCorrD()
+        elif mode == "PC1C":
+            score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter).getPC1change()
 
+        return(score)
 
+    def allTwoScore(self,typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"]):
+        for i,type in enumerate(typelist):
+            if i == 0:
+                multiType = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i])
+            else:
+                next = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i]).iloc[:,3]
+                multiType = pd.concat([multiType,next],axis=1)
 
-
-
-#def allTwoSample(path,res,chr,type=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
-#                parameter=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson"],PC1parameter="NotSpecified")
+        return(multiType)
