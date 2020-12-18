@@ -45,25 +45,37 @@ class DirectionalRelativeFreq(BasePara):
     def getCSV(self):
         super().makeCSV(self.getDRF())
 
-class InsulationScoreChange(BasePara):
-    def __init__(self,path,control_path,resolution,chromosome,out_name="InsulationScore",square_size=150000):
+class TADScoreChange(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name=""):
         super().__init__(path,resolution,chromosome,out_name)
         self.control_path = control_path
-        self.square_size = square_size
-        self.IStreat = InsulationScore(path,resolution,chromosome,out_name="InsulationScore",
-                                        square_size=self.square_size).getIS()
-        self.IScontrol = InsulationScore(control_path,resolution,chromosome,out_name="InsulationScore",
-                                        square_size=self.square_size).getIS()
 
-    def getISC(self):
-        isc = np.array(self.IStreat.InsulationScore - self.IScontrol.InsulationScore)
-        return super().makeDF(isc,"InsulationScoreChange")
+    def getChange(self,mode,parameter):
+        if mode == "IS":
+            treat = InsulationScore(self.path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
+            control = InsulationScore(self.control_path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
+            title = "InsulationScoreChange"
+        elif mode == "CI":
+            treat = ContrastIndex(self.path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
+            control = ContrastIndex(self.control_path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
+            title = "ContrastIndexChange"
+        elif mode == "DI":
+            treat = DirectionalityIndex(self.path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
+            control = DirectionalityIndex(self.control_path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
+            title = "DirectionalityIndexChange"
+        elif mode == "TADss":
+            treat = SeparationScore(self.path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
+            control = SeparationScore(self.control_path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
+            title = "SeparationScore"
+
+        change = np.array(treat - control)
+        return super().makeDF(change,title)
 
     def getCSV(self):
         super().makeCSV(self.getISC())
 
 class deltaDLR(BasePara):
-    def __init__(self,path,control_path,resolution,chromosome,out_name="DLR",sizeDLR=3000000):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="deltaDLR",sizeDLR=3000000):
         super().__init__(path,resolution,chromosome,out_name)
         self.control_path = control_path
         self.sizeDLR = sizeDLR
@@ -78,3 +90,101 @@ class deltaDLR(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getDeltaDLR())
+
+class PC1change(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,corr_file=""):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
+        self.control_path = control_path
+        self.corr_file = corr_file
+        self.PC1treat = CompartmentPC1(path,resolution,chromosome,
+                                    out_name="PC1").getPC1(signCorr=self.corr_file)
+        self.PC1control= CompartmentPC1(control_path,resolution,chromosome,
+                                    out_name="PC1").getPC1(signCorr=self.corr_file)
+
+    def getPC1change(self):
+        treat = self.PC1treat.CompartmentPC1
+        control = self.PC1control.CompartmentPC1
+        array = self.blankarray
+        for i in range(self.matrix_shape):
+            A = treat[i]
+            B = control[i]
+            if np.isnan(A+B): continue
+            if A*B >= 0 :  #同为A/B则视为0
+                array[i] = 0
+            elif min(abs(treat[i-1:i+2]))<0.01 or min(abs(control[i-1:i+2]))<0.01:
+                array[i] = 0
+            else:
+                array[i] = A - B  #if >0 compartmentBtoA; <0 AtoB
+
+        return super().makeDF(array,"PC1change")
+
+    def getCSV(self):
+        super().makeCSV(self.getPC1change())
+
+class CorrelationDifference(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,method="pearson"):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
+        self.control_path = control_path
+        self.method = method
+        self.control_matrix = loadDenseMatrix(control_path).values
+
+    def getCorrD(self):
+        array = self.blankarray
+        for i in range(self.matrix_shape):
+            treat = pd.Series(np.log1p(self.matrix[i,:]))
+            control = pd.Series(np.log1p(self.control_matrix[i,:]))
+
+            if np.nansum(treat) == 0 or np.nansum(control) == 0:
+                continue
+            elif np.median(np.nan_to_num(treat)) == 0 or np.median(np.nan_to_num(control)) == 0:
+                continue
+            else:
+                array[i] = treat.corr(control,method=self.method)
+        return super().makeDF(array,"CorrD")
+
+    def getCSV(self):
+        super().makeCSV(self.getCorrD())
+
+class intraScoreChange(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,IS_size=300000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
+        self.control_path = control_path
+
+        self.treat = intraTADscore(path,resolution,chromosome).getIntraS(IS_size=IS_size).intraTADscore
+        self.control = intraTADscore(control_path,resolution,chromosome).getIntraS(IS_size=IS_size).intraTADscore
+
+    def getIntraSC(self):
+        array = self.blankarray
+        for i in range(self.matrix_shape):
+            t = np.array(self.treat)[i]
+            c = np.array(self.control)[i]
+            if np.isnan(t+c) or min(t,c) == 0:
+                continue
+
+            array[i] = np.log2(t/c)
+        return super().makeDF(array,"IntraSC")
+
+    def getCSV(self):
+        super().makeCSV(self.getIntraSC())
+
+class interScoreChange(BasePara):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,IS_size=300000):
+        super().__init__(path,resolution,chromosome,out_name,useNA)
+        self.control_path = control_path
+
+        self.treat = interTADscore(path,resolution,chromosome).getInterS(IS_size=IS_size).interTADscore
+        self.control = interTADscore(control_path,resolution,chromosome).getInterS(IS_size=IS_size).interTADscore
+
+    def getInterSC(self):
+        array = self.blankarray
+        for i in range(self.matrix_shape):
+            t = np.array(self.treat)[i]
+            c = np.array(self.control)[i]
+            if np.isnan(t+c) or min(t,c) == 0:
+                continue
+
+            array[i] = np.log2(t/c)
+        return super().makeDF(array,"InterSC")
+
+    def getCSV(self):
+        super().makeCSV(self.getInterSC())

@@ -19,11 +19,11 @@ class BasePara:
         self.chromosome = chromosome
         self.out_name = out_name
         self.useNA = useNA
+        self.allsum = np.nansum(self.matrix)
         if useNA == True:
             self.blankarray = np.zeros(self.matrix_shape) * np.NaN
         elif useNA == False:
             self.blankarray = np.zeros(self.matrix_shape)
-
 
     def makeDF(self,array,metrics_name="unknown metrics"):
         array = np.round(array,6)
@@ -259,6 +259,9 @@ class intraTADscore(BasePara):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
             if sum(belongTAD) == 0: continue
 
+            elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
+                continue
+
             startBin = int(leftBorder[belongTAD])
             endBin = int(rightBorder[belongTAD])
             A = self.matrix[i,startBin:i].sum()
@@ -266,7 +269,8 @@ class intraTADscore(BasePara):
             if np.isnan(A+B) or max(A,B) == 0: continue
             array[i] = A+B
 
-        array = np.log1p(array/np.nanmean(array))
+        #array = np.log1p(array/np.nanmean(array))
+        array = (array/self.allsum)*1e4
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
@@ -280,6 +284,9 @@ class interTADscore(BasePara):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
             if sum(belongTAD) == 0: continue
 
+            elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
+                continue
+
             startBin = int(leftBorder[belongTAD])
             endBin = int(rightBorder[belongTAD])
             A = np.nansum(self.matrix[i,0:startBin-1])
@@ -287,7 +294,8 @@ class interTADscore(BasePara):
             if np.isnan(A+B) or max(A,B) == 0: continue
             array[i] = A+B
 
-        array = np.log1p(array/np.nanmean(array))
+        #array = np.log1p(array/np.nanmean(array))
+        array = (array/self.allsum)*1e4
         return super().makeDF(array,"interTADscore")
 
 class CompartmentPC1(BasePara):

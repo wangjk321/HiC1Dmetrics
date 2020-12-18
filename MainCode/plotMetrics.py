@@ -106,7 +106,7 @@ class PlotBedGraph(PlotTri):
         plt.title(title,fontsize=20)
         plt.plot(scoreRegion,c="dodgerblue")
         plt.xlim(self.sbin,self.ebin)
-        plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        plt.plot([self.sbin,self.ebin],[score.median(),score.median()],"k--",linewidth=0.4)
 
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
