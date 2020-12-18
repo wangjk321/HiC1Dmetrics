@@ -2,7 +2,7 @@ from calculateMetrics import *
 import seaborn as sns
 from loadfile import *
 
-def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
+def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smoothPC=True,logPC=False):
     if mode == 'IS':
         for i,path in enumerate(sampleList):
             if i==0: metricMT = InsulationScore(path,res,chr,square_size=UniqueParameter).getIS()
@@ -49,7 +49,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
         for i,path in enumerate(sampleList):
             if i==0: metricMT = CompartmentPC1(path,res,chr).getPC1(signCorr = UniqueParameter)
             else:
-                next = CompartmentPC1(path,res,chr).getPC1(signCorr = UniqueParameter).iloc[:,3:4]
+                next = CompartmentPC1(path,res,chr).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == "intraScore":
@@ -73,7 +73,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter):
     return metricMT
 
 class repQC:
-    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter,method="pearson"):
+    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter,method="pearson",smoothPC=True,logPC=False):
         self.pathlist = pathlist
         self.namelist = namelist
         self.res = res
@@ -81,7 +81,7 @@ class repQC:
         self.mode = mode
         self.UniqueParameter = UniqueParameter
 
-        score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter)
+        score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC)
         self.corrMT = score.corr(method=method)
 
     def corr_plot(self):

@@ -332,7 +332,7 @@ class CompartmentPC1(BasePara):
 
         return(expected)
 
-    def getPC1(self, logOE = False, signCorr = "No correction", smooth = False):
+    def getPC1(self, logOE = False, signCorr = "No correction", smooth = True):
         rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT,smooth)
         warnings.filterwarnings("ignore")
