@@ -92,14 +92,14 @@ class deltaDLR(BasePara):
         super().makeCSV(self.getDeltaDLR())
 
 class PC1change(BasePara):
-    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,corr_file=""):
+    def __init__(self,path,control_path,resolution,chromosome,out_name="",useNA=True,corr_file="",smoothPC=True,logPC=False):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.control_path = control_path
         self.corr_file = corr_file
         self.PC1treat = CompartmentPC1(path,resolution,chromosome,
-                                    out_name="PC1").getPC1(signCorr=self.corr_file)
+                                    out_name="PC1").getPC1(signCorr=self.corr_file,smooth = smoothPC, logOE=logPC)
         self.PC1control= CompartmentPC1(control_path,resolution,chromosome,
-                                    out_name="PC1").getPC1(signCorr=self.corr_file)
+                                    out_name="PC1").getPC1(signCorr=self.corr_file,smooth = smoothPC, logOE=logPC)
 
     def getPC1change(self):
         treat = self.PC1treat.CompartmentPC1

@@ -70,7 +70,7 @@ class PlotTri(PlotCommon):
 
 class PlotBedGraph(PlotTri):
 
-    def draw(self,type,UniqueParameter=None):
+    def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False):
         if type == 'IS':
             score = InsulationScore(self.path,self.resolution,self.chr).getIS().InsulationScore
             title = "InsulationScore"
@@ -87,7 +87,7 @@ class PlotBedGraph(PlotTri):
             score = DistalToLocalRatio(self.path,self.resolution,self.chr).getDLR().DistalToLocalRatio
             title = "DistalToLocalRatio"
         elif type == "PC1":
-            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1().CompartmentPC1
+            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(smooth = smoothPC, logOE=logPC).CompartmentPC1
             title = "CompartmentPC1"
         elif type == "intraScore":
             score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().intraTADscore

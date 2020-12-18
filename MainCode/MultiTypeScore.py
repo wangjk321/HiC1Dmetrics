@@ -8,7 +8,7 @@ class multiScore:
         self.chr = chr
         self.control_path = control_path
 
-    def obtainOneScore(self,mode,parameter):
+    def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False):
         if mode == "IS":
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
@@ -24,21 +24,21 @@ class multiScore:
         elif mode == "interS":
             score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = parameter)
         elif mode == "PC1":
-            score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter)
+            score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         return(score)
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
-                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"]):
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],smoothPC=True,logPC=False):
         for i,type in enumerate(typelist):
             if i == 0:
-                multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i])
+                multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
             else:
-                next = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i]).iloc[:,3]
+                next = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC).iloc[:,3]
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
 
-    def obtainTwoScore(self,mode,parameter):
+    def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False):
         if mode == "ISC":
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",parameter)
         elif mode == "CIC":
@@ -59,17 +59,17 @@ class multiScore:
         elif mode == "CorrD":
             score = CorrelationDifference(self.path,self.control_path,self.res,self.chr,method=parameter).getCorrD()
         elif mode == "PC1C":
-            score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter).getPC1change()
+            score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter,smoothPC = smoothPC, logPC=logPC).getPC1change()
 
         return(score)
 
     def allTwoScore(self,typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
-                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"]):
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],smoothPC=True,logPC=False):
         for i,type in enumerate(typelist):
             if i == 0:
-                multiType = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i])
+                multiType = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
             else:
-                next = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i]).iloc[:,3]
+                next = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC).iloc[:,3]
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
