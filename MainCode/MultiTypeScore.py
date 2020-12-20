@@ -2,6 +2,7 @@ from calculateMetrics import *
 from calculateTwoSample import *
 from hmmlearn import hmm
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -101,14 +102,14 @@ class metricHMM:
             return(predictMT)
         elif outtype == "emission":
             return(emissionMT)
-        elif outtype == "transitionMT":
+        elif outtype == "transition":
             return(transitionMT)
 
     def plotOSMM(self,outtype="predict"):
         mt = self.oneSampleMultiMetric("predict")
         if outtype == "predict":
             plt.scatter(self.index,mt,c=mt,marker="8")
-        elif outtype == "emission" or outtype == "transitionMT":
+        elif outtype == "emission" or outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 
     def oneSampleOneMetric(self):
