@@ -3,6 +3,7 @@ from calculateTwoSample import *
 from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
+from plotTwoSample import *
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -119,7 +120,7 @@ class metricHMM:
                 hicplot.draw_tri()
                 plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
                 plt.scatter(self.index,mt,c=mt,marker="8")
-                
+
         elif outtype == "emission" or outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 
