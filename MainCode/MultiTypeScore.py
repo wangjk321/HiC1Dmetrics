@@ -1,5 +1,6 @@
 from calculateMetrics import *
 from calculateTwoSample import *
+from hmmlearn import hmm
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -73,3 +74,47 @@ class multiScore:
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
+
+class metricHMM:
+    def __init__(self,df,ncluster,nRun=10):
+        self.label = df.columns
+        self.df = pd.DataFrame(np.nan_to_num(df))
+        self.nRun = nRun
+        self.ncluster = ncluster
+        self.state = ["state" + str(i) for i in range(ncluster)]
+        self.index = df.index
+
+    def oneSampleMultiMetric(self,outtype="predict"):
+        scorelist = []
+        modellist = []
+        for i in range(self.nRun):
+            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000, covariance_type="full").fit(self.df)
+            scorelist.append(model.score(self.df))
+            modellist.append(model)
+        bestmodel = modellist[np.argmax(scorelist)]
+        predictMT = bestmodel.predict(self.df)
+        emissionMT = pd.DataFrame(bestmodel.mean_,columns=self.label,index=self.state]
+        transitionMT = pd.DataFrame(bestmodel.transmat_,columns=self.state,index=self.state)
+
+        if outtype == "predict":
+            return(predictMT)
+        elif outtype == "emission":
+            return(emissionMT)
+        elif outtype == "transitionMT":
+            return(transitionMT)
+
+    def plotOSMM(outtype="predict"):
+        mt = self.oneSampleMultiMetric("predict")
+        if outtype == "predict":
+            plt.scatter(self.index,mt,c=mt,marker="8")
+        elif outtype == "emission" or outtype == "transitionMT":
+            sns.heatmap(mt,cmap="coolwarm")
+
+    def oneSampleOneMetric(self):
+        pass
+
+    def multiSampleOneMetric(self):
+        pass
+
+    def multiSampleMultiMetric(self):
+        pass
