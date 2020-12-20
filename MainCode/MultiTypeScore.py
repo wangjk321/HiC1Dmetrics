@@ -1,6 +1,7 @@
 from calculateMetrics import *
 from calculateTwoSample import *
 from hmmlearn import hmm
+import matplotlib.pyplot as plt
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
