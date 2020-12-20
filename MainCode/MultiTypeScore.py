@@ -106,7 +106,7 @@ class metricHMM:
             return(transitionMT)
 
     def plotOSMM(self,outtype="predict"):
-        mt = self.oneSampleMultiMetric("predict")
+        mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
             plt.scatter(self.index,mt,c=mt,marker="8")
         elif outtype == "emission" or outtype == "transition":
