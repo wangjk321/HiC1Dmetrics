@@ -105,10 +105,21 @@ class metricHMM:
         elif outtype == "transition":
             return(transitionMT)
 
-    def plotOSMM(self,outtype="predict"):
+    def plotOSMM(self,outtype="predict",plotHiC=False,plotHiC_para=[]):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
-            plt.scatter(self.index,mt,c=mt,marker="8")
+            if plotHiC == False:
+                plt.scatter(self.index,mt,c=mt,marker="8")
+            if plotHiC == True:
+                hicplot = DiffDraw(path=plotHiC_para[0],control_path=plotHiC_para[1],
+                                resolution=plotHiC_para[2],startSite=plotHiC_para[3],endSite=plotHiC_para[4])
+                plt.figure(figsize=(10,10))
+                #pad + fraction = -0.1, So the bedGraph figure width should be (1+0.1)*width of HiC
+                plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
+                hicplot.draw_tri()
+                plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
+                plt.scatter(self.index,mt,c=mt,marker="8")
+                
         elif outtype == "emission" or outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 

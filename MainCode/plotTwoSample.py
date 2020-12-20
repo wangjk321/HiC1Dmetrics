@@ -110,7 +110,7 @@ class DiffDraw(object):
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
 
-    def draw_DRF(self):
+    def draw_DRF(self):  #已被上面的替代
         score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
                 start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
         title = "DirectionalRelativeFreq"
