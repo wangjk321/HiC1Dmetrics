@@ -93,8 +93,8 @@ class metricHMM:
             modellist.append(model)
         bestmodel = modellist[np.argmax(scorelist)]
         predictMT = bestmodel.predict(self.df)
-        emissionMT = pd.DataFrame(bestmodel.mean_, columns = self.label,index=self.state]
-        transitionMT = pd.DataFrame(bestmodel.transmat_, columns = self.state,index=self.state)
+        emissionMT = pd.DataFrame(bestmodel.mean_,columns=self.label,index=self.state)
+        transitionMT = pd.DataFrame(bestmodel.transmat_,columns=self.state,index=self.state)
 
         if outtype == "predict":
             return(predictMT)
