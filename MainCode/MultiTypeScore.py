@@ -80,7 +80,7 @@ class multiScore:
         return(multiType)
 
 class metricHMM:
-    def __init__(self,df,ncluster,nRun=10,covMethod= "spherical"):
+    def __init__(self,df,ncluster,nRun=10,covMethod= "spherical",random_state=None):
         if len(df.shape) == 1: df= pd.DataFrame(df)
         self.label = df.columns
         self.df = pd.DataFrame(np.nan_to_num(df))
@@ -90,17 +90,19 @@ class metricHMM:
         self.index = df.index
         self.covMethod = covMethod
 
-    def oneSampleMultiMetric(self,outtype="predict"):
         scorelist = []
         modellist = []
         for i in range(self.nRun):
-            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000, covariance_type=self.covMethod).fit(self.df)
+            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000,random_state=random_state,
+                                    covariance_type=self.covMethod).fit(self.df)
             scorelist.append(model.score(self.df))
             modellist.append(model)
-        bestmodel = modellist[np.argmax(scorelist)]
-        predictMT = bestmodel.predict(self.df)
-        emissionMT = pd.DataFrame(bestmodel.means_,columns=self.label,index=self.state)
-        transitionMT = pd.DataFrame(bestmodel.transmat_,columns=self.state,index=self.state)
+        self.bestmodel = modellist[np.argmax(scorelist)]
+
+    def oneSampleMultiMetric(self,outtype="predict"):
+        predictMT = self.bestmodel.predict(self.df)
+        emissionMT = pd.DataFrame(self.bestmodel.means_,columns=self.label,index=self.state)
+        transitionMT = pd.DataFrame(self.bestmodel.transmat_,columns=self.state,index=self.state)
 
         if outtype == "predict":
             return(predictMT)
