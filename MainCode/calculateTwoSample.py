@@ -29,7 +29,7 @@ class DirectionalRelativeFreq(BasePara):
         control = ndimage.median_filter(self.control_matrix,smooth)
         logratio = ndimage.median_filter(self.matrix - control, smooth)
 
-        array = np.zeros(self.matrix_shape)
+        array = np.zeros(self.matrix_shape) * np.NaN
         startDistanceBin = int(self.start_distance / self.resolution)+1
         endDistanceBin = int(self.end_distance / self.resolution)
 
