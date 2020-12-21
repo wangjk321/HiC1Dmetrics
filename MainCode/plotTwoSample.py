@@ -10,7 +10,7 @@ from calculateTwoSample import *
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
 
 class DiffDraw(object):
-    def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-5,clmax=5, \
+    def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-2,clmax=2, \
                 title="", chr="",startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
         self.path = path
         self.control_path = control_path

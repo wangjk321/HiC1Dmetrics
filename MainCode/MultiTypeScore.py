@@ -4,6 +4,7 @@ from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
 from plotTwoSample import *
+from plotMetrics import *
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -111,18 +112,33 @@ class metricHMM:
         if outtype == "predict":
             if plotHiC == False:
                 plt.scatter(self.index,mt,c=mt,marker="8")
+                plt.yticks(range(self.ncluster),self.state)
             if plotHiC == True:
                 hicplot = DiffDraw(path=plotHiC_para[0],control_path=plotHiC_para[1],
                                 resolution=plotHiC_para[2],startSite=plotHiC_para[3],endSite=plotHiC_para[4])
                 plt.figure(figsize=(10,10))
-                #pad + fraction = -0.1, So the bedGraph figure width should be (1+0.1)*width of HiC
                 plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
                 hicplot.draw_tri()
                 plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
                 plt.scatter(self.index,mt,c=mt,marker="8")
+                plt.yticks(range(self.ncluster),self.state)
 
         elif outtype == "emission" or outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
+
+    def plotHiC(self,mode,path,resolution,startSite,endSite,control_path=""):
+        mt = self.oneSampleMultiMetric("predict")
+        plt.figure(figsize=(10,10))
+        plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
+        if mode == "single":
+            hicplot = PlotTri(path,resolution,startSite,endSite)
+            hicplot.draw()
+        elif mode == "differ":
+            hicplot = DiffDraw(path,control_path = control_path,resolution,startSite,endSite)
+            hicplot.draw_tri()
+        plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
+        plt.scatter(self.index,mt,c=mt,marker="8")
+        plt.yticks(range(self.ncluster),self.state)
 
     def oneSampleOneMetric(self):
         pass
