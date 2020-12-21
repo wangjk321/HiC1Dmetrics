@@ -81,6 +81,7 @@ class multiScore:
 
 class metricHMM:
     def __init__(self,df,ncluster,nRun=10):
+        if len(df.shape) == 1: df= pd.DataFrame(df)
         self.label = df.columns
         self.df = pd.DataFrame(np.nan_to_num(df))
         self.nRun = nRun
@@ -110,18 +111,8 @@ class metricHMM:
     def plotOSMM(self,outtype="predict",plotHiC=False,plotHiC_para=[]):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
-            if plotHiC == False:
-                plt.scatter(self.index,mt,c=mt,marker="8")
-                plt.yticks(range(self.ncluster),self.state)
-            if plotHiC == True:
-                hicplot = DiffDraw(path=plotHiC_para[0],control_path=plotHiC_para[1],
-                                resolution=plotHiC_para[2],startSite=plotHiC_para[3],endSite=plotHiC_para[4])
-                plt.figure(figsize=(10,10))
-                plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
-                hicplot.draw_tri()
-                plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
-                plt.scatter(self.index,mt,c=mt,marker="8")
-                plt.yticks(range(self.ncluster),self.state)
+            plt.scatter(self.index,mt,c=mt,marker="8")
+            plt.yticks(range(self.ncluster),self.state)
 
         elif outtype == "emission" or outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
@@ -142,9 +133,7 @@ class metricHMM:
 
     def oneSampleOneMetric(self):
         pass
-
     def multiSampleOneMetric(self):
         pass
-
     def multiSampleMultiMetric(self):
         pass
