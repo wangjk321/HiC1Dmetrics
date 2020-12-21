@@ -105,7 +105,7 @@ class metricHMM:
         if outtype == "predict":
             return(predictMT)
         elif outtype == "emission":
-            return(emissionMT)
+            return(emissionMT.T)
         elif outtype == "transition":
             return(transitionMT)
 
