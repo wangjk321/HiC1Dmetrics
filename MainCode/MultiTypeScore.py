@@ -134,7 +134,7 @@ class metricHMM:
             hicplot = PlotTri(path,resolution,startSite,endSite)
             hicplot.draw()
         elif mode == "differ":
-            hicplot = DiffDraw(path,control_path = control_path,resolution,startSite,endSite)
+            hicplot = DiffDraw(path,control_path,resolution,startSite,endSite)
             hicplot.draw_tri()
         plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
         plt.scatter(self.index,mt,c=mt,marker="8")
