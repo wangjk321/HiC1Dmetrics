@@ -80,7 +80,7 @@ class multiScore:
         return(multiType)
 
 class metricHMM:
-    def __init__(self,df,ncluster,nRun=10):
+    def __init__(self,df,ncluster,nRun=10,covMethod= "spherical"):
         if len(df.shape) == 1: df= pd.DataFrame(df)
         self.label = df.columns
         self.df = pd.DataFrame(np.nan_to_num(df))
@@ -88,12 +88,13 @@ class metricHMM:
         self.ncluster = ncluster
         self.state = ["state" + str(i) for i in range(ncluster)]
         self.index = df.index
+        self.covMethod = covMethod
 
     def oneSampleMultiMetric(self,outtype="predict"):
         scorelist = []
         modellist = []
         for i in range(self.nRun):
-            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000, covariance_type="full").fit(self.df)
+            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000, covariance_type=self.covMethod).fit(self.df)
             scorelist.append(model.score(self.df))
             modellist.append(model)
         bestmodel = modellist[np.argmax(scorelist)]
@@ -108,7 +109,7 @@ class metricHMM:
         elif outtype == "transition":
             return(transitionMT)
 
-    def plotOSMM(self,outtype="predict",plotHiC=False,plotHiC_para=[]):
+    def plotHMM(self,outtype="predict",plotHiC=False,plotHiC_para=[]):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
             plt.scatter(self.index,mt,c=mt,marker="8")
