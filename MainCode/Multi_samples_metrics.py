@@ -91,3 +91,28 @@ class repQC:
         maxCorr = abs(np.nan_to_num(self.corrMT[self.corrMT<1])).max()
         minCorr = abs(np.array(self.corrMT)).min()
         return(maxCorr-minCorr)
+
+    def heatmap(self,start,end,figs=[10,5],vmin=None,vmax=None):
+        nScore = len(self.namelist)
+        sbin = start//self.res
+        ebin = start//self.res
+        plt.figure(figsize=figs)
+        plt.imshow(score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
+        plt.colorbar()
+
+    def getdiff(self):
+        '''
+        nLoci = df.shape[1]
+        nScore = df.shape[0]
+        arrays = np.zeros(nLoci)+1
+        for i in range(nLoci):
+            if (i-2)<0 or (i+2)>=nLoci: continue
+            df_i = df.iloc[:,i-2:i+3]
+            df_ilist = [df_i.iloc[j] for j in range(nScore)]
+            pvalue = stats.f_oneway(*df_ilist)[1]
+            arrays[i] = pvalue
+
+        from statsmodels.sandbox.stats.multicomp import multipletests
+        qvalue=multipletests(arrays, method='fdr_bh')
+        '''
+        pass
