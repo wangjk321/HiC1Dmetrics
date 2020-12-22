@@ -91,6 +91,7 @@ class metricHMM:
         self.state = ["state" + str(i) for i in range(ncluster)]
         self.index = df.index
         self.covMethod = covMethod
+        self.limx = [min(df.index),max(df.index)]
 
         scorelist = []
         modellist = []
@@ -150,6 +151,7 @@ class metricHMM:
         plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
         plt.scatter(self.index,mt,c=mt,marker="8")
         plt.yticks(range(self.ncluster),self.state)
+        plt.xlim(self.limx[0],self.limx[1])
 
     def oneSampleOneMetric(self):
         pass
