@@ -66,7 +66,7 @@ class TADScoreChange(BasePara):
         elif mode == "TADss":
             treat = SeparationScore(self.path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
             control = SeparationScore(self.control_path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
-            title = "SeparationScore"
+            title = "SeparationScoreChange"
 
         change = np.array(treat - control)
         return super().makeDF(change,title)
