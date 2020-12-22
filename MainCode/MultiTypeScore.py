@@ -130,19 +130,19 @@ class metricHMM:
             elif norm == "overall":
                 u = self.rawdf.mean(axis=0)
                 uMT = pd.DataFrame([u]*self.ncluster,index=mt.index)
-                sd = self.rawdf.std(axis-0)
+                sd = self.rawdf.std(axis=0)
                 sdMT = pd.DataFrame([sd]*self.ncluster,index=mt.index)
                 zMT = (mt - uMT)/sdMT
-            sns.heatmap(zMT,cmap="coolwarm",vmax=2,vmin=-2)
+            sns.heatmap(zMT.T,cmap="coolwarm",vmax=2,vmin=-2)
         elif outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 
-    def plotHiC(self,mode,path,resolution,startSite,endSite,control_path=""):
+    def plotHiC(self,mode,path,resolution,startSite,endSite,control_path="",clmax=50):
         mt = self.oneSampleMultiMetric("predict")
         plt.figure(figsize=(10,10))
         plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
         if mode == "single":
-            hicplot = PlotTri(path,resolution,startSite,endSite)
+            hicplot = PlotTri(path,resolution,startSite,endSite,clmax=clmax)
             hicplot.draw()
         elif mode == "differ":
             hicplot = DiffDraw(path,control_path,resolution,startSite,endSite)
