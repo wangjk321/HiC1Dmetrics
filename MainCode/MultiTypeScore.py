@@ -121,7 +121,8 @@ class metricHMM:
     def plotHMM(self,outtype="predict",norm="local"):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
-            plt.scatter(self.index,mt,c=mt,marker="8",ylim=(-1,self.ncluster))
+            plt.scatter(self.index,mt,c=mt,marker="8")
+            plt.ylim(-1,self.ncluster)
             plt.yticks(range(self.ncluster),self.state)
         elif outtype == "emission":
             if norm == "local":
