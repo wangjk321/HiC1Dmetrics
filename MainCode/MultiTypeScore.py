@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from plotTwoSample import *
 from plotMetrics import *
+from scipy import stats
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -80,8 +81,9 @@ class multiScore:
         return(multiType)
 
 class metricHMM:
-    def __init__(self,df,ncluster,nRun=10,covMethod= "spherical",random_state=None):
+    def __init__(self,df,ncluster,nRun=10,covMethod= "spherical",random_state=None,HMMtype="Gaussian"):
         if len(df.shape) == 1: df= pd.DataFrame(df)
+        self.rawdf = df
         self.label = df.columns
         self.df = pd.DataFrame(np.nan_to_num(df))
         self.nRun = nRun
@@ -92,8 +94,13 @@ class metricHMM:
 
         scorelist = []
         modellist = []
+        if HMMtype == "Gaussian":
+            hmmTrain = hmm.GaussianHMM
+        elif HMMtype == "GMM":
+            hmmTrain = hmm.GMMHMM
+
         for i in range(self.nRun):
-            model = hmm.GaussianHMM(n_components=self.ncluster, n_iter=10000,random_state=random_state,
+            model = hmmTrain(n_components=self.ncluster, n_iter=10000,random_state=random_state,
                                     covariance_type=self.covMethod).fit(self.df)
             scorelist.append(model.score(self.df))
             modellist.append(model)
@@ -107,17 +114,26 @@ class metricHMM:
         if outtype == "predict":
             return(predictMT)
         elif outtype == "emission":
-            return(emissionMT.T)
+            return(emissionMT)
         elif outtype == "transition":
             return(transitionMT)
 
-    def plotHMM(self,outtype="predict",plotHiC=False,plotHiC_para=[]):
+    def plotHMM(self,outtype="predict",norm="local"):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
             plt.scatter(self.index,mt,c=mt,marker="8")
             plt.yticks(range(self.ncluster),self.state)
-
-        elif outtype == "emission" or outtype == "transition":
+        elif outtype == "emission":
+            if norm == "local":
+                zMT = mt.apply(stats.zscore)
+            elif norm == "overall":
+                u = self.rawdf.mean(axis=0)
+                uMT = pd.DataFrame([u]*self.ncluster,index=mt.index)
+                sd = self.rawdf.std(axis-0)
+                sdMT = pd.DataFrame([sd]*self.ncluster,index=mt.index)
+                zMT = (mt - uMT)/sdMT
+            sns.heatmap(zmt,cmap="coolwarm",vmax=2,vmin=-2)
+        elif outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 
     def plotHiC(self,mode,path,resolution,startSite,endSite,control_path=""):
