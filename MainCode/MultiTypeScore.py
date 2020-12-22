@@ -121,7 +121,7 @@ class metricHMM:
     def plotHMM(self,outtype="predict",norm="local"):
         mt = self.oneSampleMultiMetric(outtype)
         if outtype == "predict":
-            plt.scatter(self.index,mt,c=mt,marker="8")
+            plt.scatter(self.index,mt,c=mt,marker="8",ylim=(-1,self.ncluster))
             plt.yticks(range(self.ncluster),self.state)
         elif outtype == "emission":
             if norm == "local":
@@ -132,7 +132,7 @@ class metricHMM:
                 sd = self.rawdf.std(axis-0)
                 sdMT = pd.DataFrame([sd]*self.ncluster,index=mt.index)
                 zMT = (mt - uMT)/sdMT
-            sns.heatmap(zmt,cmap="coolwarm",vmax=2,vmin=-2)
+            sns.heatmap(zMT,cmap="coolwarm",vmax=2,vmin=-2)
         elif outtype == "transition":
             sns.heatmap(mt,cmap="coolwarm")
 
