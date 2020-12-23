@@ -150,8 +150,8 @@ class intraScoreChange(BasePara):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.control_path = control_path
 
-        self.treat = intraTADscore(path,resolution,chromosome,TADpath=control_path).getIntraS(IS_size=IS_size).intraTADscore
-        self.control = intraTADscore(control_path,resolution,chromosome,TADpath=control_path).getIntraS(IS_size=IS_size).intraTADscore
+        self.treat = intraTADscore(path,resolution,chromosome).getIntraS(IS_size=IS_size,TADpath=control_path).intraTADscore
+        self.control = intraTADscore(control_path,resolution,chromosome).getIntraS(IS_size=IS_size,TADpath=control_path).intraTADscore
 
     def getIntraSC(self):
         array = self.blankarray
@@ -172,8 +172,8 @@ class interScoreChange(BasePara):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.control_path = control_path
 
-        self.treat = interTADscore(path,resolution,chromosome,TADpath=control_path).getInterS(IS_size=IS_size).interTADscore
-        self.control = interTADscore(control_path,resolution,chromosome,TADpath=control_path).getInterS(IS_size=IS_size).interTADscore
+        self.treat = interTADscore(path,resolution,chromosome).getInterS(IS_size=IS_size,TADpath=control_path).interTADscore
+        self.control = interTADscore(control_path,resolution,chromosome).getInterS(IS_size=IS_size,TADpath=control_path).interTADscore
 
     def getInterSC(self):
         array = self.blankarray
