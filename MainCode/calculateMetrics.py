@@ -249,8 +249,11 @@ class DistalToLocalRatio(BasePara):
         super.makeCSV(self.getDLR())
 
 class intraTADscore(BasePara):
-    def getIntraS(self,IS_size=300000,useNA=True):   #this useNA is for TAD calling
-        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None):   #this useNA is for TAD calling
+        if TADpath:
+            usedPath = TADpath
+        else:usedPath = self.path
+        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
@@ -274,8 +277,11 @@ class intraTADscore(BasePara):
         return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
-    def getInterS(self,IS_size=300000,useNA=True):
-        tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+    def getInterS(self,IS_size=300000,useNA=True,TADpath=None):
+        if TADpath:
+            usedPath = TADpath
+        else:usedPath = self.path
+        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
