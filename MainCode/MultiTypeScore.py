@@ -44,6 +44,11 @@ class multiScore:
 
         return(multiType)
 
+    def plotOneScore(typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],
+                    smoothPC=True,logPC=False):
+        scoreMT = self.allOneScore(typelist,parameterlist,smoothPC,logPC)
+
     def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False):
         if mode == "ISC":
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",parameter)
