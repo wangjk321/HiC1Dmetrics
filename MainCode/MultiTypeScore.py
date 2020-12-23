@@ -7,6 +7,7 @@ from plotTwoSample import *
 from plotMetrics import *
 from scipy import stats
 
+
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
         self.path = path
@@ -48,6 +49,8 @@ class multiScore:
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],
                     smoothPC=True,logPC=False):
         import matplotlib.colors as mcolors
+        from callDirectionalTAD import PlotTAD
+        
         cols = list(mcolors.TABLEAU_COLORS.keys())
         scoreMT = self.allOneScore(typelist,parameterlist,smoothPC,logPC)
         nScore = len(typelist)
