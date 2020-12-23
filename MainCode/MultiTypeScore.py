@@ -44,7 +44,7 @@ class multiScore:
 
         return(multiType)
 
-    def plotOneScore(start,end,res,clmax=100,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
+    def plotOneScore(self,start,end,res,clmax=100,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],
                     smoothPC=True,logPC=False):
         import matplotlib.colors as mcolors
