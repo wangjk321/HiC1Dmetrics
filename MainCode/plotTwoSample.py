@@ -93,7 +93,7 @@ class DiffDraw(object):
         elif type == "intraSC":
             score = intraScoreChange(self.path,self.control_path,self.resolution,self.chr).getIntraSC().IntraSC
             title = "intraScoreChange"
-
+            
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.figure(figsize=(10,10))
         #pad + fraction = -0.1, So the bedGraph figure width should be (1+0.1)*width of HiC
