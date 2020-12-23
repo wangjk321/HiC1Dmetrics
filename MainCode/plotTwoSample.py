@@ -10,8 +10,8 @@ from calculateTwoSample import *
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
 
 class DiffDraw(object):
-    def __init__(self,path,control_path,resolution,startSite=0,endSite=0,clmin=-2,clmax=2, \
-                title="", chr="",startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
+    def __init__(self,path,control_path,resolution,chr="",startSite=0,endSite=0,clmin=-2,clmax=2, \
+                title="", startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
         self.path = path
         self.control_path = control_path
         treat = loadWithNorm(path,log = True).values
@@ -77,7 +77,7 @@ class DiffDraw(object):
         plt.xticks(ticks_pos,self.mark)
         plt.yticks([])
 
-    def draw_2sampleMetric(self,type):
+    def drawMetric(self,type):
         if type == "deltaDLR":
             score = deltaDLR(self.path,self.control_path,self.resolution,self.chr, \
                     sizeDLR=3000000).getDeltaDLR().deltaDLR
@@ -90,9 +90,9 @@ class DiffDraw(object):
             score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
                     start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
             title = "DirectionalRelativeFreq"
-        elif type == "intraScore":
+        elif type == "intraSC":
             score = intraScoreChange(self.path,self.control_path,self.resolution,self.chr).getIntraSC().IntraSC
-            title = "intraScore"
+            title = "intraScoreChange"
 
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.figure(figsize=(10,10))
