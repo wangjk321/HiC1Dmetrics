@@ -50,7 +50,7 @@ class multiScore:
                     smoothPC=True,logPC=False):
         import matplotlib.colors as mcolors
         from callDirectionalTAD import PlotTAD
-        
+
         cols = list(mcolors.TABLEAU_COLORS.keys())
         scoreMT = self.allOneScore(typelist,parameterlist,smoothPC,logPC)
         nScore = len(typelist)
@@ -58,7 +58,7 @@ class multiScore:
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
         hp = PlotTAD(self.path,res,start,end,clmax=clmax)
-        hp.drawTAD()
+        hp.draw()
         for i in range(nScore):
             scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
