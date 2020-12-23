@@ -90,6 +90,9 @@ class DiffDraw(object):
             score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
                     start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
             title = "DirectionalRelativeFreq"
+        elif type == "intraScore":
+            score = intraScoreChange(self.path,self.control_path,self.resolution,self.chr).getIntraSC().IntraSC
+            title = "intraScore"
 
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.figure(figsize=(10,10))
