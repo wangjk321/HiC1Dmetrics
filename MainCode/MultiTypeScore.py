@@ -125,7 +125,7 @@ class multiScore:
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
         hp = DiffDraw(self.path,self.control_path,res,startSite=start,endSite=end,clmax=clmax)
         if plotTAD == True:
-            pass
+            hp.drawTAD()
         elif plotTAD == False:
             hp.draw_tri()
         for i in range(nScore):
