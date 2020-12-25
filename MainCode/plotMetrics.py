@@ -3,7 +3,7 @@ from loadfile import *
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
-from calculateMetrics import *
+from calculateMetrics import * 
 
 class PlotCommon(object):
     def __init__(self,path,resolution,startSite=0,endSite=0,clmin=0,clmax=50, \

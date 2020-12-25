@@ -63,6 +63,7 @@ class DiffDraw(object):
 
     def draw_tri(self):
         tri_matrix = ndimage.rotate(self.matrixRegion,45)
+        plt.plot(dpi=300)
         plt.imshow(tri_matrix,clim= self.clim,cmap=cmap,interpolation="nearest", aspect=1)
         plt.title(self.title,fontsize=20)
         tri_shape = tri_matrix.shape[0]
