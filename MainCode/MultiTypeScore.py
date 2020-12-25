@@ -123,11 +123,11 @@ class multiScore:
 
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
-        hp = PlotTAD(self.path,res,start,end,clmax=clmax)
+        hp = DiffDraw(self.path,self.control_path,res,startSite=start,endSite=end,clmax=clmax)
         if plotTAD == True:
-            hp.drawTAD()
+            pass
         elif plotTAD == False:
-            hp.draw()
+            hp.draw_tri()
         for i in range(nScore):
             scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
