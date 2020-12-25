@@ -77,6 +77,30 @@ class DiffDraw(object):
         plt.xticks(ticks_pos,self.mark)
         plt.yticks([])
 
+    def drawTAD(self,squareSize=300000,useNA=True):
+        Tad = TADcallIS(self.control_path,self.resolution,self.chr,squareSize,useNA=useNA)
+        selectTADbool = np.logical_and(Tad["TADstart"] >= self.startSite,Tad["TADend"] <= self.endSite)
+        selectTAD=Tad[selectTADbool]
+
+        originalWidth = self.matrixRegion.shape[0]
+        figwidth = ndimage.rotate(self.matrixRegion,45).shape[0]
+
+        xpos=[]
+        ypos=[]
+        for i in range(selectTAD.shape[0]):
+            left = ((selectTAD["TADstart"].iloc[i]-self.startSite)/self.resolution+1) * (figwidth/originalWidth)
+            right = ((selectTAD["TADend"].iloc[i]-self.startSite)/self.resolution+1) * (figwidth/originalWidth)
+            xpos.append(left)
+            xpos.append((left+right)/2)
+            xpos.append(right)
+
+            ypos.append(figwidth/2)
+            ypos.append(figwidth/2-(right-left)/2)
+            ypos.append(figwidth/2)
+
+        self.draw_tri()
+        plt.plot(xpos,ypos,"k-",linestyle ="dashed")
+
     def drawMetric(self,type):
         if type == "deltaDLR":
             score = deltaDLR(self.path,self.control_path,self.resolution,self.chr, \
