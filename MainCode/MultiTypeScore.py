@@ -45,7 +45,7 @@ class multiScore:
 
         return(multiType)
 
-    def plotOneScore(self,start,end,res,clmax=100,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
+    def plotOneScore(self,start,end,res,clmax=100,plotTAD=False,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],
                     smoothPC=True,logPC=False):
         import matplotlib.colors as mcolors
@@ -58,7 +58,10 @@ class multiScore:
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
         hp = PlotTAD(self.path,res,start,end,clmax=clmax)
-        hp.drawTAD()
+        if plotTAD == True:
+            hp.drawTAD()
+        elif plotTAD == False:
+            hp.draw()
         for i in range(nScore):
             scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
@@ -106,6 +109,36 @@ class multiScore:
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
+
+    def plotTwoScore(self,start,end,res,clmax=2,plotTAD=False,
+                    typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],
+                    smoothPC=True,logPC=False):
+        import matplotlib.colors as mcolors
+        from callDirectionalTAD import PlotTAD
+
+        cols = list(mcolors.TABLEAU_COLORS.keys())
+        scoreMT = self.allTwoScore(typelist,parameterlist,smoothPC,logPC)
+        nScore = len(typelist)
+
+        plt.figure(figsize=(10,9+nScore*1))
+        plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
+        hp = PlotTAD(self.path,res,start,end,clmax=clmax)
+        if plotTAD == True:
+            hp.drawTAD()
+        elif plotTAD == False:
+            hp.draw()
+        for i in range(nScore):
+            scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
+            plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
+            plt.plot(scoreRegion,c=cols[i],label=scoreRegion.name)
+            plt.legend(loc="upper left")
+            plt.xlim(start//res,end//res)
+            ticks_pos = np.arange(hp.sbin,hp.ebin+1,(hp.ebin-hp.sbin)/5)
+            if i < nScore-1:
+                plt.xticks(ticks_pos,[])
+            else:
+                plt.xticks(ticks_pos,hp.mark)
 
 class metricHMM:
     def __init__(self,df,ncluster,nRun=10,covMethod= "spherical",random_state=None,HMMtype="Gaussian"):
