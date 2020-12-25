@@ -129,16 +129,16 @@ class multiScore:
         elif plotTAD == False:
             hp.draw_tri()
         for i in range(nScore):
-            scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
+            scoreRegion = scoreMT.iloc[start//res:end//res+1,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
             plt.plot(scoreRegion,c=cols[i],label=scoreRegion.name)
             plt.legend(loc="upper left")
             plt.xlim(start//res,end//res)
 
             plt.plot([hp.sbin,hp.ebin],[0,0],"k--",linewidth=0.6)
-            #if scoreRegion.name != "CorrD":
-            #    plt.fill_between(np.arange(hp.sbin,hp.ebin+1,1),scoreRegion, 0,\
-            #                    where = scoreRegion <0,facecolor='grey', alpha=0.5)
+            if scoreRegion.name != "CorrD":
+                plt.fill_between(np.arange(hp.sbin,hp.ebin+1,1),scoreRegion, 0,\
+                                where = scoreRegion <0,facecolor='grey', alpha=0.5)
 
             ticks_pos = np.arange(hp.sbin,hp.ebin+1,(hp.ebin-hp.sbin)/5)
             if i < nScore-1:
