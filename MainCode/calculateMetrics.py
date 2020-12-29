@@ -248,33 +248,6 @@ class DistalToLocalRatio(BasePara):
     def getCSV(self):
         super.makeCSV(self.getDLR())
 
-class intraTADscore(BasePara):
-    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None):   #this useNA is for TAD calling
-        if TADpath:
-            usedPath = TADpath
-        else:usedPath = self.path
-        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
-        leftBorder =  np.array(tad.TADstart) // self.resolution
-        rightBorder = np.array(tad.TADend) // self.resolution
-        array = self.blankarray
-
-        for i in range(self.matrix_shape):
-            belongTAD = (i >= leftBorder) * (i < rightBorder)
-            if sum(belongTAD) == 0: continue
-
-            #elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
-            #    continue
-
-            startBin = int(leftBorder[belongTAD])
-            endBin = int(rightBorder[belongTAD])
-            A = self.matrix[i,startBin:i].sum()
-            B = self.matrix[i,i+1:endBin+1].sum()
-            if np.isnan(A+B) or max(A,B) == 0: continue
-            array[i] = A+B
-
-        #array = np.log1p(array/np.nanmean(array))
-        array = (array/self.allsum)*1e4
-        return super().makeDF(array,"intraTADscore")
 
 class interTADscore(BasePara):
     def getInterS(self,IS_size=300000,useNA=True,TADpath=None):
@@ -389,3 +362,30 @@ class CompartmentPC1(BasePara):
 
     def getCSV(self):
         super.makeCSV(self.getPC1())
+
+class intraTADscore(CompartmentPC1):
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None):   #this useNA is for TAD calling
+        if TADpath:
+            usedPath = TADpath
+        else:usedPath = self.path
+        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+        leftBorder =  np.array(tad.TADstart) // self.resolution
+        rightBorder = np.array(tad.TADend) // self.resolution
+        array = self.blankarray
+
+        for i in range(self.matrix_shape):
+            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            if sum(belongTAD) == 0: continue
+            #elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
+            #    continue
+
+            startBin = int(leftBorder[belongTAD])
+            endBin = int(rightBorder[belongTAD])
+            A = self.matrix[i,startBin:i].sum()
+            B = self.matrix[i,i+1:endBin+1].sum()
+            if np.isnan(A+B) or max(A,B) == 0: continue
+            array[i] = A+B
+
+        #array = np.log1p(array/np.nanmean(array))
+        array = (array/self.allsum)*1e4
+        return super().makeDF(array,"intraTADscore")
