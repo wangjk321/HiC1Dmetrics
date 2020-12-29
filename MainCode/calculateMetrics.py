@@ -364,14 +364,20 @@ class CompartmentPC1(BasePara):
         super.makeCSV(self.getPC1())
 
 class intraTADscore(CompartmentPC1):
-    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None):   #this useNA is for TAD calling
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
+
         tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
+
+        if useOE == True:
+            mt = self.matrix
+        else:
+            mt = self.matrix
 
         for i in range(self.matrix_shape):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
@@ -381,8 +387,8 @@ class intraTADscore(CompartmentPC1):
 
             startBin = int(leftBorder[belongTAD])
             endBin = int(rightBorder[belongTAD])
-            A = self.matrix[i,startBin:i].sum()
-            B = self.matrix[i,i+1:endBin+1].sum()
+            A = mt[i,startBin:i].sum()
+            B = mt[i,i+1:endBin+1].sum()
             if np.isnan(A+B) or max(A,B) == 0: continue
             array[i] = A+B
 
