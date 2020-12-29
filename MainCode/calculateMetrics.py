@@ -375,7 +375,11 @@ class intraTADscore(CompartmentPC1):
         array = self.blankarray
 
         if useOE == True:
-            mt = self.matrix
+            rawMT = np.nan_to_num(self.matrix)
+            expectMT = self.makeExpect(rawMT,smooth)
+            warnings.filterwarnings("ignore")
+            mt = np.nan_to_num(rawMT / expectMT)
+            warnings.filterwarnings("default")
         else:
             mt = self.matrix
 
