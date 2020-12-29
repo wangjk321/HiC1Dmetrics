@@ -4,6 +4,7 @@ from plotMetrics import *
 from plotTwoSample import *
 import sys
 
+'''
 def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
     ISoneNA = ISbedgraph.InsulationScore
@@ -62,6 +63,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     TADout = TADout[withNA]
 
     return(TADout)
+'''
 
 class PlotTAD(PlotTri):
 
