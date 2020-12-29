@@ -262,8 +262,8 @@ class intraTADscore(BasePara):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
             if sum(belongTAD) == 0: continue
 
-            elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
-                continue
+            #elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
+            #    continue
 
             startBin = int(leftBorder[belongTAD])
             endBin = int(rightBorder[belongTAD])
