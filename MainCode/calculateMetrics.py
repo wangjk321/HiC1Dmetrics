@@ -397,5 +397,5 @@ class intraTADscore(CompartmentPC1):
             array[i] = A+B
 
         #array = np.log1p(array/np.nanmean(array))
-        array = (array/self.allsum)*1e4
+        #array = (array/self.allsum)*1e4
         return super().makeDF(array,"intraTADscore")
