@@ -364,7 +364,7 @@ class CompartmentPC1(BasePara):
         super.makeCSV(self.getPC1())
 
 class intraTADscore(CompartmentPC1):
-    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=False,smooth=False,normTAD=False):   #this useNA is for TAD calling
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
@@ -381,7 +381,7 @@ class intraTADscore(CompartmentPC1):
             mt = np.nan_to_num(rawMT / expectMT)
             warnings.filterwarnings("default")
         else:
-            mt = np.log1p(self.matrix)
+            mt = self.matrix
 
         for i in range(self.matrix_shape):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
