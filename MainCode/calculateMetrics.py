@@ -381,7 +381,7 @@ class intraTADscore(CompartmentPC1):
             mt = np.nan_to_num(rawMT / expectMT)
             warnings.filterwarnings("default")
         else:
-            mt = self.matrix
+            mt = np.log1p(self.matrix)
 
         for i in range(self.matrix_shape):
             belongTAD = (i >= leftBorder) * (i < rightBorder)
