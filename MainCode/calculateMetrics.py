@@ -364,7 +364,7 @@ class CompartmentPC1(BasePara):
         super.makeCSV(self.getPC1())
 
 class intraTADscore(CompartmentPC1):
-    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False):   #this useNA is for TAD calling
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
@@ -394,8 +394,11 @@ class intraTADscore(CompartmentPC1):
             A = mt[i,startBin:i].sum()
             B = mt[i,i+1:endBin+1].sum()
             if np.isnan(A+B) or max(A,B) == 0: continue
-            array[i] = A+B
+            if normTAD == True:
+                array[i] = (A+B)/(endBin-startBin)
+            else: array[i] = A+B
 
         #array = np.log1p(array/np.nanmean(array))
-        #array = (array/self.allsum)*1e4
+        if useOE == False:
+            array = (array/self.allsum)*1e4
         return super().makeDF(array,"intraTADscore")
