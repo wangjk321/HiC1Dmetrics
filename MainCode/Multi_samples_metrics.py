@@ -80,6 +80,7 @@ class repQC:
         self.chr = chr
         self.mode = mode
         self.UniqueParameter = UniqueParameter
+        self.nScore = len(namelist)
 
         score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC)
         self.corrMT = score.corr(method=method)
@@ -93,12 +94,25 @@ class repQC:
         return(maxCorr-minCorr)
 
     def heatmap(self,start,end,figs=[10,5],vmin=None,vmax=None):
-        nScore = len(self.namelist)
         sbin = start//self.res
         ebin = start//self.res
         plt.figure(figsize=figs)
-        plt.imshow(score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
+        plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
         plt.colorbar()
+
+    def heatmap_tri(self,hic_path,start,end,clmax=100):
+        sbin = start//self.res
+        ebin = start//self.res
+
+        from callDirectionalTAD import PlotTAD
+        plt.figure(figsize=(10,9+self.nScore*1))
+        plt.subplot2grid((5+self.nScore,11),(0,0),rowspan=5,colspan=10)
+        hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
+        hp.draw()
+
+        plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
+        df = self.score.iloc[sbin:ebin,:].T
+        plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=0)
 
     def getdiff(self):
         '''
