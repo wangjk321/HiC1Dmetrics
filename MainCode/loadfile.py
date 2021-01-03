@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def loadDenseMatrix(filename,log=True):
+def loadDenseMatrix(filename,log=False):
     #print(filename)
     data = pd.read_csv(filename, delimiter='\t', index_col=0)
     if log == True:
