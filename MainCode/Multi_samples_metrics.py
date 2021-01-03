@@ -1,6 +1,7 @@
 from calculateMetrics import *
 import seaborn as sns
 from loadfile import *
+import matplotlib.pyplot as plt
 
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smoothPC=True,logPC=False):
     if mode == 'IS':
@@ -82,7 +83,7 @@ class repQC:
         self.UniqueParameter = UniqueParameter
         self.nScore = len(namelist)
 
-        score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC)
+        self.score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC)
         self.corrMT = score.corr(method=method)
 
     def corr_plot(self):
