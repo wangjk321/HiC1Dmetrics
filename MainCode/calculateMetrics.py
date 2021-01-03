@@ -13,7 +13,7 @@ class BasePara:
     def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True):
         self.path = path
         #self.matrixNA = loadDenseMatrix(path).values
-        self.matrix = loadDenseMatrix(path).values
+        self.matrix = loadDenseMatrix(path,log=True).values
         self.matrix_shape = self.matrix.shape[0]
         self.resolution = resolution
         self.chromosome = chromosome
