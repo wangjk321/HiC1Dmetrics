@@ -21,4 +21,4 @@ def getMultiDiscrete(sampleList, labels, res, chr, mode, UniqueParameter):
         metricMT.index = metricMT.start.tolist()
         metricMT = metricMT.iloc[:,3:]
     metricMT.columns = labels
-    return metricMT
+    return(metricMT)
