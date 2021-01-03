@@ -84,7 +84,7 @@ class repQC:
         self.nScore = len(namelist)
 
         self.score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC)
-        self.corrMT = score.corr(method=method)
+        self.corrMT = self.score.corr(method=method)
 
     def corr_plot(self):
         sns.clustermap(self.corrMT ,cmap="RdPu")
