@@ -94,7 +94,7 @@ class repQC:
         minCorr = abs(np.array(self.corrMT)).min()
         return(maxCorr-minCorr)
 
-    def heatmap(self,start,end,figs=[10,5],vmin=None,vmax=None):
+    def heatmap(self,start,end,figs=(10,5),vmin=None,vmax=None):
         sbin = start//self.res
         ebin = start//self.res
         plt.figure(figsize=figs)
