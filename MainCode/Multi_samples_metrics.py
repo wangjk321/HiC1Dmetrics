@@ -101,7 +101,7 @@ class repQC:
         plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
         plt.colorbar()
 
-    def heatmap_tri(self,hic_path,start,end,clmax=100):
+    def heatmap_tri(self,hic_path,start,end,clmax=100,heatmin=None):
         sbin = start//self.res
         ebin = end//self.res
 
@@ -113,13 +113,16 @@ class repQC:
 
         plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
         df = self.score.iloc[sbin:ebin,:].T
-        plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=0)
+        plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
 
-    def getdiff(self):
-        '''
+    def anova_like(self,start,end):
+        sbin = start//self.res
+        ebin = end//self.res
+        df = self.score.iloc[sbin:ebin,:].T
+
         nLoci = df.shape[1]
         nScore = df.shape[0]
-        arrays = np.zeros(nLoci)+1
+        arrays = np.zeros(nLoci)*np.NaN
         for i in range(nLoci):
             if (i-2)<0 or (i+2)>=nLoci: continue
             df_i = df.iloc[:,i-2:i+3]
@@ -127,7 +130,7 @@ class repQC:
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
 
-        from statsmodels.sandbox.stats.multicomp import multipletests
-        qvalue=multipletests(arrays, method='fdr_bh')
-        '''
-        pass
+        return(arrays)
+
+        #from statsmodels.sandbox.stats.multicomp import multipletests
+        #qvalue=multipletests(arrays, method='fdr_bh')
