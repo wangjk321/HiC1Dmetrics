@@ -97,7 +97,7 @@ class repQC:
     def heatmap(self,start,end,figs=(10,5),vmin=None,vmax=None):
         sbin = start//self.res
         ebin = start//self.res
-        return(self.score.iloc[sbin:ebin,:].T)
+        return(sbin)
         #plt.figure(figsize=figs)
         #plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
         #plt.colorbar()
