@@ -96,15 +96,14 @@ class repQC:
 
     def heatmap(self,start,end,figs=(10,5),vmin=None,vmax=None):
         sbin = start//self.res
-        ebin = start//self.res
-        return(sbin)
-        #plt.figure(figsize=figs)
-        #plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
-        #plt.colorbar()
+        ebin = end//self.res
+        plt.figure(figsize=figs)
+        plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
+        plt.colorbar()
 
     def heatmap_tri(self,hic_path,start,end,clmax=100):
         sbin = start//self.res
-        ebin = start//self.res
+        ebin = end//self.res
 
         from callDirectionalTAD import PlotTAD
         plt.figure(figsize=(10,9+self.nScore*1))
