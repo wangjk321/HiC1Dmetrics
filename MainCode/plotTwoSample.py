@@ -108,8 +108,13 @@ class DiffDraw(object):
                     sizeDLR=3000000).getDeltaDLR().deltaDLR
             title = "deltaDLR"
         elif type == "ISC":
-            score = TADScoreChange(self.path,self.control_path,self.resolution,self.chr).getChange("IS",300000).InsulationScoreChange
+            score = TADScoreChange(self.path,self.control_path,self.resolution,
+                                    self.chr).getChange("IS",300000).InsulationScoreChange
             title = "InsulationScoreChange"
+        elif type == "CIC":
+            score = TADScoreChange(self.path,self.control_path,self.resolution,
+                                    self.chr).getChange("CI",300000).ContrastIndexChange
+            title = "ContrastIndexChange"
         elif type == "DRF":
             score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
                     start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
