@@ -32,6 +32,21 @@ class multiSampleDiscrete:
         metricMT.columns = self.namelist
         return(metricMT)
 
+    def plotMultiDiscrete(self,hic_path,start,end,clmax=100,heatmin=None):
+        sbin = start//self.res
+        ebin = end//self.res
+
+        from callDirectionalTAD import PlotTAD
+        plt.figure(figsize=(10,9+self.nScore*1))
+        plt.subplot2grid((5+self.nScore,11),(0,0),rowspan=5,colspan=10)
+        hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
+        hp.draw()
+
+        plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//3,colspan=11)
+        df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
+        plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
+        plt.yticks(range(self.nScore),self.namelist)
+
 def plot_discrete(mt,res,hic_path,start,end,clmax=100,heatmin=None):
     sbin = start//self.res
     ebin = end//self.res
