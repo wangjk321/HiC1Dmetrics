@@ -44,13 +44,14 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         bd = np.unique(bd)
         IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
 
-        state = np.zeros(IS.shape[0])-1
+        state = ["nonBorder"]*IS.shape[0]
         for i in bd:
-            state[IS.start == i] = 1
-            state[IS.start == i-res] = 1
-            state[IS.start == i+res] = 1
+            state[IS.start == i] = "border"
+            state[IS.start == i-res] = "border"
+            state[IS.start == i+res] = "border"
         score = IS
         score.iloc[:,3] =state
+        score.columns=["chr","start","end","TADborder"]
 
     return(score)
 
