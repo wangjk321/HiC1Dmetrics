@@ -10,10 +10,23 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = -1
         score.iloc[:,3] =state
 
+    elif mode == "DLR":
+        pass
+
     elif mode == "border":
         tad = TADcallIS(path,res,chr)
-        score = tad
-        
+        bd = np.concatenate([np.array(tad.TADstart),np.array(tad.TADend)])
+        bd = np.unique(bd)
+        IS = multiScore(path,res,chr).obtainOneScore(mode,parameter)
+
+        state = np.zeros(IS.shape[0])
+        for i in bd:
+            state[IS.start == i] = 1
+            state[IS.start == i-res] = 1
+            state[IS.start == i+res] = 1
+        score = IS
+        score.iloc[:,3] =state
+
     return(score)
 
 class multiSampleDiscrete:
