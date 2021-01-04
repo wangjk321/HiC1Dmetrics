@@ -4,8 +4,12 @@ def getDiscrete(path,res,chr,mode,parameter):
     ob = multiScore(path,res,chr)
     score = ob.obtainOneScore(mode,parameter)
     state = np.zeros(score.shape[0])*np.NaN
-    state[score.iloc[:,3] > 0] = 1
-    state[score.iloc[:,3] < 0] = -1
+    if mode == "PC1":
+        state[score.iloc[:,3] > 0] = 1
+        state[score.iloc[:,3] < 0] = -1
+    elif mode == "tad":
+        pass
+
     score.iloc[:,3] =state
 
     return(score)
@@ -32,7 +36,7 @@ class multiSampleDiscrete:
         metricMT.columns = self.namelist
         return(metricMT)
 
-    def plotMultiDiscrete(self,hic_path,start,end,clmax=100,heatmin=None):
+    def plotMultiDiscrete(self,hic_path,start,end,clmax=100,heatmin=None,interpolation='none'):
         sbin = start//self.res
         ebin = end//self.res
 
@@ -42,9 +46,9 @@ class multiSampleDiscrete:
         hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
         hp.draw()
 
-        plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//3,colspan=11)
+        plt.subplot2grid((5+self.nScore,11),(6,0),rowspan=self.nScore//3,colspan=11)
         df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
-        plt.imshow(df,aspect="auto",interpolation='none',vmin=heatmin)
+        plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
 
 def plot_discrete(mt,res,hic_path,start,end,clmax=100,heatmin=None):
