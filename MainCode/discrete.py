@@ -5,9 +5,9 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
     if mode == "PC1":  #Acompartment~1,Bcompartment~-1
         ob = multiScore(path,res,chr)
         score = ob.obtainOneScore(mode,parameter)
-        state = np.zeros(score.shape[0])*np.NaN
-        state[score.iloc[:,3] > 0] = 1
-        state[score.iloc[:,3] < 0] = -1
+        state = np.array(["none"]*score.shape[0],dtype=object)
+        state[score.iloc[:,3] > 0] = "CompartA"
+        state[score.iloc[:,3] < 0] = "CompartB"
         score.iloc[:,3] =state
 
     elif mode in ["deltaDLR","ISC","CIC","intraSC","interSC","DRF"]:
@@ -16,7 +16,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         # CIC: postive 1 stronger boundary. negative -1 weaker boundart
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
-        state = np.array(["none"]*score.shape[0])
+        state = np.array(["none"]*score.shape[0],dtype=object)
         state[score.iloc[:,3] > 0] = "up"+mode
         state[score.iloc[:,3] < 0] = "down"+mode
         score.iloc[:,3] =state
@@ -33,7 +33,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
     elif mode == "PC1C":
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
-        state = np.array(["none"]*score.shape[0])
+        state = np.array(["none"]*score.shape[0],dtype=object)
         state[score.iloc[:,3] > 0] = "BtoA"
         state[score.iloc[:,3] < 0] = "AtoB"
         score.iloc[:,3] =state
@@ -44,7 +44,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         bd = np.unique(bd)
         IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
 
-        state = np.array(["nonBorder"]*IS.shape[0])
+        state = np.array(["nonBorder"]*IS.shape[0],dtype=object)
         for i in bd:
             state[IS.start == i] = "border"
             state[IS.start == i-res] = "border"
@@ -77,6 +77,9 @@ class multiTypeDiscrete:
                 mt = pd.concat([mt,next],axis=1)
 
         return(mt)
+
+    def makecsv(self,outname="multiDiscrete.txt"):
+        self.multiDiscrete().to_csv(outname,sep="\t",index=None)
 
 
 class multiSampleDiscrete:
