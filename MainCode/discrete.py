@@ -43,6 +43,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         bd = np.concatenate([np.array(tad.TADstart),np.array(tad.TADend)])
         bd = np.unique(bd)
         IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
+        print("OK")
 
         state = np.array(["nonBorder"]*IS.shape[0],dtype=object)
         for i in bd:
