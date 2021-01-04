@@ -2,14 +2,15 @@ from MultiTypeScore import *
 from calculateMetrics import *
 
 def getDiscrete(path,res,chr,mode,parameter,control_path=""):
-    ob = multiScore(path,res,chr)
-    score = ob.obtainOneScore(mode,parameter)
-    state = np.zeros(score.shape[0])*np.NaN
     if mode == "PC1":
+        ob = multiScore(path,res,chr)
+        score = ob.obtainOneScore(mode,parameter)
+        state = np.zeros(score.shape[0])*np.NaN
         state[score.iloc[:,3] > 0] = 1
         state[score.iloc[:,3] < 0] = -1
+
     elif mode == "border":
-        tad = TADcallIS()
+        tad = TADcallIS(path,res,chr)
 
     score.iloc[:,3] =state
 
@@ -47,7 +48,7 @@ class multiSampleDiscrete:
         hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
         hp.draw()
 
-        plt.subplot2grid((5+int(self.nScore/1.5),11),(5,0),rowspan=(self.nScore//4)+1,colspan=11)
+        plt.subplot2grid((5+int(self.nScore/1.5),11),(5,0),rowspan=(self.nScore//5)+1,colspan=11)
         df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
