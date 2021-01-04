@@ -66,7 +66,7 @@ class multiTypeDiscrete:
         self.parameterlist = parameterlist
 
     def multiDiscrete(self):
-        for i,type in enumerate(typelist):
+        for i,type in enumerate(self.typelist):
             if i == 0:
                 mt = getDiscrete(self.path,self.res,self.chr,self.typelist[i],
                                 self.parameterlist[i],control_path=self.control_path)
