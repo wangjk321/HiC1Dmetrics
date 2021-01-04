@@ -10,7 +10,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = -1
         score.iloc[:,3] =state
 
-    elif mode in ["deltaDLR","ISC","CIC","inraSC","interSC","DRF"]:
+    elif mode in ["deltaDLR","ISC","CIC","intraSC","interSC","DRF"]:
         #positive-decompaction: 1; negative-compaction:-1
         # ISC: positive-more interaction: 1; negative-less interaction:-1
         # CIC: postive 1 stronger boundary. negative -1 weaker boundart
