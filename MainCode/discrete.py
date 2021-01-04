@@ -28,6 +28,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state = np.array(["none"]*score.shape[0])
         state[score.iloc[:,3] >= thresh] = str("highCorr")
         state[score.iloc[:,3] < thresh] = str("lowCorr")
+        score.iloc[:,3]=score.iloc[:,3].astype(str)
         score.iloc[:,3] =state
 
     elif mode == "PC1C":
