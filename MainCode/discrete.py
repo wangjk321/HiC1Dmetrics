@@ -16,16 +16,16 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         # CIC: postive 1 stronger boundary. negative -1 weaker boundart
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
-        state = np.zeros(score.shape[0])*np.NaN
-        state[score.iloc[:,3] > 0] = 1
-        state[score.iloc[:,3] < 0] = -1
+        state = np.array(["none"]*score.shape[0])
+        state[score.iloc[:,3] > 0] = "up"+mode
+        state[score.iloc[:,3] < 0] = "down"+mode
         score.iloc[:,3] =state
 
     elif mode == "CorrD":
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
         thresh = score.CorrD.describe()[5]
-        state = np.array(["none"]*IS.shape[0])
+        state = np.array(["none"]*score.shape[0])
         state[score.iloc[:,3] >= thresh] = "highCorr"
         state[score.iloc[:,3] < thresh] = "lowCorr"
         score.iloc[:,3] =state
@@ -33,7 +33,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
     elif mode == "PC1C":
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
-        state = np.array(["none"]*IS.shape[0])
+        state = np.array(["none"]*score.shape[0])
         state[score.iloc[:,3] > 0] = "BtoA"
         state[score.iloc[:,3] < 0] = "AtoB"
         score.iloc[:,3] =state
