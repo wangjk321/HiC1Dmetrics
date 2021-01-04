@@ -10,7 +10,10 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = -1
         score.iloc[:,3] =state
 
-    elif mode == "deltaDLR": #positive-decompaction: 1; negative-compaction:-1
+    elif mode in ["deltaDLR","ISC","CIC","inraSC","interSC","DRF"]:
+        #positive-decompaction: 1; negative-compaction:-1
+        # ISC: positive-more interaction: 1; negative-less interaction:-1
+        # CIC: postive 1 stronger boundary. negative -1 weaker boundart
         ob = multiScore(path,res,chr,control_path=control_path)
         score = ob.obtainTwoScore(mode,parameter)
         state = np.zeros(score.shape[0])*np.NaN
@@ -18,6 +21,22 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = -1
         score.iloc[:,3] =state
 
+    elif mode == "CorrD":
+        ob = multiScore(path,res,chr,control_path=control_path)
+        score = ob.obtainTwoScore(mode,parameter)
+        thresh = score.CorrD.describe()[5]
+        state = np.zeros(score.shape[0])*np.NaN
+        state[score.iloc[:,3] > thresh] = 1
+        state[score.iloc[:,3] < thresh] = -1
+        score.iloc[:,3] =state
+
+    elif mode == "PC1C":
+        ob = multiScore(path,res,chr,control_path=control_path)
+        score = ob.obtainTwoScore(mode,parameter)
+        state = np.zeros(score.shape[0])*np.NaN
+        state[score.iloc[:,3] > 0] = 1
+        state[score.iloc[:,3] <= 0] = -1
+        score.iloc[:,3] =state
 
     elif mode == "border":
         tad = TADcallIS(path,res,chr)
@@ -25,7 +44,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         bd = np.unique(bd)
         IS = multiScore(path,res,chr).obtainOneScore(mode,parameter)
 
-        state = np.zeros(IS.shape[0])
+        state = np.zeros(IS.shape[0])-1
         for i in bd:
             state[IS.start == i] = 1
             state[IS.start == i-res] = 1
@@ -34,6 +53,30 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         score.iloc[:,3] =state
 
     return(score)
+
+class multiTypeDiscrete:
+    def __init__(self,path,control_path,res,chr,
+                typelist=["PC1","border","deltaDLR","ISC","CIC","inraSC","interSC","DRF","CorrD","PC1C"],
+                parameterlist=["NoDefault",300000,3000000,300000,300000,300000,300000,[200000,5000000],"pearson","NoDefault"]):
+        self.path = path
+        self.res = res
+        self.chr = chr
+        self.control_path = control_path
+        self.typelist = typelist
+        self.parameterlist = parameterlist
+
+    def multiDiscrete(self):
+        for i,type in enumerate(typelist):
+            if i == 0:
+                mt = getDiscrete(self.path,self.res,self.chr,self.typelist[i],
+                                self.parameterlist[i],control_path=self.control_path)
+            else:
+                next = getDiscrete(self.path,self.res,self.chr,self.typelist[i],
+                                self.parameterlist[i],control_path=self.control_path).iloc[:,3]
+                mt = pd.concat([mt,next],axis=1)
+
+        return(mt)
+
 
 class multiSampleDiscrete:
     def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
