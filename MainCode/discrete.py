@@ -40,10 +40,12 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
 
     elif mode == "border":
         tad = TADcallIS(path,res,chr)
+        print("OK1")
         bd = np.concatenate([np.array(tad.TADstart),np.array(tad.TADend)])
+        print("OK2")
         bd = np.unique(bd)
+        print("OK3")
         IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
-        print("OK")
 
         state = np.array(["nonBorder"]*IS.shape[0],dtype=object)
         for i in bd:
