@@ -2,7 +2,7 @@ from MultiTypeScore import *
 from calculateMetrics import *
 
 def getDiscrete(path,res,chr,mode,parameter,control_path=""):
-    if mode == "PC1":
+    if mode == "PC1":  #Acompartment~1,Bcompartment~-1
         ob = multiScore(path,res,chr)
         score = ob.obtainOneScore(mode,parameter)
         state = np.zeros(score.shape[0])*np.NaN
@@ -10,8 +10,14 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = -1
         score.iloc[:,3] =state
 
-    elif mode == "DLR":
-        pass
+    elif mode == "deltaDLR": #positive-decompaction: 1; negative-compaction:-1
+        ob = multiScore(path,res,chr,control_path=control_path)
+        score = ob.obtainTwoScore(mode,parameter)
+        state = np.zeros(score.shape[0])*np.NaN
+        state[score.iloc[:,3] > 0] = 1
+        state[score.iloc[:,3] < 0] = -1
+        score.iloc[:,3] =state
+
 
     elif mode == "border":
         tad = TADcallIS(path,res,chr)

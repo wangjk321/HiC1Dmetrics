@@ -108,8 +108,8 @@ class DiffDraw(object):
                     sizeDLR=3000000).getDeltaDLR().deltaDLR
             title = "deltaDLR"
         elif type == "ISC":
-            score = InsulationScoreChange(self.path,self.control_path,self.resolution,self.chr, \
-                    square_size=self.sizeIS).getISC().InsulationScoreChange
+            score = TADScoreChange(self.path,self.control_path,self.resolution,self.chr, \
+                    square_size=self.sizeIS).getChange("IS",300000).InsulationScoreChange
             title = "InsulationScoreChange"
         elif type == "DRF":
             score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
@@ -131,7 +131,7 @@ class DiffDraw(object):
         plt.title(title,fontsize=20)
         plt.plot(scoreRegion,c='black')
         plt.xlim(self.sbin,self.ebin)
-        plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        #plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
         plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
                         where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.99)
 
