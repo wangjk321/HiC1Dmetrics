@@ -80,7 +80,7 @@ class multiTypeDiscrete:
         return(mt)
 
     def makecsv(self,outname="multiDiscrete.txt"):
-        self.multiDiscrete().to_csv(outname,sep="\t",index=None)
+        self.multiDiscrete().iloc[:,3:].to_csv(outname,sep="\t",index=None)
 
 
 class multiSampleDiscrete:
