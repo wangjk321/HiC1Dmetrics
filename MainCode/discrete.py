@@ -44,7 +44,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         bd = np.unique(bd)
         IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
 
-        state = ["nonBorder"]*IS.shape[0]
+        state = np.array(["nonBorder"]*IS.shape[0])
         for i in bd:
             state[IS.start == i] = "border"
             state[IS.start == i-res] = "border"
