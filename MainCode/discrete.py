@@ -46,7 +46,6 @@ class multiSampleDiscrete:
         df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation='none',vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
-        plt.colorbar()
 
 def plot_discrete(mt,res,hic_path,start,end,clmax=100,heatmin=None):
     sbin = start//self.res
