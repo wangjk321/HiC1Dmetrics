@@ -56,7 +56,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
 
 class multiTypeDiscrete:
     def __init__(self,path,control_path,res,chr,
-                typelist=["PC1","border","deltaDLR","ISC","CIC","inraSC","interSC","DRF","CorrD","PC1C"],
+                typelist=["PC1","border","deltaDLR","ISC","CIC","intraSC","interSC","DRF","CorrD","PC1C"],
                 parameterlist=["NoDefault",300000,3000000,300000,300000,300000,300000,[200000,5000000],"pearson","NoDefault"]):
         self.path = path
         self.res = res
