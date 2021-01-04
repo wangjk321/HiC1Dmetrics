@@ -8,12 +8,12 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state = np.zeros(score.shape[0])*np.NaN
         state[score.iloc[:,3] > 0] = 1
         state[score.iloc[:,3] < 0] = -1
+        score.iloc[:,3] =state
 
     elif mode == "border":
         tad = TADcallIS(path,res,chr)
-
-    score.iloc[:,3] =state
-
+        score = tad
+        
     return(score)
 
 class multiSampleDiscrete:
