@@ -44,8 +44,9 @@ class multiSampleDiscrete:
 
         plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//3,colspan=11)
         df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
-        plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
+        plt.imshow(df,aspect="auto",interpolation='none',vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
+        plt.colorbar()
 
 def plot_discrete(mt,res,hic_path,start,end,clmax=100,heatmin=None):
     sbin = start//self.res
