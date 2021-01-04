@@ -26,8 +26,8 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         score = ob.obtainTwoScore(mode,parameter)
         thresh = score.CorrD.describe()[5]
         state = np.array(["none"]*score.shape[0])
-        state[score.iloc[:,3] >= thresh] = "highCorr"
-        state[score.iloc[:,3] < thresh] = "lowCorr"
+        state[score.iloc[:,3] >= thresh] = str("highCorr")
+        state[score.iloc[:,3] < thresh] = str("lowCorr")
         score.iloc[:,3] =state
 
     elif mode == "PC1C":
