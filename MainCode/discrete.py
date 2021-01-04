@@ -42,7 +42,7 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         tad = TADcallIS(path,res,chr)
         bd = np.concatenate([np.array(tad.TADstart),np.array(tad.TADend)])
         bd = np.unique(bd)
-        IS = multiScore(path,res,chr).obtainOneScore(mode,parameter)
+        IS = multiScore(path,res,chr).obtainOneScore("IS",parameter)
 
         state = np.zeros(IS.shape[0])-1
         for i in bd:
