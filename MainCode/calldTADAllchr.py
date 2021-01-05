@@ -38,8 +38,8 @@ def call_dTAD(chrom,pathName,pathControl,resolution):
     controlfilename = pathControl + "/observed.KR."+chrom+".matrix.gz"
 
     dTAD = DirectionalTAD(filename,controlfilename, \
-                      resolution,chr=chrom,startDRF=500000,sizeDRF=1000000,\
-                      sizeIS=150000)
+                      resolution,chr=chrom,startDRF=500000,sizeDRF=2000000,\
+                      sizeIS=300000)
     leftTAD,rightTAD,_ = dTAD.extractRegion()
     return({"leftTAD":leftTAD,"rightTAD":rightTAD})
 
@@ -80,7 +80,7 @@ class paralfuncOneSample(object):
 
 def TAD1sample(chrom,pathName,resolution):
     filename = pathName+"/observed.KR."+chrom+".matrix.gz"
-    tad = TADcallIS(filename,resolution,chrom,squareSize=150000)
+    tad = TADcallIS(filename,resolution,chrom,squareSize=300000)
     return(tad)
 
 def runTAD1sample(pathName,resolution,outname="oneSample",maxchr=22):

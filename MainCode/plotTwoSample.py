@@ -11,7 +11,7 @@ cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3
 
 class DiffDraw(object):
     def __init__(self,path,control_path,resolution,chr="",startSite=0,endSite=0,clmin=-2,clmax=2, \
-                title="", startDRF=500000,sizeDRF=1000000,sizeIS=150000,sizeDCI=300000):
+                title="", startDRF=500000,sizeDRF=2000000,sizeIS=300000,sizeDCI=300000):
         self.path = path
         self.control_path = control_path
         treat = loadWithNorm(path,log = True).values
