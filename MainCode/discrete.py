@@ -80,8 +80,8 @@ class multiTypeDiscrete:
 
         return(mt)
 
-    def makecsv(self,outname="multiDiscrete.txt"):
-        self.multiDiscrete().iloc[:,3:].to_csv(outname,sep="\t",index=None)
+    def makecsv(self,outname="multiDiscrete.txt",s=450,e=650):
+        self.multiDiscrete().iloc[s:e,3:].to_csv(outname,sep="\t",index=None)
 
     def useHMM(self):
         self.makecsv()
@@ -124,8 +124,17 @@ class multiTypeDiscrete:
 
         return(hMT,eMT,tMT)
 
-    def plotHMM(self):
+    def plotHMM(self,type="hidden"):
         hMT,eMT,tMT = self.useHMM()
+        if type == "hidden":
+            from sklearn.preprocessing import LabelEncoder
+            hmt = hMT.iloc[0,:]
+            le = LabelEncoder().fit(hmt)
+            hmtN = le.transform(hmt)
+            plt.scatter(range(len(hmt)),hmtN,c=hmtN,marker="8")
+            plt.yticks(range(5),list(le.classes_))
+        elif type == "transition":
+            sns.heatmap(tMT,cmap="coolwarm")
 
 class multiSampleDiscrete:
     def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
