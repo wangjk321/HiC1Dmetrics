@@ -11,8 +11,16 @@ def getDiscrete(path,res,chr,mode,parameter,control_path=""):
         state[score.iloc[:,3] < 0] = "CompartB"
         score.iloc[:,3] =state
 
-    elif mode in ["deltaDLR","ISC","CIC","intraSC","interSC","DRF"]:
+    elif mode in ["deltaDLR"]:
         #positive-decompaction: 1; negative-compaction:-1
+        ob = multiScore(path,res,chr,control_path=control_path)
+        score = ob.obtainTwoScore(mode,parameter)
+        state = np.array(["NA"]*score.shape[0],dtype=object)
+        state[score.iloc[:,3] > 0] = "decompact"
+        state[score.iloc[:,3] < 0] = "compact"
+        score.iloc[:,3] =state
+
+    elif mode in ["ISC","CIC","intraSC","interSC","DRF"]:
         # ISC: positive-more interaction: 1; negative-less interaction:-1
         # CIC: postive 1 stronger boundary. negative -1 weaker boundart
         ob = multiScore(path,res,chr,control_path=control_path)
@@ -124,17 +132,26 @@ class multiTypeDiscrete:
 
         return(hMT,eMT,tMT)
 
-    def plotHMM(self,type="hidden"):
+    def plotHMM(self,type="hidden",plotHiC=False,s=None,e=None,path="",control_path="",clmax=100):
         hMT,eMT,tMT = self.useHMM()
         if type == "hidden":
             from sklearn.preprocessing import LabelEncoder
             hmt = hMT.iloc[0,:]
             le = LabelEncoder().fit(hmt)
             hmtN = le.transform(hmt)
+            if plotHiC == True:
+                plt.figure(figsize=(10,10))
+                plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
+                hicplot = PlotTri(path,self.res,startSite=s,endSite=e,clmax=clmax)
+                hicplot.draw()
+                plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
             plt.scatter(range(len(hmt)),hmtN,c=hmtN,marker="8")
             plt.yticks(range(5),list(le.classes_))
         elif type == "transition":
             sns.heatmap(tMT,cmap="coolwarm")
+        elif type == "emission":
+            sns.heatmap(eMT.T,cmap="coolwarm")
+
 
 class multiSampleDiscrete:
     def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
