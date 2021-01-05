@@ -87,7 +87,7 @@ class multiTypeDiscrete:
         self.makecsv()
         import rpy2.robjects as robjects
         r = robjects.r
-        if not os.path.exists(path):
+        if not os.path.exists("seqHMM"):
             os.mkdir("seqHMM")
 
         r("library(seqHMM)")
