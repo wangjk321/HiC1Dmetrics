@@ -116,7 +116,16 @@ class multiTypeDiscrete:
         r("for(i in seq(1,length(emp))){eMT[,i] <- emp[[i]][,1];label[i] <- colnames(emp[[i]])[1]}")
         r("colnames(eMT) <- label")
         r("row.names(eMT) <- row.names(emp[[1]])")
-        r("write.table(hMT,'seqHMM/emissionMatrix.txt',sep='\t')")
+        r("write.table(eMT,'seqHMM/emissionMatrix.txt',sep='\t')")
+
+        hMT = pd.read_csv("seqHMM/hiddenState.txt",sep="\t")
+        eMT = pd.read_csv("seqHMM/emissionMatrix.txt",sep="\t")
+        tMT = pd.read_csv("seqHMM/transitionMatrix.txt",sep="\t")
+
+        return(hMT,eMT,tMT)
+
+    def plotHMM(self):
+        hMT,eMT,tMT = self.useHMM()
 
 class multiSampleDiscrete:
     def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter):
