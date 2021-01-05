@@ -132,18 +132,22 @@ class multiTypeDiscrete:
 
         return(hMT,eMT,tMT)
 
-    def plotHMM(self,type="hidden",plotHiC=False,s=None,e=None,clmax=100):
+    def plotHMM(self,type="hidden",plotHiC="",s=None,e=None,clmax=100):
         hMT,eMT,tMT = self.useHMM()
         if type == "hidden":
             from sklearn.preprocessing import LabelEncoder
             hmt = hMT.iloc[0,:]
             le = LabelEncoder().fit(hmt)
             hmtN = le.transform(hmt)
-            if plotHiC == True:
+            if plotHiC in ["single","differ"]:
                 plt.figure(figsize=(10,10))
                 plt.subplot2grid((6,11),(0,0),rowspan=5,colspan=10)
-                hicplot = PlotTri(self.path,self.res,startSite=s,endSite=e,clmax=clmax)
-                hicplot.draw()
+                if plotHiC == "single":
+                    hicplot = PlotTri(self.path,self.res,startSite=s,endSite=e,clmax=clmax)
+                    hicplot.draw()
+                elif plotHiC == "differ":
+                    hicplot = DiffDraw(self.path,self.control_path,self.res,startSite=s,endSite=e)
+                    hicplot.draw_tri()
                 plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
             plt.scatter(range(len(hmt)),hmtN,c=hmtN,marker="8")
             plt.yticks(range(5),list(le.classes_))
