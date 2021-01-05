@@ -110,8 +110,8 @@ class DirectionalTAD(DiffDraw):
             MinDRF.append(drf.iloc[regionLeft:regionRight].min())
             MaxDRF.append(drf.iloc[regionLeft:regionRight].max())
 
-        leftTAD = ControlTad[np.array(MaxDRF)<0]
-        rightTAD = ControlTad[np.array(MinDRF)>0]
+        leftTAD = ControlTad[np.nan_to_num(MaxDRF)<0]
+        rightTAD = ControlTad[np.nan_to_num(MinDRF)>0]
         return(leftTAD,rightTAD,drf)
 
     def plotAlldirec(self,type):

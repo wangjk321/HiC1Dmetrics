@@ -8,11 +8,15 @@ class paralfunc(object):
         self.myfun = myfun
         self.num_processer = num_processer
 
-        chrlist= list(range(1,23)); chrlist.append("X")
+        #chrlist= list(range(1,23)); chrlist.append("X")
+        #chrolist = ["chr"+str(a) for a in chrlist]
+        #self.chrolist = chrolist
+
+    def run(self,pathName,pathControl,resolution,maxchr=22):
+        chrlist= list(range(1,maxchr+1)); chrlist.append("X")
         chrolist = ["chr"+str(a) for a in chrlist]
         self.chrolist = chrolist
 
-    def run(self,pathName,pathControl,resolution):
         resultlist=[]
         p = Pool(self.num_processer)
         for r in self.chrolist:
@@ -39,13 +43,13 @@ def call_dTAD(chrom,pathName,pathControl,resolution):
     leftTAD,rightTAD,_ = dTAD.extractRegion()
     return({"leftTAD":leftTAD,"rightTAD":rightTAD})
 
-def alldTAD(pathName,pathControl,resolution,outname="twoSample"):
-    ltad,rtad = paralfunc(call_dTAD,30).run(pathName,pathControl,resolution)
+def alldTAD(pathName,pathControl,resolution,outname="twoSample",maxchr=22):
+    ltad,rtad = paralfunc(call_dTAD,30).run(pathName,pathControl,resolution,maxchr)
     ltad.to_csv(outname+"_leftTAD.csv",sep="\t",index=False)
     rtad.to_csv(outname+"_rightTAD.csv",sep="\t",index=False)
 
 #alldTAD("/Users/wangjiankang/figureServer/Nov2020/Rad21KD1_HiCmatrix",
-#        "/Users/wangjiankang/figureServer/Nov2020/Control1_HiCmatrix",50000)
+#        "/Users/wangjiankang/figureServer/Nov2020/Control1_HiCmatrix",50000,maxchr=23)
 
 #=====================================#
 #simply call all TAD
@@ -55,11 +59,11 @@ class paralfuncOneSample(object):
         self.myfun = myfun
         self.num_processer = num_processer
 
-        chrlist= list(range(1,23)); chrlist.append("X")
+    def run(self,pathName,resolution,maxchr=22):
+        chrlist= list(range(1,maxchr+1)); chrlist.append("X")
         chrolist = ["chr"+str(a) for a in chrlist]
         self.chrolist = chrolist
 
-    def run(self,pathName,resolution):
         resultlist=[]
         p = Pool(self.num_processer)
         for r in self.chrolist:
@@ -79,8 +83,8 @@ def TAD1sample(chrom,pathName,resolution):
     tad = TADcallIS(filename,resolution,chrom,squareSize=150000)
     return(tad)
 
-def runTAD1sample(pathName,resolution,outname="oneSample"):
-    tad = paralfuncOneSample(TAD1sample,30).run(pathName,resolution)
+def runTAD1sample(pathName,resolution,outname="oneSample",maxchr=22):
+    tad = paralfuncOneSample(TAD1sample,30).run(pathName,resolution,maxchr)
     tad.to_csv(outname+"_TAD.csv",sep="\t",index=False)
 
-#runTAD1sample("/Users/wangjiankang/figureServer/Nov2020/Rad21KD1_HiCmatrix",50000)
+#runTAD1sample("/Users/wangjiankang/figureServer/Nov2020/Rad21KD1_HiCmatrix",50000,maxchr=5)
