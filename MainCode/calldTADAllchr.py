@@ -1,5 +1,6 @@
 from multiprocessing import Pool
 from callDirectionalTAD import *
+from MultiTypeScore import *
 #from multiprocessing.pool import ThreadPool as Pool #多线程
 
 # calculate each dTAD of chromosome separately
@@ -59,7 +60,7 @@ class paralfuncOneSample(object):
         self.myfun = myfun
         self.num_processer = num_processer
 
-    def run(self,pathName,resolution,maxchr=22):
+    def run(self,pathName,resolution,maxchr=22,type=None,parameter=None):
         chrlist= list(range(1,maxchr+1)); chrlist.append("X")
         chrolist = ["chr"+str(a) for a in chrlist]
         self.chrolist = chrolist
@@ -67,7 +68,7 @@ class paralfuncOneSample(object):
         resultlist=[]
         p = Pool(self.num_processer)
         for r in self.chrolist:
-            result = p.apply_async(self.myfun, args=(r,pathName,resolution,))
+            result = p.apply_async(self.myfun, args=(r,pathName,resolution,type,parameter))
             resultlist.append(result)
         p.close()
         p.join()
@@ -83,8 +84,17 @@ def TAD1sample(chrom,pathName,resolution):
     tad = TADcallIS(filename,resolution,chrom,squareSize=300000)
     return(tad)
 
-def runTAD1sample(pathName,resolution,outname="oneSample",maxchr=22):
+def runTAD1sample(pathName,resolution,outname="allTAD",maxchr=22):
     tad = paralfuncOneSample(TAD1sample,30).run(pathName,resolution,maxchr)
     tad.to_csv(outname+"_TAD.csv",sep="\t",index=False)
+
+def oneScoreSinglechr(chrom,pathName,resolution,type,parameter):
+    filename = pathName+"/observed.KR."+chrom+".matrix.gz"
+    score = multiScore(filename,resolution,chrom).obtainOneScore(type,parameter)
+    return(score)
+
+def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=22):
+    allscore = paralfuncOneSample(oneScoreSinglechr,30).run(pathName,resolution,maxchr,type,parameter)
+    allscore.to_csv(outname+"_"+type+".csv",sep="\t",index=False)
 
 #runTAD1sample("/Users/wangjiankang/figureServer/Nov2020/Rad21KD1_HiCmatrix",50000,maxchr=5)
