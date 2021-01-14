@@ -3,7 +3,7 @@ from loadfile import *
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
-from calculateMetrics import * 
+from calculateMetrics import *
 
 class PlotCommon(object):
     def __init__(self,path,resolution,startSite=0,endSite=0,clmin=0,clmax=50, \
@@ -70,7 +70,7 @@ class PlotTri(PlotCommon):
 
 class PlotBedGraph(PlotTri):
 
-    def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False):
+    def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False,customfile=""):
         if type == 'IS':
             score = InsulationScore(self.path,self.resolution,self.chr).getIS().InsulationScore
             title = "InsulationScore"
@@ -95,6 +95,9 @@ class PlotBedGraph(PlotTri):
         elif type == "interScore":
             score = interTADscore(self.path,self.resolution,self.chr).getInterS().interTADscore
             title = "inerTADscore"
+        elif type == "custom":
+            score = pd.read_csv(customfile,sep="\t",header=None).iloc[:,3]
+            title = "customScore"
 
         scoreRegion = score[self.sbin:self.ebin+1]
 
