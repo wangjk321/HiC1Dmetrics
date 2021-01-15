@@ -79,7 +79,7 @@ class paralfuncOneSample(object):
             output_all = output_all.append(output_single)
         return(output_all)
 
-def TAD1sample(chrom,pathName,resolution):
+def TAD1sample(chrom,pathName,resolution,type,parameter):
     filename = pathName+"/observed.KR."+chrom+".matrix.gz"
     tad = TADcallIS(filename,resolution,chrom,squareSize=300000)
     return(tad)
