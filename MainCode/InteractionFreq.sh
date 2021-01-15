@@ -3,6 +3,7 @@ hic=$2 #.hic file
 chr=$3 #number (1,2,3....)
 res=$4 #resolution
 gt=$5 #genome_table
+outname=$6
 
 #step1 dump interaction from .hic
 java -Xms512m -Xmx20480m -jar $juicer dump observed KR $hic $chr $chr BP $res dump.temp.txt
@@ -35,10 +36,10 @@ zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|
 zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|cut -f 4 >> Anchor.txt
 
 awk '{print "'$chromosome'""\t"$1-50000"\t"$1}' Anchor.txt > Anchor.bed
-bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > IF.bedgraph
+bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > $outname.bedgraph
 
 rm dump.temp.txt start end fragment.temp.gz fithic.temp.gz
 rm FitHiC.fithic* FitHiC.spline_pass1.*.significances.txt.gz
 rm end2 genome.split Anchor.bed Anchor.txt
 
-#sh InteractionFreq.sh /Users/wangjiankang/Documents/localrun/juicer_tools_1.19.02.jar /Users/wangjiankang/Documents/localrun/MCF7_Ctrl.hic 21 50000 /Users/wangjiankang/Documents/localrun/genome_table
+#sh InteractionFreq.sh /Users/wangjiankang/Documents/localrun/juicer_tools_1.19.02.jar  /Users/wangjiankang/Documents/localrun/MCF7_Ctrl.hic 21 50000 /Users/wangjiankang/Documents/localrun/genome_table
