@@ -35,11 +35,11 @@ touch Anchor.txt
 zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|cut -f 2 > Anchor.txt
 zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|cut -f 4 >> Anchor.txt
 
-awk '{print "'$chromosome'""\t"$1-50000"\t"$1}' Anchor.txt > Anchor.bed
+awk '{print "'$chromosome'""\t"$1"\t"$1+"'$res'"}' Anchor.txt > Anchor.bed
 bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > $outname.bedgraph
 
 rm dump.temp.txt start end fragment.temp.gz fithic.temp.gz
 rm FitHiC.fithic* FitHiC.spline_pass1.*.significances.txt.gz
 rm end2 genome.split Anchor.bed Anchor.txt
 
-#sh InteractionFreq.sh /Users/wangjiankang/Documents/localrun/juicer_tools_1.19.02.jar  /Users/wangjiankang/Documents/localrun/MCF7_Ctrl.hic 21 50000 /Users/wangjiankang/Documents/localrun/genome_table
+#sh InteractionFreq.sh /Users/wangjiankang/Documents/localrun/juicer_tools_1.19.02.jar  /Users/wangjiankang/Documents/localrun/MCF7_Ctrl.hic 21 50000 /Users/wangjiankang/Documents/localrun/genome_table outname
