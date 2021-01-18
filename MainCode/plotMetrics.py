@@ -70,7 +70,7 @@ class PlotTri(PlotCommon):
 
 class PlotBedGraph(PlotTri):
 
-    def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False,customfile=""):
+    def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False,customfile="",scorelim=None,scorecolor=None):
         if type == 'IS':
             score = InsulationScore(self.path,self.resolution,self.chr).getIS().InsulationScore
             title = "InsulationScore"
@@ -87,7 +87,7 @@ class PlotBedGraph(PlotTri):
             score = DistalToLocalRatio(self.path,self.resolution,self.chr).getDLR().DistalToLocalRatio
             title = "DistalToLocalRatio"
         elif type == "PC1":
-            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(smooth = smoothPC, logOE=logPC).CompartmentPC1
+            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).CompartmentPC1
             title = "CompartmentPC1"
         elif type == "intraScore":
             score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().intraTADscore
@@ -107,8 +107,13 @@ class PlotBedGraph(PlotTri):
         super().draw()
         plt.subplot2grid((6,11),(5,0),rowspan=1,colspan=11)
         plt.title(title,fontsize=20)
-        plt.plot(scoreRegion,c="dodgerblue")
+        if scorecolor:
+            plt.plot(scoreRegion,c=scorecolor)
+        else:
+            plt.plot(scoreRegion,c="dodgerblue")
+            
         plt.xlim(self.sbin,self.ebin)
+        if scorelim: plt.ylim(scorelim[0],scorelim[1])
         plt.plot([self.sbin,self.ebin],[score.median(),score.median()],"k--",linewidth=0.4)
 
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
