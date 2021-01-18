@@ -120,7 +120,7 @@ class PlotBedGraph(PlotTri):
         plt.xticks(ticks_pos,self.mark)
 
     def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None):
-        from MultiTypeScore import *
+        from MultiTypeScore import multiScore
         score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode,parameter)
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.title(title,fontsize=20)
