@@ -34,6 +34,7 @@ class PlotCommon(object):
 
         position = self.resolution * np.arange(self.sbin,self.ebin+1,int((self.ebin-self.sbin)/5))
         self.mark = [str(x/1000000)+"M" for x in position]
+        self.ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
 
 cmap= LinearSegmentedColormap.from_list("custom1",['#FFFFFF', '#d10a3f'])
 
@@ -119,7 +120,7 @@ class PlotBedGraph(PlotTri):
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
 
-    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None):
+    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None,tick=True):
         from MultiTypeScore import multiScore
         score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode=mode,parameter=parameter).iloc[:,3]
         scoreRegion = score[self.sbin:self.ebin+1]
@@ -132,8 +133,10 @@ class PlotBedGraph(PlotTri):
         plt.xlim(self.sbin,self.ebin)
         if scorelim: plt.ylim(scorelim[0],scorelim[1])
         #plt.plot([self.sbin,self.ebin],[score.median(),score.median()],"k--",linewidth=0.4)
-        ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
-        plt.xticks(ticks_pos,self.mark)
+        if tick:
+            plt.xticks(self.ticks_pos,self.mark)
+        else:
+            plt.xticks(self.ticks_pos,[])
 
     def makePDF(self,type,PDFname):
         self.draw(type)
