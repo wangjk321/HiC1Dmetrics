@@ -121,7 +121,7 @@ class PlotBedGraph(PlotTri):
 
     def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None):
         from MultiTypeScore import multiScore
-        score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode,parameter)
+        score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode=mode,parameter=parameter).iloc[:,3]
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.title(title,fontsize=20)
         if scorecolor:
