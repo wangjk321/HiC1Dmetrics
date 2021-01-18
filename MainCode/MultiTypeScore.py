@@ -35,6 +35,7 @@ class multiScore:
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
+            score.index = range(score.shape[0])
 
         return(score)
 
