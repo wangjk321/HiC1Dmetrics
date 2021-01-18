@@ -34,6 +34,7 @@ class multiScore:
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "custom":
             score = pd.read_csv(parameter,sep="\t",header=None)
+            
         return(score)
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
