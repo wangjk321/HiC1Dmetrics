@@ -111,11 +111,27 @@ class PlotBedGraph(PlotTri):
             plt.plot(scoreRegion,c=scorecolor)
         else:
             plt.plot(scoreRegion,c="dodgerblue")
-            
+
         plt.xlim(self.sbin,self.ebin)
         if scorelim: plt.ylim(scorelim[0],scorelim[1])
         plt.plot([self.sbin,self.ebin],[score.median(),score.median()],"k--",linewidth=0.4)
 
+        ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
+        plt.xticks(ticks_pos,self.mark)
+
+    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None):
+        from MultiTypeScore import *
+        score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode,parameter)
+        scoreRegion = score[self.sbin:self.ebin+1]
+        plt.title(title,fontsize=20)
+        if scorecolor:
+            plt.plot(scoreRegion,c=scorecolor)
+        else:
+            plt.plot(scoreRegion,c="dodgerblue")
+
+        plt.xlim(self.sbin,self.ebin)
+        if scorelim: plt.ylim(scorelim[0],scorelim[1])
+        #plt.plot([self.sbin,self.ebin],[score.median(),score.median()],"k--",linewidth=0.4)
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
 
