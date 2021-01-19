@@ -151,9 +151,10 @@ class PlotBedGraph(PlotTri):
 
         if fill:
             plt.plot([self.sbin,self.ebin],[0,0],"k--",linewidth=0.6)
-            plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion, 0,\
+            #np.arange(self.sbin,self.ebin+1,1)
+            plt.fill_between(scoreRegion.index,scoreRegion, 0,\
                             where = scoreRegion <=0,facecolor='grey', alpha=0.5)
-            plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion, 0,\
+            plt.fill_between(scoreRegion.index,scoreRegion, 0,\
                             where = scoreRegion >=0,facecolor=scorecolor, alpha=0.4)
 
     def makePDF(self,type,PDFname):
