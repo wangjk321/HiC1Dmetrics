@@ -120,7 +120,7 @@ class PlotBedGraph(PlotTri):
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
 
-    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None,tick=True):
+    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None,tick=True,fill=False):
         from MultiTypeScore import multiScore
         score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode=mode,parameter=parameter).iloc[:,3]
         scoreRegion = score[self.sbin:self.ebin+1]
@@ -137,6 +137,13 @@ class PlotBedGraph(PlotTri):
             plt.xticks(self.ticks_pos,self.mark)
         else:
             plt.xticks(self.ticks_pos,[])
+
+        if fill:
+            plt.plot([self.sbin,self.ebin],[0,0],"k--",linewidth=0.6)
+            plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion, 0,\
+                            where = scoreRegion <=0,facecolor='grey', alpha=0.5)
+            plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion, 0,\
+                            where = scoreRegion >=0,facecolor=scorecolor, alpha=0.4)
 
     def makePDF(self,type,PDFname):
         self.draw(type)
