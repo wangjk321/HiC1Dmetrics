@@ -7,9 +7,12 @@ from calculateMetrics import *
 
 class PlotCommon(object):
     def __init__(self,path,resolution,startSite=0,endSite=0,clmin=0,clmax=50, \
-                title="", chr="",other_parameter=0):
+                title="", chr="",other_parameter=0,ndsmooth=None):
         self.path = path
-        self.matrix = loadDenseMatrix(path).values
+        matrix = loadDenseMatrix(path).values
+        if ndsmooth:
+            self.matrix = ndimage.median_filter(matrix,ndsmooth)
+        else: self.matrix = matrix
         self.resolution = resolution
         self.startSite = startSite
         self.endSite = endSite
@@ -52,10 +55,10 @@ class PlotSquare(PlotCommon):
         plt.colorbar(fraction = 0.02,aspect=10,pad=-0.12,cax=position)
 
 class PlotTri(PlotCommon):
-    def draw(self):
+    def draw(self,interpolation="nearest"):
         tri_matrix = ndimage.rotate(self.matrixRegion,45)
         plt.plot(dpi=300)
-        plt.imshow(tri_matrix,clim= self.clim,cmap=cmap,interpolation="nearest", aspect=1)
+        plt.imshow(tri_matrix,clim= self.clim,cmap=cmap,interpolation=interpolation, aspect=1)
         plt.title(self.title,fontsize=20)
         tri_shape = tri_matrix.shape[0]
         plt.ylim(tri_shape/2,0-tri_shape/10)
