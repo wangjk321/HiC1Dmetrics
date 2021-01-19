@@ -134,8 +134,7 @@ class PlotBedGraph(PlotTri):
             y_smooth = make_interp_spline(x, y)(x_smooth)
             scoreRegion = pd.Series(y_smooth)
             scoreRegion.index = x_smooth
-        elif:
-            scoreRegion = score[self.sbin:self.ebin+1]
+        else: scoreRegion = score[self.sbin:self.ebin+1]
         plt.title(title,fontsize=20)
         if scorecolor:
             plt.plot(scoreRegion,c=scorecolor)
