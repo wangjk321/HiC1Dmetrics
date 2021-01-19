@@ -130,7 +130,7 @@ class PlotBedGraph(PlotTri):
         if linesmooth:
             y = list(score[self.sbin:self.ebin+1])
             x = list(score[self.sbin:self.ebin+1].index)
-            x_smooth = np.linspace(min(x),max(x),float(len(y))//linesmooth)
+            x_smooth = np.linspace(min(x),max(x),int(len(y)//linesmooth))
             y_smooth = make_interp_spline(x, y)(x_smooth)
             scoreRegion = pd.Series(y_smooth)
             scoreRegion.index = x_smooth
