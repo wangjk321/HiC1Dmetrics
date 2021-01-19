@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
 from calculateMetrics import *
+from scipy.interpolate import make_interp_spline
 
 class PlotCommon(object):
     def __init__(self,path,resolution,startSite=0,endSite=0,clmin=0,clmax=50, \
@@ -123,10 +124,18 @@ class PlotBedGraph(PlotTri):
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
 
-    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None,tick=True,fill=False):
+    def onlyMetric(self,mode,parameter,title,scorelim=None,scorecolor=None,tick=True,fill=False,linesmooth=None):
         from MultiTypeScore import multiScore
         score = multiScore(self.path,self.resolution,self.chr).obtainOneScore(mode=mode,parameter=parameter).iloc[:,3]
-        scoreRegion = score[self.sbin:self.ebin+1]
+        if linesmooth:
+            y = list(score[self.sbin:self.ebin+1])
+            x = list(score[self.sbin:self.ebin+1].index)
+            x_smooth = np.linspace(min(x),max(x),len(y)//linesmooth)
+            y_smooth = make_interp_spline(x, y)(x_smooth)
+            scoreRegion = pd.Series(y_smooth)
+            scoreRegion.index = x_smooth
+        elif:
+            scoreRegion = score[self.sbin:self.ebin+1]
         plt.title(title,fontsize=20)
         if scorecolor:
             plt.plot(scoreRegion,c=scorecolor)
