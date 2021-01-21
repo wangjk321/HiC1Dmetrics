@@ -98,7 +98,7 @@ class PlotBedGraph(PlotTri):
             score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().intraTADscore
             title = "intraTADscore"
         elif type == "interScore":
-            score = interTADscore(self.path,self.resolution,self.chr).getInterS().interTADscore
+            score = interTADscore(self.path,self.resolution,self.chr).getInterS(useOE=UniqueParameter).interTADscore
             title = "inerTADscore"
         elif type == "custom":
             score = pd.read_csv(customfile,sep="\t",header=None).iloc[:,3]
