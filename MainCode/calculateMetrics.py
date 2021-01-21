@@ -401,7 +401,7 @@ class intraTADscore(CompartmentPC1):
         #array = np.log1p(array/np.nanmean(array))
         if useOE == False:
             array = (array/self.allsum)*1e4
-        return super().makeDF(array,"intraTADscore")
+        return super().makeDF(array,"IntraTADscore")
 
 class interTADscore(CompartmentPC1):
     def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
@@ -441,4 +441,4 @@ class interTADscore(CompartmentPC1):
         #array = np.log1p(array/np.nanmean(array))
         if useOE == False:
             array = (array/self.allsum)*1e4
-        return super().makeDF(array,"interTADscore")
+        return super().makeDF(array,"InterTADscore")

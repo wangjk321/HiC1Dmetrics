@@ -15,7 +15,7 @@ class multiScore:
         self.chr = chr
         self.control_path = control_path
 
-    def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False):
+    def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False,custom_name="InteractionFrequency"):
         if mode == "IS":
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
@@ -36,11 +36,12 @@ class multiScore:
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
             score.index = range(score.shape[0])
-
+            score.columns = ["chr","start","end",custom_name]
         return(score)
 
-    def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
-                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],smoothPC=True,logPC=False):
+    def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified","customPath"],
+                    smoothPC=True,logPC=False):
         for i,type in enumerate(typelist):
             if i == 0:
                 multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
@@ -50,8 +51,9 @@ class multiScore:
 
         return(multiType)
 
-    def plotOneScore(self,start,end,res,clmax=100,plotTAD=False,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1"],
-                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified"],
+    def plotOneScore(self,start,end,res,clmax=100,plotTAD=False,
+                    typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified","customPath"],
                     smoothPC=True,logPC=False):
         import matplotlib.colors as mcolors
         from callDirectionalTAD import PlotTAD
