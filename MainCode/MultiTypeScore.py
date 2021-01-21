@@ -36,7 +36,9 @@ class multiScore:
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
-            #if logCustom: score[3] = np.log1p(score[3])
+            if logCustom:
+                beforlog = score[3].copy()
+                score[3] = np.log1p(beforlog)
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
         return(score)
