@@ -248,7 +248,7 @@ class DistalToLocalRatio(BasePara):
     def getCSV(self):
         super.makeCSV(self.getDLR())
 
-
+'''
 class interTADscore(BasePara):
     def getInterS(self,IS_size=300000,useNA=True,TADpath=None):
         if TADpath:
@@ -276,6 +276,7 @@ class interTADscore(BasePara):
         #array = np.log1p(array/np.nanmean(array))
         array = (array/self.allsum)*1e4
         return super().makeDF(array,"interTADscore")
+'''
 
 class CompartmentPC1(BasePara):
     #def __init__(self,path,resolution,chromosome,out_name="noName"):
@@ -401,3 +402,42 @@ class intraTADscore(CompartmentPC1):
         if useOE == False:
             array = (array/self.allsum)*1e4
         return super().makeDF(array,"intraTADscore")
+
+class interTADscore(CompartmentPC1):
+    def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
+        if TADpath:
+            usedPath = TADpath
+        else:usedPath = self.path
+
+        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+        leftBorder =  np.array(tad.TADstart) // self.resolution
+        rightBorder = np.array(tad.TADend) // self.resolution
+        array = self.blankarray
+
+        if useOE == True:
+            rawMT = np.nan_to_num(self.matrix)
+            expectMT = self.makeExpect(rawMT,smooth)
+            warnings.filterwarnings("ignore")
+            mt = np.nan_to_num(rawMT / expectMT)
+            warnings.filterwarnings("default")
+        else:
+            mt = self.matrix
+
+        for i in range(self.matrix_shape):
+            belongTAD = (i >= leftBorder) * (i < rightBorder)
+            if sum(belongTAD) == 0: continue
+            #elif np.median(np.nan_to_num(self.matrix[i,:])) == 0:
+            #    continue
+            startBin = int(leftBorder[belongTAD])
+            endBin = int(rightBorder[belongTAD])
+            A = np.nansum(mt[i,0:startBin-1])
+            B = np.nansum(mt[i,endBin+1:])
+            if np.isnan(A+B) or max(A,B) == 0: continue
+            if normTAD == True:
+                array[i] = (A+B)/(self.matrix_shape-(endBin-startBin))
+            else: array[i] = A+B
+
+        #array = np.log1p(array/np.nanmean(array))
+        if useOE == False:
+            array = (array/self.allsum)*1e4
+        return super().makeDF(array,"interTADscore")
