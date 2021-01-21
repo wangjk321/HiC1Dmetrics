@@ -15,7 +15,8 @@ class multiScore:
         self.chr = chr
         self.control_path = control_path
 
-    def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False,custom_name="InteractionFrequency"):
+    def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False,
+                        custom_name="InteractionFrequency",logCustom=True):
         if mode == "IS":
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
@@ -35,6 +36,7 @@ class multiScore:
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
+            if logCustom: score[3] = np.log1p(score[3])
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
         return(score)
