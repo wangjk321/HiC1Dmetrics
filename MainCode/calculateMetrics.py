@@ -434,7 +434,8 @@ class interTADscore(CompartmentPC1):
             B = np.nansum(mt[i,endBin+1:])
             if np.isnan(A+B) or max(A,B) == 0: continue
             if normTAD == True:
-                array[i] = (A+B)/(self.matrix_shape-(endBin-startBin))
+                array[i] = (A+B)
+                #/(self.matrix_shape-(endBin-startBin))
             else: array[i] = A+B
 
         #array = np.log1p(array/np.nanmean(array))
