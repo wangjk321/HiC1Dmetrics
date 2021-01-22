@@ -404,7 +404,7 @@ class intraTADscore(CompartmentPC1):
         return super().makeDF(array,"IntraTADscore")
 
 class interTADscore(CompartmentPC1):
-    def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
+    def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=True,normTAD=True):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path

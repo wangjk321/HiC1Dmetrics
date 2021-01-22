@@ -43,6 +43,7 @@ class multiScore:
             score.columns = ["chr","start","end",custom_name]
         elif mode == "stripe":
             score = stripeTAD(self.path,self.res,self.chr).callStripe(seg=parameter)
+        else: print("Error: Please use the right mode")
         return(score)
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
