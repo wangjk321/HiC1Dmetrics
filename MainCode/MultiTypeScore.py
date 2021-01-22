@@ -102,7 +102,7 @@ class multiScore:
         elif mode == "intraSC":
             score = intraScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getIntraSC()
         elif mode == "interSC":
-            score = interScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getInterSC()
+            score = interScoreChange(self.path,self.control_path,self.res,self.chr,smoothScore=parameter).getInterSC()
         elif mode == "DRF":
             score = DirectionalRelativeFreq(self.path,self.control_path,self.res,self.chr,
                                             start_distance=parameter[0], end_distance=parameter[1]).getDRF()
