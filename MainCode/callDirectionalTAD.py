@@ -94,7 +94,7 @@ class PlotTAD(PlotTri):
         self.drawTAD(squareSize)
         plt.savefig(PDFname+".pdf")
 
-class stripeTAD(PlotTri):
+class stripeTAD(BasePara):
     def callStripe(self,squareSize=300000,useNA=True,seg=8):
         Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
         interScore = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
