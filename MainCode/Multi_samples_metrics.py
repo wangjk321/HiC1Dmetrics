@@ -64,7 +64,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smo
         for i,path in enumerate(sampleList):
             if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter)
             else:
-                next = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter).iloc[:,3:4]
+                next = interTADscore(path,res,chr).getInterS(smoothScore = UniqueParameter).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     if mode != "raw":
