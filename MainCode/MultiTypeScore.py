@@ -6,7 +6,7 @@ import seaborn as sns
 from plotTwoSample import *
 from plotMetrics import *
 from scipy import stats
-
+from callDirectionalTAD import *
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -41,6 +41,8 @@ class multiScore:
                 score[3] = np.log1p(beforlog)
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
+        elif mode == "stripe":
+            score = stripeTAD(self.path,self.res,self.chr).callStripe(seg=parameter)
         return(score)
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],

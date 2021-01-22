@@ -95,9 +95,32 @@ class PlotTAD(PlotTri):
         plt.savefig(PDFname+".pdf")
 
 class stripeTAD(PlotTri):
-    def callStripe(self,squareSize=300000,useNA=True):
+    def callStripe(self,squareSize=300000,useNA=True,seg=8):
         Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
         interScore = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
+
+        status = []
+        for i in range(Tad.shape[0]):
+            regionLeft = int((Tad.iloc[i,1])/50000)
+            regionRight = int((Tad.iloc[i,2])/50000)
+            scorei = interScore.iloc[regionLeft:regionRight]
+            oneseg = len(scorei) // seg +1
+            l = scorei.iloc[0:oneseg]
+            r = scorei.iloc[-oneseg:]
+            m = scorei.iloc[oneseg:-oneseg]
+            ls = l.min() > m.mean() and l.mean() > interScore.median()
+            rs = r.min() > m.mean() and r.mean() > interScore.median()
+
+            if ls and not rs:
+                status.append("leftStripe")
+            elif rs and not ls:
+                status.append("rightStripe")
+            elif ls and rs:
+                status.append("loopTAD")
+            else:
+                status.append("otherTAD")
+        Tad["TADtype"] = status
+        return(Tad)
 
 class DirectionalTAD(DiffDraw):
     def extractRegion(self):
