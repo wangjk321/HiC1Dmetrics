@@ -96,7 +96,7 @@ class PlotTAD(PlotTri):
 
 class stripeTAD(BasePara):
     def callStripe(self,squareSize=300000,useNA=True,seg=8):
-        Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
+        Tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize,useNA=useNA)
         interScore = intraTADscore(self.path,self.resolution,self.chromosome).getIntraS().iloc[:,3]
 
         status = []
