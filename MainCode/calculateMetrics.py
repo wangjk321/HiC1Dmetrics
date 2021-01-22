@@ -404,7 +404,8 @@ class intraTADscore(CompartmentPC1):
         return super().makeDF(array,"IntraTADscore")
 
 class interTADscore(CompartmentPC1):
-    def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,logOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
+    def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,
+                logOE=False,smooth=False,normTAD=True,smoothScore=None):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
@@ -440,6 +441,9 @@ class interTADscore(CompartmentPC1):
             if normTAD == True:
                 array[i] = (A+B)/(self.matrix_shape-(endBin-startBin))
             else: array[i] = A+B
+        if smoothScore:
+            from scipy.ndimage import gaussian_filter1d
+            array = gaussian_filter1d(array,smoothScore)
 
         #array = np.log1p(array/np.nanmean(array))
         if useOE == False:
