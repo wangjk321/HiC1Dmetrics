@@ -16,7 +16,7 @@ class multiScore:
         self.control_path = control_path
 
     def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",logCustom=True):
+                        custom_name="InteractionFrequency",logCustom=False):
         if mode == "IS":
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
