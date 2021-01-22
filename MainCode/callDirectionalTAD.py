@@ -66,7 +66,6 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
 '''
 
 class PlotTAD(PlotTri):
-
     def drawTAD(self,squareSize=300000,useNA=True):
         Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
         selectTADbool = np.logical_and(Tad["TADstart"] >= self.startSite,Tad["TADend"] <= self.endSite)
@@ -95,6 +94,10 @@ class PlotTAD(PlotTri):
         self.drawTAD(squareSize)
         plt.savefig(PDFname+".pdf")
 
+class stripeTAD(PlotTri):
+    def callStripe(self,squareSize=300000,useNA=True):
+        Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)
+        interScore = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
 
 class DirectionalTAD(DiffDraw):
     def extractRegion(self):

@@ -95,7 +95,7 @@ class PlotBedGraph(PlotTri):
             score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).CompartmentPC1
             title = "CompartmentPC1"
         elif type == "intraScore":
-            score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().intraTADscore
+            score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
             title = "intraTADscore"
         elif type == "interScore":
             score = interTADscore(self.path,self.resolution,self.chr).getInterS(useOE=UniqueParameter).interTADscore
