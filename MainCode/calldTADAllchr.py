@@ -97,4 +97,13 @@ def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=
     allscore = paralfuncOneSample(oneScoreSinglechr,30).run(pathName,resolution,maxchr,type,parameter)
     allscore.to_csv(outname+"_"+type+".csv",sep="\t",index=False)
 
+def multiScoreSinglechr(chrom,pathName,resolution,typelist,parameterlist):
+    filename = pathName+"/observed.KR."+chrom+".matrix.gz"
+    multiType = multiScore(filename,resolution,chrom).allOneScore(typelist,parameterlist)
+    return(multiType)
+
+def multiScoreAllchr(pathName,resolution,typelist,parameterlist,outname="multiScore",maxchr=22):
+    allmultiscore = paralfuncOneSample(multiScoreSinglechr,30).run(pathName,resolution,maxchr,typelist,parameterlist)
+    return(allmultiscore)
+
 #runTAD1sample("/Users/wangjiankang/figureServer/Nov2020/Rad21KD1_HiCmatrix",50000,maxchr=5)
