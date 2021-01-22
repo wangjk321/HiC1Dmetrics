@@ -95,7 +95,8 @@ def oneScoreSinglechr(chrom,pathName,resolution,type,parameter):
 
 def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=22):
     allscore = paralfuncOneSample(oneScoreSinglechr,30).run(pathName,resolution,maxchr,type,parameter)
-    allscore.to_csv(outname+"_"+type+".csv",sep="\t",index=False)
+    return(allscore)
+    #allscore.to_csv(outname+"_"+type+".csv",sep="\t",index=False)
 
 def multiScoreSinglechr(chrom,pathName,resolution,typelist,parameterlist):
     filename = pathName+"/observed.KR."+chrom+".matrix.gz"
