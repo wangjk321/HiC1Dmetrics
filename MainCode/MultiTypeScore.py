@@ -148,6 +148,7 @@ class multiScore:
         cols = list(mcolors.TABLEAU_COLORS.keys())
         cols.remove("tab:gray")
         cols.remove("tab:pink")
+        cols.append("black")
         scoreMT = self.allTwoScore(typelist,parameterlist,smoothPC,logPC)
         nScore = len(typelist)
 
