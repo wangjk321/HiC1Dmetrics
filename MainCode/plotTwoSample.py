@@ -117,7 +117,7 @@ class DiffDraw(object):
             title = "ContrastIndexChange"
         elif type == "DRF":
             score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
-                    start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
+                    start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFrequency
             title = "DirectionalRelativeFreq"
         elif type == "intraSC":
             score = intraScoreChange(self.path,self.control_path,self.resolution,self.chr).getIntraSC().IntraSC
