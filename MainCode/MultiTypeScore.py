@@ -16,7 +16,7 @@ class multiScore:
         self.control_path = control_path
 
     def obtainOneScore(self,mode,parameter,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",logCustom=False):
+                        custom_name="InteractionFrequency",normIF=False):
         if mode == "IS":
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
@@ -36,9 +36,10 @@ class multiScore:
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
-            if logCustom:
+            if normIF:
                 beforlog = score[3].copy()
-                score[3] = np.log1p(beforlog)
+                afterlog = np.log1p(beforlog)
+                score[3] = afterlog / np.mean(afterlog[afterlog>0])
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
         elif mode == "stripe":
@@ -115,8 +116,11 @@ class multiScore:
             scoreControl= pd.read_csv(parameter[1],sep="\t",header=None)
             treat = scoreTreat[scoreTreat[0]==self.chr]
             control = scoreControl[scoreControl[0]==self.chr]
-            t = (treat.iloc[:,3]) / treat.iloc[:,3].median()
-            c = (control.iloc[:,3]) / control.iloc[:,3].median()
+            treatlog = np.log1p(treat.iloc[:,3])
+            controllog = np.log1p(control.iloc[:,3])
+            t = treatlog / np.mean(treatlog[treatlog>0])
+            c = controllog / np.mean(controllog[controllog>0])
+            
             score = pd.DataFrame({"chr":treat[0],"start":treat[1],"end":treat[2],"IFchange":t-c})
             score.index = range(score.shape[0])
         else: print("Error: Please specify the correct mode")
