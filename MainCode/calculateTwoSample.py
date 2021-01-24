@@ -40,7 +40,7 @@ class DirectionalRelativeFreq(BasePara):
             array[i] = right - left
 
 
-        return super().makeDF(array,"DirectionalRelativeFreq")
+        return super().makeDF(array,"DirectionalRelativeFrequency")
 
     def getCSV(self):
         super().makeCSV(self.getDRF())
