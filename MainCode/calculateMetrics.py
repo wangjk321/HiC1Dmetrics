@@ -405,7 +405,7 @@ class intraTADscore(CompartmentPC1):
 
 class interTADscore(CompartmentPC1):
     def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,
-                logOE=False,smooth=False,normTAD=True,smoothScore=1):   #this useNA is for TAD calling
+                logOE=False,smooth=False,normTAD=True,smoothScore=0.8):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path

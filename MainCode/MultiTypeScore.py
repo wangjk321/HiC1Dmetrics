@@ -88,7 +88,7 @@ class multiScore:
             else:
                 plt.xticks(ticks_pos,hp.mark)
 
-    def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False):
+    def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False,normIF=True):
         if mode == "ISC":
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",parameter)
         elif mode == "CIC":
@@ -110,6 +110,16 @@ class multiScore:
             score = CorrelationDifference(self.path,self.control_path,self.res,self.chr,method=parameter).getCorrD()
         elif mode == "PC1C":
             score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter,smoothPC = smoothPC, logPC=logPC).getPC1change()
+        elif mode == "IFC":
+            scoreTreat = pd.read_csv(parameter[0],sep="\t",header=None)
+            scoreControl= pd.read_csv(parameter[1],sep="\t",header=None)
+            treat = scoreTreat[scoreTreat[0]==self.chr]
+            control = scoreControl[scoreControl[0]==self.chr]
+            t = (treat.iloc[:,3]) / treat.iloc[:,3].median()
+            c = (control.iloc[:,3]) / control.iloc[:,3].median()
+            score = pd.DataFrame({"chr":treat[0],"start":treat[1],"end":treat[2],"IFchange":t-c})
+            score.index = range(score.shape[0])
+        else: print("Error: Please specify the correct mode")
 
         return(score)
 
