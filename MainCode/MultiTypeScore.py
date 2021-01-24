@@ -168,14 +168,14 @@ class multiScore:
 
             if scoreRegion.name != "CorrelationDifference":
                 if scoreRegion.name == "DirectionalRelativeFrequency":
-                    posColor = '#e9a3c9'; negColor = '#a1d76a'
-                else: posColor = cols[i]; negColor = 'grey'
+                    posColor = '#e9a3c9'; negColor = '#a1d76a'; opacity=1
+                else: posColor = cols[i]; negColor = 'grey'; opacity=0.5
 
                 plt.plot([hp.sbin,hp.ebin],[0,0],"k--",linewidth=0.6)
                 plt.fill_between(np.arange(hp.sbin,hp.ebin+1,1),scoreRegion, 0,\
-                                where = scoreRegion <=0,facecolor=negColor, alpha=0.5)
+                                where = scoreRegion <=0,facecolor=negColor, alpha=opacity)
                 plt.fill_between(np.arange(hp.sbin,hp.ebin+1,1),scoreRegion, 0,\
-                                where = scoreRegion >=0,facecolor=posColor, alpha=0.5)
+                                where = scoreRegion >=0,facecolor=posColor, alpha=opacity)
 
             ticks_pos = np.arange(hp.sbin,hp.ebin+1,(hp.ebin-hp.sbin)/5)
             if i < nScore-1:
