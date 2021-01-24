@@ -120,8 +120,8 @@ class multiScore:
             controllog = np.log1p(control.iloc[:,3])
             t = treatlog / np.mean(treatlog[treatlog>0])
             c = controllog / np.mean(controllog[controllog>0])
-            
-            score = pd.DataFrame({"chr":treat[0],"start":treat[1],"end":treat[2],"IFchange":t-c})
+            score = pd.DataFrame({"chr":treat[0],"start":treat[1],
+                                "end":treat[2],"InteractionFrequency Change":t-c})
             score.index = range(score.shape[0])
         else: print("Error: Please specify the correct mode")
 
@@ -146,6 +146,7 @@ class multiScore:
         from callDirectionalTAD import PlotTAD
 
         cols = list(mcolors.TABLEAU_COLORS.keys())
+        cols.remove("tab:gray")
         scoreMT = self.allTwoScore(typelist,parameterlist,smoothPC,logPC)
         nScore = len(typelist)
 

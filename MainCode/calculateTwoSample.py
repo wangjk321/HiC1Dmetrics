@@ -54,11 +54,11 @@ class TADScoreChange(BasePara):
         if mode == "IS":
             treat = InsulationScore(self.path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
             control = InsulationScore(self.control_path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
-            title = "InsulationScoreChange"
+            title = "InsulationScore Change"
         elif mode == "CI":
             treat = ContrastIndex(self.path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
             control = ContrastIndex(self.control_path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
-            title = "ContrastIndexChange"
+            title = "ContrastIndex Change"
         elif mode == "DI":
             treat = DirectionalityIndex(self.path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
             control = DirectionalityIndex(self.control_path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
@@ -66,7 +66,7 @@ class TADScoreChange(BasePara):
         elif mode == "TADss":
             treat = SeparationScore(self.path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
             control = SeparationScore(self.control_path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
-            title = "SeparationScoreChange"
+            title = "SeparationScore Change"
 
         change = np.array(treat - control)
         return super().makeDF(change,title)
@@ -86,7 +86,7 @@ class deltaDLR(BasePara):
 
     def getDeltaDLR(self):
         dDLR = np.array(self.DLRtreat.DistalToLocalRatio - self.DLRcontrol.DistalToLocalRatio)
-        return super().makeDF(dDLR,"deltaDLR")
+        return super().makeDF(dDLR,"delta-DistalToLocalRatio")
 
     def getCSV(self):
         super().makeCSV(self.getDeltaDLR())
@@ -140,7 +140,7 @@ class CorrelationDifference(BasePara):
                 continue
             else:
                 array[i] = treat.corr(control,method=self.method)
-        return super().makeDF(array,"CorrD")
+        return super().makeDF(array,"CorrelationDifference")
 
     def getCSV(self):
         super().makeCSV(self.getCorrD())
@@ -162,7 +162,7 @@ class intraScoreChange(BasePara):
                 continue
 
             array[i] = np.log2(t/c)
-        return super().makeDF(array,"IntraSC")
+        return super().makeDF(array,"IntraTADscore Change")
 
     def getCSV(self):
         super().makeCSV(self.getIntraSC())
@@ -184,7 +184,7 @@ class interScoreChange(BasePara):
                 continue
 
             array[i] = np.log2(t/c)
-        return super().makeDF(array,"InterSC")
+        return super().makeDF(array,"InterTADscore Change")
 
     def getCSV(self):
         super().makeCSV(self.getInterSC())
