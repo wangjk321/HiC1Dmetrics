@@ -198,3 +198,4 @@ class multiSampleDiscrete:
         df = self.getMultiDiscrete(label=False).iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
+        plt.xticks(hp.ticks_pos,hp.mark)

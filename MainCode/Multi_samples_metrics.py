@@ -115,6 +115,7 @@ class repQC:
         df = self.score.iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
         plt.yticks(range(len(self.namelist)),self.namelist)
+        plt.xticks(hp.ticks_pos,hp.mark)
 
     def anova_like(self,start,end):
         sbin = start//self.res
