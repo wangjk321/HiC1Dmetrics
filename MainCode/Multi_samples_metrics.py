@@ -108,7 +108,7 @@ class repQC:
         from callDirectionalTAD import PlotTAD
         plt.figure(figsize=(10,9+self.nScore*1))
         plt.subplot2grid((5+self.nScore,11),(0,0),rowspan=5,colspan=10)
-        hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
+        hp = PlotTAD(hic_path,self.res,self.chr,start,end,clmax=clmax)
         hp.draw()
 
         plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
