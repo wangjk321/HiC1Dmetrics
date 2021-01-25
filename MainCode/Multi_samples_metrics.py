@@ -114,6 +114,7 @@ class repQC:
         plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
         df = self.score.iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
+        plt.yticks(range(len(self.namelist)),self.namelist)
 
     def anova_like(self,start,end):
         sbin = start//self.res
