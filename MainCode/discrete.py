@@ -6,11 +6,12 @@ def getDiscrete(path,res,chr,mode,parameter,control_path="",label=True):
     if mode == "PC1":  #Acompartment~1,Bcompartment~-1
         ob = multiScore(path,res,chr)
         score = ob.obtainOneScore(mode,parameter)
-        state = np.array(["NA"]*score.shape[0],dtype=object)
         if label:
+            state = np.array(["NA"]*score.shape[0],dtype=object)
             state[score.iloc[:,3] > 0] = "CompartA"
             state[score.iloc[:,3] < 0] = "CompartB"
         else:
+            state = np.array([np.NaN]*score.shape[0])
             state[score.iloc[:,3] > 0] = 1
             state[score.iloc[:,3] < 0] = 0
         score.iloc[:,3] =state
