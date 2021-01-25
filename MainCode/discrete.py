@@ -2,13 +2,17 @@ from MultiTypeScore import *
 from calculateMetrics import *
 import os
 
-def getDiscrete(path,res,chr,mode,parameter,control_path=""):
+def getDiscrete(path,res,chr,mode,parameter,control_path="",label=True):
     if mode == "PC1":  #Acompartment~1,Bcompartment~-1
         ob = multiScore(path,res,chr)
         score = ob.obtainOneScore(mode,parameter)
         state = np.array(["NA"]*score.shape[0],dtype=object)
-        state[score.iloc[:,3] > 0] = "CompartA"
-        state[score.iloc[:,3] < 0] = "CompartB"
+        if label:
+            state[score.iloc[:,3] > 0] = "CompartA"
+            state[score.iloc[:,3] < 0] = "CompartB"
+        else:
+            state[score.iloc[:,3] > 0] = 1
+            state[score.iloc[:,3] < 0] = 0
         score.iloc[:,3] =state
 
     elif mode in ["deltaDLR"]:
@@ -167,11 +171,11 @@ class multiSampleDiscrete:
         self.UniqueParameter = UniqueParameter
         self.nScore = len(namelist)
 
-    def getMultiDiscrete(self):
+    def getMultiDiscrete(self,label=True):
         for i,path in enumerate(self.pathlist):
-            if i==0: metricMT = getDiscrete(path,self.res,self.chr,self.mode,self.UniqueParameter)
+            if i==0: metricMT = getDiscrete(path,self.res,self.chr,self.mode,self.UniqueParameter,label=label)
             else:
-                next = getDiscrete(path,self.res,self.chr,self.mode,self.UniqueParameter).iloc[:,3:4]
+                next = getDiscrete(path,self.res,self.chr,self.mode,self.UniqueParameter,label=label).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
         metricMT.index = metricMT.start.tolist()
@@ -184,13 +188,13 @@ class multiSampleDiscrete:
         ebin = end//self.res
 
         from callDirectionalTAD import PlotTAD
-        plt.figure(figsize=(10,9+self.nScore))
+        plt.figure(figsize=(10,9+self.nScore//2))
         plt.subplot2grid((5+int(self.nScore/1.5),11),(0,0),rowspan=5,colspan=10)
         hp = PlotTAD(hic_path,self.res,self.chr,start,end,clmax=clmax)
         hp.draw()
 
         plt.subplot2grid((5+int(self.nScore/2),11),(5,0),rowspan=(self.nScore//5)+1,colspan=11)
-        df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
+        df = self.getMultiDiscrete(label=False).iloc[sbin:ebin,:].T
         return(df)
         plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
