@@ -72,7 +72,7 @@ class multiScore:
 
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
-        hp = PlotTAD(self.path,res,start,end,clmax=clmax)
+        hp = PlotTAD(self.path,res,self.chr,start,end,clmax=clmax)
         if plotTAD == True:
             hp.drawTAD()
         elif plotTAD == False:
