@@ -189,7 +189,7 @@ class multiSampleDiscrete:
         hp = PlotTAD(hic_path,self.res,start,end,clmax=clmax)
         hp.draw()
 
-        plt.subplot2grid((5+int(self.nScore/1.5),11),(5,0),rowspan=(self.nScore//5)+1,colspan=11)
+        plt.subplot2grid((5+int(self.nScore/2),11),(5,0),rowspan=(self.nScore//5)+1,colspan=11)
         df = self.getMultiDiscrete().iloc[sbin:ebin,:].T
         plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
