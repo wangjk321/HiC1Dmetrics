@@ -189,7 +189,7 @@ class multiSampleDiscrete:
         ebin = end//self.res
 
         from callDirectionalTAD import PlotTAD
-        plt.figure(figsize=(10,9+self.nScore//2))
+        plt.figure(figsize=(10,9+self.nScore))
         plt.subplot2grid((5+int(self.nScore/1.5),11),(0,0),rowspan=5,colspan=10)
         hp = PlotTAD(hic_path,self.res,self.chr,start,end,clmax=clmax)
         hp.draw()
