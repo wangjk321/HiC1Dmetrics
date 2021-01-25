@@ -196,6 +196,5 @@ class multiSampleDiscrete:
 
         plt.subplot2grid((5+int(self.nScore/2),11),(5,0),rowspan=(self.nScore//5)+1,colspan=11)
         df = self.getMultiDiscrete(label=False).iloc[sbin:ebin,:].T
-        return(df)
         plt.imshow(df,aspect="auto",interpolation=interpolation,vmin=heatmin)
         plt.yticks(range(self.nScore),self.namelist)
