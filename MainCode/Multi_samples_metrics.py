@@ -3,6 +3,17 @@ import seaborn as sns
 from loadfile import *
 import matplotlib.pyplot as plt
 
+def readIF(parameter,chr,custom_name="InteractionFrequency"):
+    all = pd.read_csv(parameter,sep="\t",header=None)
+    score = all[all[0] == chr]
+    if normIF:
+        beforlog = score[3].copy()
+        afterlog = np.log1p(beforlog)
+        score[3] = afterlog / np.mean(afterlog[afterlog>0])
+    score.index = range(score.shape[0])
+    score.columns = ["chr","start","end",custom_name]
+    return(score)
+
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smoothPC=True,logPC=False):
     if mode == 'IS':
         for i,path in enumerate(sampleList):
@@ -65,6 +76,13 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smo
             if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter)
             else:
                 next = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter).iloc[:,3:4]
+                metricMT = pd.concat([metricMT,next],axis=1)
+
+    elif mode == "IF":
+        for i,path in enumerate(sampleList):
+            if i==0: metricMT = readIF(path,chr)
+            else:
+                next = ireadIF(path,chr).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     if mode != "raw":
