@@ -3,7 +3,7 @@ import seaborn as sns
 from loadfile import *
 import matplotlib.pyplot as plt
 
-def readIF(parameter,chr,custom_name="InteractionFrequency"):
+def readIF(parameter,chr,normIF=True,custom_name="InteractionFrequency"):
     all = pd.read_csv(parameter,sep="\t",header=None)
     score = all[all[0] == chr]
     if normIF:
