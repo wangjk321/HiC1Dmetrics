@@ -82,7 +82,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter,smo
         for i,path in enumerate(sampleList):
             if i==0: metricMT = readIF(path,chr)
             else:
-                next = ireadIF(path,chr).iloc[:,3:4]
+                next = readIF(path,chr).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     if mode != "raw":
