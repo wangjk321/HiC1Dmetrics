@@ -49,7 +49,7 @@ class multiScore:
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified","customPath"],
-                    smoothPC=True,logPC=False):
+                    smoothPC=True,logPC=False,normIF=False):
         for i,type in enumerate(typelist):
             if i == 0:
                 multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
