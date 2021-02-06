@@ -126,7 +126,7 @@ class DirectionalTAD(DiffDraw):
     def extractRegion(self):
         ControlTad = TADcallIS(self.control_path,self.resolution,self.chr,squareSize= self.sizeIS)
         drf = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
-                start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().DirectionalRelativeFreq
+                start_distance=self.startDRF,end_distance=self.sizeDRF).getDRF().iloc[:,3]
 
         MinDRF=[]
         MaxDRF=[]
