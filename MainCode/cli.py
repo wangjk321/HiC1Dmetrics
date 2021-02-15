@@ -1,7 +1,6 @@
 import argparse
-from MultiTypeScore import *
 
-def main():
+def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is a easy to use tools to \
                                                 calculate, visualize, and analyze 1D metrics for Hi-C")
     #parser.set_defaults(func=lambda args: parser.print_help())
@@ -13,7 +12,7 @@ def main():
     #Function 2
     #=============================================================================
     def func_one(args):
-        score = multiScore(args.matrix,args.resolution,args.chromosome).obtainOneScore(args.type,parameter=args.parameter)
+        score = MultiTypeScore.multiScore(args.matrix,args.resolution,args.chromosome).obtainOneScore(args.type,parameter=args.parameter)
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
     parser_one = subparsers.add_parser("one",help="1D metrics designed for one Hi-C sample",
                                             description="1D metrics designed for one Hi-C sample")
