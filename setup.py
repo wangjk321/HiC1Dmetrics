@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='h1d',
-    version='0.0.1',
+    version='0.0.15',
     author='wangjiankng',
     author_email='wangjk321@gmail.com',
     url='https://github.com/wangjk321/HiC1Dmetrics',
@@ -24,6 +24,6 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'h1d=MainCode:main',
+            'h1d=MainCode.__main__:CLI',
         ]}
 )
