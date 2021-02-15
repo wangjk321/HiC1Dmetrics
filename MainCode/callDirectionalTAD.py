@@ -95,32 +95,41 @@ class PlotTAD(PlotTri):
         plt.savefig(PDFname+".pdf")
 
 class stripeTAD(BasePara):
-    def callStripe(self,squareSize=300000,useNA=True,seg=8):
+    def callStripe(self,squareSize=300000,useNA=True,segbp=100000):
         Tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize,useNA=useNA)
-        interScore = intraTADscore(self.path,self.resolution,self.chromosome).getIntraS().iloc[:,3]
+        intraScore = intraTADscore(self.path,self.resolution,self.chromosome).getIntraS().iloc[:,3]
+        nonNAIntraScore = intraScore[~intraScore.isnull()]
+        bm = noNA.sample(200,random_state=1)
 
         status = []
+        import statsmodels.stats.weightstats as sw
+        from statsmodels.sandbox.stats.multicomp import multipletests
         for i in range(Tad.shape[0]):
-            regionLeft = int((Tad.iloc[i,1])/50000)
-            regionRight = int((Tad.iloc[i,2])/50000)
-            scorei = interScore.iloc[regionLeft:regionRight]
-            oneseg = len(scorei) // seg +1
-            l = scorei.iloc[0:oneseg]
-            r = scorei.iloc[-oneseg:]
-            m = scorei.iloc[oneseg:-oneseg]
-            ls = l.min() > m.mean() and l.mean() > interScore.median()
-            rs = r.min() > m.mean() and r.mean() > interScore.median()
+            regionLeft = int((Tad.iloc[i,1])/self.resolution)
+            regionRight = int((Tad.iloc[i,2])/self.resolution)
+            scorei = intraScore.iloc[regionLeft:regionRight]
+            seg = int(segbp/self.resolution) #bins of the corner
+            l = scorei.iloc[0:seg]
+            r = scorei.iloc[-seg:]
 
-            if ls and not rs:
+            pvalue_l = sw.ztest(bm, value=l.mean(), alternative="smaller")[1]
+            pvalue_r = sw.ztest(bm, value=r.mean(), alternative="smaller")[1]
+            qvalue_l = multipletests(pvalue_l, method='bonferroni')[1]
+            qvalue_r = multipletests(pvalue_r, method='bonferroni')[1]
+
+            if qvalue_l < 0.05 and not qvalue_r <0.05:
                 status.append("leftStripe")
-            elif rs and not ls:
+            elif qvalue_r <0.05 and not qvalue_l < 0.05:
                 status.append("rightStripe")
-            elif ls and rs:
+            elif qvalue_r <0.05 and qvalue_l < 0.05:
                 status.append("loopTAD")
             else:
                 status.append("otherTAD")
         Tad["TADtype"] = status
         return(Tad)
+        #m = scorei.iloc[seg:-seg]
+        #ls = l.min() > m.mean() and l.mean() > interScore.median()
+        #rs = r.min() > m.mean() and r.mean() > interScore.median()
 
 class DirectionalTAD(DiffDraw):
     def extractRegion(self):
