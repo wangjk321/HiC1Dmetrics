@@ -118,8 +118,8 @@ class stripeTAD(BasePara):
             pl.append(pvalue_l)
             pr.append(pvalue_r)
 
-        qvalue_l = multipletests(pvalue_l, method='bonferroni')[1]
-        qvalue_r = multipletests(pvalue_r, method='bonferroni')[1]
+        qvalue_l = multipletests(pl, method='bonferroni')[1]
+        qvalue_r = multipletests(pr, method='bonferroni')[1]
         status = []
         for i in range(Tad.shape[0]):
             if qvalue_l[i] < 0.05 and qvalue_r[i] >0.05:
