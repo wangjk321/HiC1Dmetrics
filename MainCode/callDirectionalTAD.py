@@ -95,7 +95,7 @@ class PlotTAD(PlotTri):
         plt.savefig(PDFname+".pdf")
 
 class stripeTAD(BasePara):
-    def callStripe(self,squareSize=300000,useNA=True,segbp=100000):
+    def callStripe(self,squareSize=300000,useNA=True,seg=100000):
         Tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize,useNA=useNA)
         intraScore = intraTADscore(self.path,self.resolution,self.chromosome).getIntraS().iloc[:,3]
         nonNAIntraScore = intraScore[~intraScore.isnull()]
@@ -108,9 +108,9 @@ class stripeTAD(BasePara):
             regionLeft = int((Tad.iloc[i,1])/self.resolution)
             regionRight = int((Tad.iloc[i,2])/self.resolution)
             scorei = intraScore.iloc[regionLeft:regionRight]
-            seg = int(segbp/self.resolution) #bins of the corner
-            l = scorei.iloc[0:seg]
-            r = scorei.iloc[-seg:]
+            segbin = int(seg/self.resolution) #bins of the corner
+            l = scorei.iloc[0:segbin]
+            r = scorei.iloc[-segbin:]
 
             pvalue_l = sw.ztest(bm, value=l.mean(), alternative="smaller")[1]
             pvalue_r = sw.ztest(bm, value=r.mean(), alternative="smaller")[1]
