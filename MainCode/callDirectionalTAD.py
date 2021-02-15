@@ -101,7 +101,8 @@ class stripeTAD(BasePara):
         nonNAIntraScore = intraScore[~intraScore.isnull()]
         bm = nonNAIntraScore.sample(300,random_state=1)
 
-        status = []
+        pl = []
+        pr = []
         import statsmodels.stats.weightstats as sw
         from statsmodels.sandbox.stats.multicomp import multipletests
         for i in range(Tad.shape[0]):
@@ -114,14 +115,18 @@ class stripeTAD(BasePara):
 
             pvalue_l = sw.ztest(bm, value=l.mean(), alternative="smaller")[1]
             pvalue_r = sw.ztest(bm, value=r.mean(), alternative="smaller")[1]
-            qvalue_l = multipletests(pvalue_l, method='bonferroni')[1]
-            qvalue_r = multipletests(pvalue_r, method='bonferroni')[1]
+            pl.append(pvalue_l)
+            pr.append(pvalue_r)
 
-            if qvalue_l < 0.05 and not qvalue_r <0.05:
+        qvalue_l = multipletests(pvalue_l, method='bonferroni')[1]
+        qvalue_r = multipletests(pvalue_r, method='bonferroni')[1]
+        status = []
+        for i in range(Tad.shape[0]):
+            if qvalue_l[i] < 0.05 and qvalue_r[i] >0.05:
                 status.append("leftStripe")
-            elif qvalue_r <0.05 and not qvalue_l < 0.05:
+            elif qvalue_r[i] <0.05 and qvalue_l[i] > 0.05:
                 status.append("rightStripe")
-            elif qvalue_r <0.05 and qvalue_l < 0.05:
+            elif qvalue_r[i] <0.05 and qvalue_l[i] < 0.05:
                 status.append("loopTAD")
             else:
                 status.append("otherTAD")
