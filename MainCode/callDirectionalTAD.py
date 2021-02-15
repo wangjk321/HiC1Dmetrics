@@ -99,7 +99,7 @@ class stripeTAD(BasePara):
         Tad = TADcallIS(self.path,self.resolution,self.chromosome,squareSize,useNA=useNA)
         intraScore = intraTADscore(self.path,self.resolution,self.chromosome).getIntraS().iloc[:,3]
         nonNAIntraScore = intraScore[~intraScore.isnull()]
-        bm = noNA.sample(200,random_state=1)
+        bm = nonNAIntraScore.sample(300,random_state=1)
 
         status = []
         import statsmodels.stats.weightstats as sw
