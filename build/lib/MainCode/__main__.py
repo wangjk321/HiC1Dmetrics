@@ -1,6 +1,5 @@
 import argparse
 from .MultiTypeScore import *
-#from .calculateMetrics import *
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is a easy to use tools to \
@@ -14,6 +13,7 @@ def CLI():
     #Function 2
     #=============================================================================
     def func_one(args):
+        if args.type not in ["PC1","IF"]: args.parameter = int(args.parameter)
         score = multiScore(args.matrix,args.resolution,args.chromosome).obtainOneScore(args.type,parameter=args.parameter)
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
     parser_one = subparsers.add_parser("one",help="1D metrics designed for one Hi-C sample",
@@ -22,8 +22,8 @@ def CLI():
     parser_one.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
     parser_one.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_one.add_argument("chromosome",type=str,help="Chromosome number.")
-    parser_one.add_argument("-p","--parameter",type=int,help="Parameter for indicated metrics",default=None)
-    parser.add_argument("-o","--outname",help="output name (default metrics)",type=str,default="metrics")
+    parser_one.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
+    parser_one.add_argument("-o","--outname",help="output name (default metrics)",type=str,default="metrics")
 
     parser_one.set_defaults(func=func_one)
 

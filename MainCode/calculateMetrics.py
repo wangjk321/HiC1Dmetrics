@@ -310,7 +310,7 @@ class CompartmentPC1(BasePara):
 
         return(expected)
 
-    def getPC1(self, logOE = False, signCorr = "No correction", smooth = True):
+    def getPC1(self, logOE = False, signCorr = None, smooth = True):
         rawMT = np.nan_to_num(self.matrix)
         expectMT = self.makeExpect(rawMT,smooth)
         warnings.filterwarnings("ignore")
@@ -348,7 +348,7 @@ class CompartmentPC1(BasePara):
         #pc1 = trained.components_
         #array = pc1[0,:]
 
-        if signCorr == "No correction":
+        if signCorr == None:
             pass
         else:
             geneDensity = pd.read_csv(signCorr,header=None,sep='\t')

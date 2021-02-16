@@ -6,6 +6,7 @@ import seaborn as sns
 #from plotTwoSample import *
 #from plotMetrics import *
 from scipy import stats
+import os
 #from callDirectionalTAD import *
 
 class multiScore:
@@ -26,7 +27,7 @@ class multiScore:
         elif mode == "DI":
             if not parameter: parameter=1000000
             score = DirectionalityIndex(self.path,self.res,self.chr,DI_distance=parameter).getDI()
-        elif mode == "TADss":
+        elif mode == "SS":
             if not parameter: parameter=300000
             score = SeparationScore(self.path,self.res,self.chr,TADss_size=parameter).getTADss()
         elif mode == "DLR":
@@ -39,7 +40,13 @@ class multiScore:
             if not parameter: parameter=300000
             score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = parameter)
         elif mode == "PC1":
+            if not parameter:
+                warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
+        elif mode == "IF":
+            os.system("pwd")
+            os.system("sh gd/makeDesity")
+            score = pd.DataFrame()
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
