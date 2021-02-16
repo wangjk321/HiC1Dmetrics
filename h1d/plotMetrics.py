@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
-from loadfile import *
+from .loadfile import *
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from scipy import ndimage
-from calculateMetrics import *
+#from scipy import ndimage
+from .calculateMetrics import *
 from scipy.interpolate import make_interp_spline
 
 class PlotCommon(object):
@@ -85,7 +85,7 @@ class PlotBedGraph(PlotTri):
         elif type == "CI":
             score = ContrastIndex(self.path,self.resolution,self.chr).getCI().ContrastIndex
             title = "ContrastIndex"
-        elif type == "TADss":
+        elif type == "SS":
             score = SeparationScore(self.path,self.resolution,self.chr).getTADss().SeparationScore
             title = "SeparationScore"
         elif type == "DLR":
@@ -94,10 +94,10 @@ class PlotBedGraph(PlotTri):
         elif type == "PC1":
             score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).CompartmentPC1
             title = "CompartmentPC1"
-        elif type == "intraScore":
+        elif type == "IAS":
             score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
             title = "intraTADscore"
-        elif type == "interScore":
+        elif type == "IES":
             score = interTADscore(self.path,self.resolution,self.chr).getInterS(useOE=UniqueParameter).interTADscore
             title = "inerTADscore"
         elif type == "custom":

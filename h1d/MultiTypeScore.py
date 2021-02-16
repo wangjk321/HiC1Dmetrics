@@ -18,7 +18,7 @@ class multiScore:
         self.control_path = control_path
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",normIF=False):
+                        custom_name="InteractionFrequency",normIF=True):
         if mode == "IS":
             if not parameter: parameter=300000
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
@@ -50,7 +50,15 @@ class multiScore:
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             chrnum = self.chr.split("chr")[1]
             os.system("sh "+soft+" "+juicer+" "+self.path+" "+chrnum+" "+str(self.res)+" "+parameter+" "+"IF_"+self.chr) #in case of space
-            score = pd.DataFrame()
+            score = pd.read_csv("IF_"+self.chr,sep="\t",header=None)
+            if normIF:
+                beforlog = score[3].copy()
+                afterlog = np.log1p(beforlog)
+                score[3] = afterlog / np.mean(afterlog[afterlog>0])
+            score.index = range(score.shape[0])
+            score.columns = ["chr","start","end",custom_name]
+            os.system("rm "+"IF_"+self.chr+".bedGraph")
+
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
             score = all[all[0] == self.chr]
