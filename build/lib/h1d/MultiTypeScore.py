@@ -46,9 +46,10 @@ class multiScore:
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "IF":
             codepath = os.path.dirname(os.path.realpath(__file__))
-            print(codepath)
-            print(os.getcwd())
-            os.system("sh "+"'"+codepath+"/gd/makeDensity.sh"+"'") #in case of space
+            soft = codepath+"/InteractionFreq.sh"
+            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            chrnum = self.chr.split("chr")[1]
+            os.system("sh "+soft+" "+juicer+" "+self.path+" "+chrnum+" "+self.res+" "+parameter+" "+"IF_"+self.chr) #in case of space
             score = pd.DataFrame()
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)

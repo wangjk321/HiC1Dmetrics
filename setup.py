@@ -16,6 +16,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     packages=['h1d'],
+    include_package_data=True,
     install_requires=["pandas","numpy","scikit-learn",
 		"fithic==2.0.7"],
     classifiers=[

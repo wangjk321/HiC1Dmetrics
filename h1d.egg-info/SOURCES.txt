@@ -25,4 +25,5 @@ h1d.egg-info/entry_points.txt
 h1d.egg-info/requires.txt
 h1d.egg-info/top_level.txt
 h1d/gd/makeDensity.sh
+h1d/jc/jctool_1.11.04.jar
 h1d/test/InteractionFreq.sh
