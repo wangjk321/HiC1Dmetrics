@@ -45,10 +45,10 @@ class multiScore:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "IF":
-            codepath = str(os.getcwd())
-
-
-            os.system("sh "+codepath+"/gd/makeDensity.sh")
+            codepath = os.path.dirname(os.path.realpath(__file__))
+            print(codepath)
+            print(os.getcwd())
+            os.system("sh "+"'"+codepath+"/gd/makeDensity.sh"+"'") #in case of space
             score = pd.DataFrame()
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)

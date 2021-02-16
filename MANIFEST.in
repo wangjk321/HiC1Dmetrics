@@ -1,1 +1,3 @@
-include InteractionFreq.sh
+include h1d/test/*
+include h1d/InteractionFreq.sh
+include h1d/gd/makeDensity.sh
