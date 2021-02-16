@@ -3,4 +3,6 @@
 # Version of the realpython-reader package
 __version__ = "0.0.9"
 
-#from . import *
+#from .MultiTypeScore import *
+#from .calculateMetrics import *
+#from .calculateTwoSample import *

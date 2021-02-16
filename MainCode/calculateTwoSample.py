@@ -1,4 +1,4 @@
-from calculateMetrics import *
+from .calculateMetrics import *
 
 class DirectionalRelativeFreq(BasePara):
     #compare two metrices need normalization

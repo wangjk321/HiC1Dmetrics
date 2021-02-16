@@ -1,12 +1,12 @@
-from calculateMetrics import *
-from calculateTwoSample import *
-from hmmlearn import hmm
+from .calculateMetrics import *
+#from calculateTwoSample import *
+#from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
-from plotTwoSample import *
-from plotMetrics import *
+#from plotTwoSample import *
+#from plotMetrics import *
 from scipy import stats
-from callDirectionalTAD import *
+#from callDirectionalTAD import *
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -21,16 +21,22 @@ class multiScore:
             if not parameter: parameter=300000
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
+            if not parameter: parameter=300000
             score = ContrastIndex(self.path,self.res,self.chr,CI_size=parameter).getCI()
         elif mode == "DI":
+            if not parameter: parameter=1000000
             score = DirectionalityIndex(self.path,self.res,self.chr,DI_distance=parameter).getDI()
         elif mode == "TADss":
+            if not parameter: parameter=300000
             score = SeparationScore(self.path,self.res,self.chr,TADss_size=parameter).getTADss()
         elif mode == "DLR":
+            if not parameter: parameter=3000000
             score = DistalToLocalRatio(self.path,self.res,self.chr,sizeDLR=parameter).getDLR()
         elif mode == "intraS":
+            if not parameter: parameter=300000
             score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = parameter)
         elif mode == "interS":
+            if not parameter: parameter=300000
             score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = parameter)
         elif mode == "PC1":
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)

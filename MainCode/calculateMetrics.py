@@ -1,6 +1,4 @@
-from loadfile import *
-import numpy as np
-import pandas as pd
+from .loadfile import *
 import argparse
 from scipy import ndimage
 from scipy import stats

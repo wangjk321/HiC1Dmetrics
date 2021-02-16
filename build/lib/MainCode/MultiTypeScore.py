@@ -1,12 +1,12 @@
-from calculateMetrics import *
-from calculateTwoSample import *
+from .calculateMetrics import *
+#from calculateTwoSample import *
 from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
-from plotTwoSample import *
-from plotMetrics import *
+#from plotTwoSample import *
+#from plotMetrics import *
 from scipy import stats
-from callDirectionalTAD import *
+#from callDirectionalTAD import *
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):

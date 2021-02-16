@@ -1,4 +1,4 @@
-from loadfile import *
+from .loadfile import *
 import numpy as np
 import pandas as pd
 import argparse
