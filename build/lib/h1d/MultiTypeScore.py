@@ -49,7 +49,7 @@ class multiScore:
             soft = codepath+"/InteractionFreq.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             chrnum = self.chr.split("chr")[1]
-            os.system("sh "+soft+" "+juicer+" "+self.path+" "+chrnum+" "+self.res+" "+parameter+" "+"IF_"+self.chr) #in case of space
+            os.system("sh "+soft+" "+juicer+" "+self.path+" "+chrnum+" "+str(self.res)+" "+parameter+" "+"IF_"+self.chr) #in case of space
             score = pd.DataFrame()
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
