@@ -7,6 +7,7 @@ import seaborn as sns
 #from plotMetrics import *
 from scipy import stats
 import os
+import subprocess
 #from callDirectionalTAD import *
 
 class multiScore:
@@ -44,8 +45,10 @@ class multiScore:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "IF":
-            os.system("pwd")
-            os.system("sh gd/makeDesity")
+            codepath = str(os.getcwd())
+
+
+            os.system("sh "+codepath+"/gd/makeDensity.sh")
             score = pd.DataFrame()
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)

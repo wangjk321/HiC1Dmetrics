@@ -8,14 +8,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='h1d',
-    version='0.0.22',
+    version='0.0.23',
     author='wangjiankng',
     author_email='wangjk321@gmail.com',
     url='https://github.com/wangjk321/HiC1Dmetrics',
     description='HiC1Dmetrics pip version',
     long_description=readme,
     long_description_content_type="text/markdown",
-    packages=['MainCode'],
+    packages=['h1d'],
     install_requires=["pandas","numpy","scikit-learn",
 		"fithic==2.0.7"],
     classifiers=[
