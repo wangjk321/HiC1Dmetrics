@@ -45,19 +45,22 @@ class multiScore:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "IF":
+            if not parameter:
+                raise ValueError("Genometable is required for the calculation of IF")
             codepath = os.path.dirname(os.path.realpath(__file__))
             soft = codepath+"/InteractionFreq.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             chrnum = self.chr.split("chr")[1]
-            os.system("sh "+soft+" "+juicer+" "+self.path+" "+chrnum+" "+str(self.res)+" "+parameter+" "+"IF_"+self.chr) #in case of space
-            score = pd.read_csv("IF_"+self.chr,sep="\t",header=None)
+            print(parameter)
+            os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+parameter+" "+"IF_"+self.chr) #in case of space
+            score = pd.read_csv("IF_"+self.chr+".bedGraph",sep="\t",header=None)
             if normIF:
                 beforlog = score[3].copy()
                 afterlog = np.log1p(beforlog)
                 score[3] = afterlog / np.mean(afterlog[afterlog>0])
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
-            os.system("rm "+"IF_"+self.chr+".bedGraph")
+            #os.system("rm "+"IF_"+self.chr+".bedGraph")
 
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)

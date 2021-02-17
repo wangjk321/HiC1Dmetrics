@@ -8,9 +8,12 @@ from scipy.interpolate import make_interp_spline
 
 class PlotCommon(object):
     def __init__(self,path,resolution,chr="",startSite=0,endSite=0,clmin=0,clmax=50, \
-                title="",other_parameter=0,ndsmooth=None):
+                title="",other_parameter=0,ndsmooth=None,datatype="matrix"):
         self.path = path
-        matrix = loadDenseMatrix(path).values
+        if datatype == "matrix":
+            matrix = loadDenseMatrix(path).values
+        elif datatype == "rawhic":
+            pass
         if ndsmooth:
             self.matrix = ndimage.median_filter(matrix,ndsmooth)
         else: self.matrix = matrix
