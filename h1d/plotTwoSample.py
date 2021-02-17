@@ -1,21 +1,31 @@
 import matplotlib.pyplot as plt
-from loadfile import *
+from .loadfile import *
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
-from calculateMetrics import *
-from calculateTwoSample import *
+from .calculateMetrics import *
+from .calculateTwoSample import *
+import os
 #from calcuDiffCI import *
 
 cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3f'])
 
 class DiffDraw(object):
     def __init__(self,path,control_path,resolution,chr="",startSite=0,endSite=0,clmin=-2,clmax=2, \
-                title="", startDRF=500000,sizeDRF=2000000,sizeIS=300000,sizeDCI=300000):
-        self.path = path
-        self.control_path = control_path
-        treat = loadWithNorm(path,log = True).values
-        control = loadWithNorm(control_path,log = True).values
+                title="", startDRF=500000,sizeDRF=2000000,sizeIS=300000,sizeDCI=300000,datatype="matrix",gt=None):
+
+        if datatype == "matrix":
+            self.path = path
+            self.control_path = control_path
+        elif datatype == "rawhic":
+            if not gt:
+                raise ValueError("Genometable is required for the calculation of IF")
+            self.path = hic2matrix(path,resolution,chr,gt)
+            self.control_path = hic2matrix(control_path,resolution,chr,gt)
+        else: print("Error, please use the matrix or rawhic datatype")
+        print(self.path,"diff")
+        treat = loadWithNorm(self.path,log = True).values
+        control = loadWithNorm(self.control_path,log = True).values
         smooth = 2
         self.treat = ndimage.median_filter(treat,smooth)
         self.control = ndimage.median_filter(control,smooth)
@@ -35,7 +45,9 @@ class DiffDraw(object):
         self.sizeIS = sizeIS
 
         if endSite == 0:
+            self.plotall = True
             self.matrixRegion = self.matrix.copy()
+            self.matrixRegion = np.nan_to_num(self.matrixRegion)
             ebin = self.matrix.shape[0]
         elif (ebin - sbin) < 5:
             print("The region you choosed is too small")
@@ -102,7 +114,7 @@ class DiffDraw(object):
         self.draw_tri()
         plt.plot(xpos,ypos,"k-",linestyle ="dashed")
 
-    def drawMetric(self,type):
+    def drawMetric(self,type,customfile="",name="custom"):
         if type == "deltaDLR":
             score = deltaDLR(self.path,self.control_path,self.resolution,self.chr, \
                     sizeDLR=3000000).getDeltaDLR().deltaDLR
@@ -125,6 +137,9 @@ class DiffDraw(object):
         elif type == "interSC":
             score = interScoreChange(self.path,self.control_path,self.resolution,self.chr).getInterSC().InterSC
             title = "interScoreChange"
+        elif type == "custom":
+            score = pd.read_csv(customfile,sep="\t",header=None).iloc[:,3]
+            title = name
 
         scoreRegion = score[self.sbin:self.ebin+1]
         plt.figure(figsize=(10,10))
@@ -135,15 +150,18 @@ class DiffDraw(object):
         plt.title(title,fontsize=20)
         plt.plot(scoreRegion,c='black')
         plt.xlim(self.sbin,self.ebin)
-        #plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        if self.plotall: self.ebin = self.ebin-1
         plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
-                        where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.99)
+                        where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.5)
 
         plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
-                        where = scoreRegion <0,facecolor='#a1d76a', alpha=0.99)
+                        where = scoreRegion <0,facecolor='#a1d76a', alpha=0.5)
 
         ticks_pos = np.arange(self.sbin,self.ebin+1,(self.ebin-self.sbin)/5)
         plt.xticks(ticks_pos,self.mark)
+        os.system("rm -rf MatrixTemp0*")
+
 
     def draw_DRF(self):  #已被上面的替代
         score = DirectionalRelativeFreq(self.path,self.control_path,self.resolution,self.chr, \
@@ -160,6 +178,7 @@ class DiffDraw(object):
         plt.plot(scoreRegion,c='black')
         plt.xlim(self.sbin,self.ebin)
         plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        if self.plotall: self.ebin = self.ebin-1
         plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
                         where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.99)
 

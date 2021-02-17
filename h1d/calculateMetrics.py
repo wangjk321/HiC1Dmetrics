@@ -6,9 +6,16 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing
 #from callDirectionalTAD import TADcallIS
 import warnings
+import os
 
 class BasePara:
-    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True):
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,datatype="matrix"):
+        if datatype == "rawhic":
+            codepath = os.path.dirname(os.path.realpath(__file__))
+            makeIntra = codepath+"/extract/makeMatrixIntra.sh"
+            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr)
+            path = "./MatrixTemp/"+str(resolution)+"/observed.KR."+chromosome+".matrix.gz"
         self.path = path
         #self.matrixNA = loadDenseMatrix(path).values
         self.matrix = loadDenseMatrix(path,log=False).values
@@ -36,9 +43,32 @@ class BasePara:
         print("--------Export to csv file--------- \n")
         df.to_csv(self.out_name + ".bedGraph", sep="\t", header=False, index=False)
 
+class InteractionFrequency:
+    def __init__(self,path,resolution,chromosome,gt=None,datatype="rawhic",normIF=True,out_name="noName"):
+        if not gt:
+            raise ValueError("Genometable is required for the calculation of IF")
+        codepath = os.path.dirname(os.path.realpath(__file__))
+        soft = codepath+"/InteractionFreq.sh"
+        juicer = codepath+"/jc/jctool_1.11.04.jar"
+        chrnum = chromosome.split("chr")[1]
+        os.system("sh '"+soft+"' '"+juicer+"' "+path+" "+chrnum+" "+str(resolution)+" "+gt+" "+"IF_"+chromosome) #in case of space
+        score = pd.read_csv("IF_"+chromosome+".bedGraph",sep="\t",header=None)
+        if normIF:
+            beforlog = score[3].copy()
+            afterlog = np.log1p(beforlog)
+            score[3] = afterlog / np.mean(afterlog[afterlog>0])
+        score.index = range(score.shape[0])
+        score.columns = ["chr","start","end","InteractionFreq"]
+        os.system("rm "+"IF_"+chromosome+".bedGraph")
+        self.score = score
+
+    def getIF(self):
+        return(self.score)
+
 class InsulationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=300000):
+    def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=300000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
+        print(path,datatype)
         self.square_size = square_size
         #The default size in Homer IS is 150000
 
@@ -128,7 +158,7 @@ def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
     return(TADout)
 
 class ContrastIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000):
+    def __init__(self,path,resolution,chromosome,out_name="ContrastIndex",useNA=True,CI_size=200000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.CI_size = CI_size
 
@@ -160,7 +190,7 @@ class ContrastIndex(BasePara):
         super().makeCSV(self.getCI())
 
 class SeparationScore(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="SeparationScore",useNA=True,TADss_size=300000):
+    def __init__(self,path,resolution,chromosome,out_name="SeparationScore",useNA=True,TADss_size=300000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.TADss_size = TADss_size
 
@@ -191,7 +221,7 @@ class SeparationScore(BasePara):
         super().makeCSV(self.getTADss())
 
 class DirectionalityIndex(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,DI_distance=1000000):
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,DI_distance=1000000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.DI_distance = DI_distance
         #The default distance in Homer DI is 1000000
@@ -224,7 +254,7 @@ class DirectionalityIndex(BasePara):
         super().makeCSV(self.getDI())
 
 class DistalToLocalRatio(BasePara):
-    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,sizeDLR=3000000):
+    def __init__(self,path,resolution,chromosome,out_name="noName",useNA=True,sizeDLR=3000000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
         self.sizeDLR = sizeDLR
 

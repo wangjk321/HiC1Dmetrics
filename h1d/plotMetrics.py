@@ -5,15 +5,21 @@ from matplotlib.colors import LinearSegmentedColormap
 #from scipy import ndimage
 from .calculateMetrics import *
 from scipy.interpolate import make_interp_spline
+import os
+
 
 class PlotCommon(object):
     def __init__(self,path,resolution,chr="",startSite=0,endSite=0,clmin=0,clmax=50, \
-                title="",other_parameter=0,ndsmooth=None,datatype="matrix"):
+                title="",other_parameter=0,ndsmooth=None,datatype="matrix",gt=""):
+        if datatype == "rawhic":
+            codepath = os.path.dirname(os.path.realpath(__file__))
+            makeIntra = codepath+"/extract/makeMatrixIntra.sh"
+            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr)
+            path = "./MatrixTemp/"+str(resolution)+"/observed.KR."+chr+".matrix.gz"
+        matrix = loadDenseMatrix(path).values
+
         self.path = path
-        if datatype == "matrix":
-            matrix = loadDenseMatrix(path).values
-        elif datatype == "rawhic":
-            pass
         if ndsmooth:
             self.matrix = ndimage.median_filter(matrix,ndsmooth)
         else: self.matrix = matrix
@@ -26,6 +32,7 @@ class PlotCommon(object):
         ebin = int(endSite/resolution)
         self.chr = chr
         self.other_parameter = other_parameter
+        self.datatype = datatype
 
         if endSite == 0:
             self.matrixRegion = np.nan_to_num(self.matrix.copy())
@@ -80,32 +87,32 @@ class PlotBedGraph(PlotTri):
 
     def draw(self,type,UniqueParameter=None,smoothPC=True,logPC=False,customfile="",scorelim=None,scorecolor=None):
         if type == 'IS':
-            score = InsulationScore(self.path,self.resolution,self.chr).getIS().InsulationScore
+            score = InsulationScore(self.path,self.resolution,self.chr,datatype=self.datatype).getIS().InsulationScore
             title = "InsulationScore"
         elif type == 'DI':
-            score = DirectionalityIndex(self.path,self.resolution,self.chr).getDI().DirectionalityIndex
+            score = DirectionalityIndex(self.path,self.resolution,self.chr,datatype=self.datatype).getDI().DirectionalityIndex
             title = "DirectionalityIndex"
         elif type == "CI":
-            score = ContrastIndex(self.path,self.resolution,self.chr).getCI().ContrastIndex
+            score = ContrastIndex(self.path,self.resolution,self.chr,datatype=self.datatype).getCI().ContrastIndex
             title = "ContrastIndex"
         elif type == "SS":
-            score = SeparationScore(self.path,self.resolution,self.chr).getTADss().SeparationScore
+            score = SeparationScore(self.path,self.resolution,self.chr,datatype=self.datatype).getTADss().SeparationScore
             title = "SeparationScore"
         elif type == "DLR":
-            score = DistalToLocalRatio(self.path,self.resolution,self.chr).getDLR().DistalToLocalRatio
+            score = DistalToLocalRatio(self.path,self.resolution,self.chr,datatype=self.datatype).getDLR().DistalToLocalRatio
             title = "DistalToLocalRatio"
         elif type == "PC1":
-            score = CompartmentPC1(self.path,self.resolution,self.chr).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).CompartmentPC1
+            score = CompartmentPC1(self.path,self.resolution,self.chr,datatype=self.datatype).getPC1(signCorr = UniqueParameter,smooth = smoothPC, logOE=logPC).CompartmentPC1
             title = "CompartmentPC1"
         elif type == "IAS":
-            score = intraTADscore(self.path,self.resolution,self.chr).getIntraS().iloc[:,3]
+            score = intraTADscore(self.path,self.resolution,self.chr,datatype=self.datatype).getIntraS().iloc[:,3]
             title = "intraTADscore"
         elif type == "IES":
-            score = interTADscore(self.path,self.resolution,self.chr).getInterS(useOE=UniqueParameter).interTADscore
+            score = interTADscore(self.path,self.resolution,self.chr,datatype=self.datatype).getInterS(useOE=UniqueParameter).interTADscore
             title = "inerTADscore"
-        elif type == "custom":
-            score = pd.read_csv(customfile,sep="\t",header=None).iloc[:,3]
-            title = "customScore"
+        elif type in ["custom","IF"]:
+            score = pd.read_csv(UniqueParameter,sep="\t",header=None).iloc[:,3]
+            title = "InteractionFrequency"
 
         scoreRegion = score[self.sbin:self.ebin+1]
 

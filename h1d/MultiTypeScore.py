@@ -1,5 +1,5 @@
 from .calculateMetrics import *
-#from calculateTwoSample import *
+from .calculateTwoSample import *
 #from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -17,10 +17,16 @@ class multiScore:
         self.chr = chr
         self.control_path = control_path
 
+
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",normIF=True):
+                        custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix"):
+
+        if datatype == "rawhic" and mode != "IF":
+            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+
         if mode == "IS":
             if not parameter: parameter=300000
+            print(self.path,datatype)
             score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
         elif mode == "CI":
             if not parameter: parameter=300000
@@ -45,14 +51,13 @@ class multiScore:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
             score = CompartmentPC1(self.path,self.res,self.chr).getPC1(signCorr = parameter,smooth = smoothPC, logOE=logPC)
         elif mode == "IF":
-            if not parameter:
+            if not gt:
                 raise ValueError("Genometable is required for the calculation of IF")
             codepath = os.path.dirname(os.path.realpath(__file__))
             soft = codepath+"/InteractionFreq.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             chrnum = self.chr.split("chr")[1]
-            print(parameter)
-            os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+parameter+" "+"IF_"+self.chr) #in case of space
+            os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+gt+" "+"IF_"+self.chr) #in case of space
             score = pd.read_csv("IF_"+self.chr+".bedGraph",sep="\t",header=None)
             if normIF:
                 beforlog = score[3].copy()
@@ -60,7 +65,7 @@ class multiScore:
                 score[3] = afterlog / np.mean(afterlog[afterlog>0])
             score.index = range(score.shape[0])
             score.columns = ["chr","start","end",custom_name]
-            #os.system("rm "+"IF_"+self.chr+".bedGraph")
+            os.system("rm "+"IF_"+self.chr+".bedGraph")
 
         elif mode == "custom":
             all = pd.read_csv(parameter,sep="\t",header=None)
@@ -119,29 +124,46 @@ class multiScore:
             else:
                 plt.xticks(ticks_pos,hp.mark)
 
-    def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False,normIF=True):
+    def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False,normIF=True,gt=None,datatype="matrix"):
+        if datatype == "rawhic" and mode != "IFC":
+            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt)
+
         if mode == "ISC":
+            if not parameter: parameter=300000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",parameter)
         elif mode == "CIC":
+            if not parameter: parameter=300000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("CI",parameter)
         elif mode == "DIC":
+            if not parameter: parameter=1000000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("DI",parameter)
-        elif mode == "TADssC":
+        elif mode == "SSC":
+            if not parameter: parameter=300000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("TADss",parameter)
         elif mode == "deltaDLR":
+            if not parameter: parameter=3000000
             score = deltaDLR(self.path,self.control_path,self.res,self.chr,sizeDLR=parameter).getDeltaDLR()
-        elif mode == "intraSC":
+        elif mode == "IASC":
+            if not parameter: parameter=300000
             score = intraScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getIntraSC()
-        elif mode == "interSC":
+        elif mode == "IESC":
+            if not parameter: parameter=300000
             score = interScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getInterSC()
         elif mode == "DRF":
+            if not parameter: parameter=[200000,5000000]
             score = DirectionalRelativeFreq(self.path,self.control_path,self.res,self.chr,
                                             start_distance=parameter[0], end_distance=parameter[1]).getDRF()
-        elif mode == "CorrD":
+        elif mode == "CD":
+            if not parameter: parameter="pearson"
             score = CorrelationDifference(self.path,self.control_path,self.res,self.chr,method=parameter).getCorrD()
         elif mode == "PC1C":
             score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter,smoothPC = smoothPC, logPC=logPC).getPC1change()
         elif mode == "IFC":
+            if not gt: raise ValueError("Genometable is required for the calculation of IF")
+            if datatype=="matrix": raise ValueError("Calculation of IF require rawhic not matrix")
+            score = InteractionFrequencyChange(self.path,self.control_path,self.res,self.chr,gt=gt,datatype=datatype,normIF=normIF).getIFC()
+        elif mode == "IFCback":
             scoreTreat = pd.read_csv(parameter[0],sep="\t",header=None)
             scoreControl= pd.read_csv(parameter[1],sep="\t",header=None)
             treat = scoreTreat[scoreTreat[0]==self.chr]
@@ -155,9 +177,10 @@ class multiScore:
             score.index = range(score.shape[0])
         else: print("Error: Please specify the correct mode")
 
-        return(score)
+        #if datatype == "rawhic" and mode != "IF": os.system("rm -rf MatrixTemp*")
+        return(score,self.path,self.control_path)
 
-    def allTwoScore(self,typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
+    def allTwoScore(self,typelist=["ISC","CIC","DIC","SSC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],smoothPC=True,logPC=False):
         for i,type in enumerate(typelist):
             if i == 0:

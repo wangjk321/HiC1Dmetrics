@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import os
+import random
 
 def loadDenseMatrix(filename,log=False):
     #print(filename)
@@ -16,3 +18,12 @@ def loadWithNorm(filename,method= "RPM",log = False):
         return np.log1p(data)
     else:
         return data
+
+def hic2matrix(path,res,chr,gt):
+    codepath = os.path.dirname(os.path.realpath(__file__))
+    makeIntra = codepath+"/extract/makeMatrixIntra.sh"
+    juicer = codepath+"/jc/jctool_1.11.04.jar"
+    foldername = "./MatrixTemp"+str(random.random())
+    os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername)
+    matrixpath = foldername+"/"+str(res)+"/observed.KR."+chr+".matrix.gz"
+    return(matrixpath)

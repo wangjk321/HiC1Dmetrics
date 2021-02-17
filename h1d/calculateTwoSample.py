@@ -188,3 +188,14 @@ class interScoreChange(BasePara):
 
     def getCSV(self):
         super().makeCSV(self.getInterSC())
+
+class InteractionFrequencyChange:
+    def __init__(self,path,control_path,resolution,chromosome,gt=None,datatype="rawhic",normIF=True,out_name="noName"):
+        treat = InteractionFrequency(path,resolution,chromosome,gt=gt,datatype=datatype,normIF=normIF).getIF()
+        control = InteractionFrequency(control_path,resolution,chromosome,gt=gt,datatype=datatype,normIF=normIF).getIF()
+        scoreChange= pd.DataFrame({"chr":treat.iloc[:,0],"start":treat.iloc[:,1],
+                    "end":treat.iloc[:,2],"InteractionFrequencyChange":treat.iloc[:,3]-control.iloc[:,3]})
+        self.score = scoreChange
+
+    def getIFC(self):
+        return(self.score)
