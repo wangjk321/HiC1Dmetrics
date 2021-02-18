@@ -3,7 +3,7 @@ from .calculateTwoSample import *
 #from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
-#from plotTwoSample import *
+from .plotTwoSample import *
 #from plotMetrics import *
 from scipy import stats
 import os
@@ -12,40 +12,43 @@ import subprocess
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
+        self.rawpath = path # store for IF
         self.path = path
         self.res = res
         self.chr = chr
+        self.rawcontrol = control_path
         self.control_path = control_path
+
 
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
                         custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix"):
+        if datatype == "rawhic" and not gt: raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
             self.path = hic2matrix(self.path,self.res,self.chr,gt)
 
         if mode == "IS":
             if not parameter: parameter=300000
-            print(self.path,datatype)
-            score = InsulationScore(self.path,self.res,self.chr,square_size=parameter).getIS()
+            score = InsulationScore(self.path,self.res,self.chr,square_size=int(parameter)).getIS()
         elif mode == "CI":
             if not parameter: parameter=300000
-            score = ContrastIndex(self.path,self.res,self.chr,CI_size=parameter).getCI()
+            score = ContrastIndex(self.path,self.res,self.chr,CI_size=int(parameter)).getCI()
         elif mode == "DI":
             if not parameter: parameter=1000000
-            score = DirectionalityIndex(self.path,self.res,self.chr,DI_distance=parameter).getDI()
+            score = DirectionalityIndex(self.path,self.res,self.chr,DI_distance=int(parameter)).getDI()
         elif mode == "SS":
             if not parameter: parameter=300000
-            score = SeparationScore(self.path,self.res,self.chr,TADss_size=parameter).getTADss()
+            score = SeparationScore(self.path,self.res,self.chr,TADss_size=int(parameter)).getTADss()
         elif mode == "DLR":
             if not parameter: parameter=3000000
-            score = DistalToLocalRatio(self.path,self.res,self.chr,sizeDLR=parameter).getDLR()
+            score = DistalToLocalRatio(self.path,self.res,self.chr,sizeDLR=int(parameter)).getDLR()
         elif mode == "intraS":
             if not parameter: parameter=300000
-            score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = parameter)
+            score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = int(parameter))
         elif mode == "interS":
             if not parameter: parameter=300000
-            score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = parameter)
+            score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = int(parameter))
         elif mode == "PC1":
             if not parameter:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")
@@ -84,45 +87,56 @@ class multiScore:
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified","customPath"],
-                    smoothPC=True,logPC=False,normIF=False):
+                    smoothPC=True,logPC=False,normIF=True,datatype="matrix",gt=None):
         for i,type in enumerate(typelist):
             if i == 0:
-                multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
+                multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
+                                                datatype=datatype,gt=gt)
             else:
-                next = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC).iloc[:,3]
+                if datatype=="rawhic" and self.path !=self.rawpath:
+                    datatype2="matrix"
+                else: datatype2 =datatype
+                if typelist[i] == "IF":
+                    self.path = self.rawpath; datatype2="rawhic"
+                next = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
+                                        datatype=datatype2,gt=gt).iloc[:,3]
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
 
-    def plotOneScore(self,start,end,res,clmax=100,plotTAD=False,
-                    typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
+    def plotOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,"NotSpecified","customPath"],
-                    smoothPC=True,logPC=False):
+                    start=0,end=0,clmax=100,plotTAD=False,smoothPC=True,logPC=False,datatype="matrix",gt=None):
         import matplotlib.colors as mcolors
-        from callDirectionalTAD import PlotTAD
+        from .callDirectionalTAD import PlotTAD
 
         cols = list(mcolors.TABLEAU_COLORS.keys())
-        scoreMT = self.allOneScore(typelist,parameterlist,smoothPC,logPC)
+        scoreMT = self.allOneScore(typelist,parameterlist,smoothPC,logPC,datatype=datatype,gt=gt)
         nScore = len(typelist)
 
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
-        hp = PlotTAD(self.path,res,self.chr,start,end,clmax=clmax)
+
+        if datatype=="rawhic" and typelist[-1] == "IF":
+            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+        hp = PlotTAD(self.path,self.res,self.chr,start,end,clmax=clmax)
         if plotTAD == True:
             hp.drawTAD()
         elif plotTAD == False:
             hp.draw()
         for i in range(nScore):
-            scoreRegion = scoreMT.iloc[start//res:end//res,3+i]
+            scoreRegion = scoreMT.iloc[start//self.res:end//self.res,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
             plt.plot(scoreRegion,c=cols[i],label=scoreRegion.name)
             plt.legend(loc="upper left")
-            plt.xlim(start//res,end//res)
+            plt.xlim(start//self.res,end//self.res)
             ticks_pos = np.arange(hp.sbin,hp.ebin+1,(hp.ebin-hp.sbin)/5)
             if i < nScore-1:
                 plt.xticks(ticks_pos,[])
             else:
                 plt.xticks(ticks_pos,hp.mark)
+
+        return(scoreMT)
 
     def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False,normIF=True,gt=None,datatype="matrix"):
         if datatype == "rawhic" and mode != "IFC":
@@ -131,25 +145,25 @@ class multiScore:
 
         if mode == "ISC":
             if not parameter: parameter=300000
-            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",parameter)
+            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",int(parameter))
         elif mode == "CIC":
             if not parameter: parameter=300000
-            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("CI",parameter)
+            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("CI",int(parameter))
         elif mode == "DIC":
             if not parameter: parameter=1000000
-            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("DI",parameter)
+            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("DI",int(parameter))
         elif mode == "SSC":
             if not parameter: parameter=300000
-            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("TADss",parameter)
+            score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("TADss",int(parameter))
         elif mode == "deltaDLR":
             if not parameter: parameter=3000000
-            score = deltaDLR(self.path,self.control_path,self.res,self.chr,sizeDLR=parameter).getDeltaDLR()
+            score = deltaDLR(self.path,self.control_path,self.res,self.chr,sizeDLR=int(parameter)).getDeltaDLR()
         elif mode == "IASC":
             if not parameter: parameter=300000
-            score = intraScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getIntraSC()
+            score = intraScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=int(parameter)).getIntraSC()
         elif mode == "IESC":
             if not parameter: parameter=300000
-            score = interScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=parameter).getInterSC()
+            score = interScoreChange(self.path,self.control_path,self.res,self.chr,IS_size=int(parameter)).getInterSC()
         elif mode == "DRF":
             if not parameter: parameter=[200000,5000000]
             score = DirectionalRelativeFreq(self.path,self.control_path,self.res,self.chr,
@@ -181,43 +195,60 @@ class multiScore:
         return(score,self.path,self.control_path)
 
     def allTwoScore(self,typelist=["ISC","CIC","DIC","SSC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
-                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],smoothPC=True,logPC=False):
+                    parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],
+                    smoothPC=True,logPC=False,datatype="matrix",gt=None):
         for i,type in enumerate(typelist):
             if i == 0:
-                multiType = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC)
+                multiType,_,_ = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
+                                                    datatype=datatype,gt=gt)
             else:
-                next = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC).iloc[:,3]
+                if datatype=="rawhic" and self.path !=self.rawpath:
+                    datatype2="matrix"
+                else: datatype2 =datatype
+                if typelist[i] == "IFC":
+                    self.path = self.rawpath
+                    self.control_path = self.rawcontrol
+                    datatype2="rawhic"
+                next = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
+                                            datatype=datatype2,gt=gt)[0].iloc[:,3]
                 multiType = pd.concat([multiType,next],axis=1)
 
         return(multiType)
 
-    def plotTwoScore(self,start,end,res,clmax=2,plotTAD=False,
-                    typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
+    def plotTwoScore(self,typelist=["ISC","CIC","DIC","TADssC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
                     parameterlist=[300000,300000,1000000,300000,3000000,300000,300000,[200000,5000000],"pearson","NotSpecified"],
-                    smoothPC=True,logPC=False):
+                    start=0,end=0,clmax=2,plotTAD=False,smoothPC=True,logPC=False,
+                    outname="default",datatype="matrix",gt=None):
         import matplotlib.colors as mcolors
-        from callDirectionalTAD import PlotTAD
+        from .callDirectionalTAD import PlotTAD
 
         cols = list(mcolors.TABLEAU_COLORS.keys())
         cols.remove("tab:gray")
         cols.remove("tab:pink")
         cols.append("black")
-        scoreMT = self.allTwoScore(typelist,parameterlist,smoothPC,logPC)
+
+        scoreMT = self.allTwoScore(typelist,parameterlist,smoothPC,logPC,datatype=datatype,gt=gt)
+        print(scoreMT)
         nScore = len(typelist)
 
         plt.figure(figsize=(10,9+nScore*1))
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
-        hp = DiffDraw(self.path,self.control_path,res,startSite=start,endSite=end,clmax=clmax)
+
+        if datatype=="rawhic" and typelist[-1] == "IFC":
+            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt)
+
+        hp = DiffDraw(self.path,self.control_path,self.res,startSite=start,endSite=end,clmax=clmax)
         if plotTAD == True:
             hp.drawTAD()
         elif plotTAD == False:
             hp.draw_tri()
         for i in range(nScore):
-            scoreRegion = scoreMT.iloc[start//res:end//res+1,3+i]
+            scoreRegion = scoreMT.iloc[start//self.res:end//self.res+1,3+i]
             plt.subplot2grid((5+nScore,11),(5+i,0),rowspan=1,colspan=11)
             plt.plot(scoreRegion,c=cols[i],label=scoreRegion.name)
             plt.legend(loc="upper left")
-            plt.xlim(start//res,end//res)
+            plt.xlim(start//self.res,end//self.res)
 
             if scoreRegion.name != "CorrelationDifference":
                 if scoreRegion.name == "DirectionalRelativeFrequency":
@@ -235,6 +266,7 @@ class multiScore:
                 plt.xticks(ticks_pos,[])
             else:
                 plt.xticks(ticks_pos,hp.mark)
+        return(scoreMT)
 
 class metricHMM:
     def __init__(self,df,ncluster,nRun=10,covMethod= "spherical",random_state=None,HMMtype="Gaussian"):

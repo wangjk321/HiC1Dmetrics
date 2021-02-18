@@ -1,0 +1,2 @@
+Control	~/Documents/localrun/MCF7_Ctrl.hic
+Treated	~/Documents/localrun/MCF7_E2.hic

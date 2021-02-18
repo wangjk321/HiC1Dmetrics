@@ -1,7 +1,7 @@
-from calculateMetrics import *
+from .calculateMetrics import *
 from scipy.signal import argrelextrema
-from plotMetrics import *
-from plotTwoSample import *
+from .plotMetrics import *
+from .plotTwoSample import *
 import sys
 
 '''

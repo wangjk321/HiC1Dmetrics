@@ -68,7 +68,6 @@ class InteractionFrequency:
 class InsulationScore(BasePara):
     def __init__(self,path,resolution,chromosome,out_name="InsulationScore",useNA=True,square_size=300000,datatype="matrix"):
         super().__init__(path,resolution,chromosome,out_name,useNA)
-        print(path,datatype)
         self.square_size = square_size
         #The default size in Homer IS is 150000
 
