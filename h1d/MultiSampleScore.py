@@ -160,8 +160,8 @@ class repQC:
             plt.yticks(range(len(self.namelist)),self.namelist)
         elif plottype == "line":
             df.columns = range(df.shape[1])
-            print(df)
-            df.T.plot
+            print(df.T)
+            df.T.plot(ax=plt.gca())
             plt.xlim(0,df.shape[1]-1)
             plt.legend()
         plt.xticks(np.arange(0,df.shape[1]+1,(df.shape[1])/5),hp.mark)

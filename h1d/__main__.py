@@ -3,6 +3,7 @@ from .MultiTypeScore import *
 from .plotMetrics import *
 from .plotTwoSample import *
 from .MultiSampleScore import *
+from .callDirectionalTAD import *
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is a easy to use tools to \
@@ -11,7 +12,18 @@ def CLI():
     subparsers = parser.add_subparsers(help="Choose the mode to use sub-commands")
 
     #Function 1
+    def func_basic(args):
+        pass
     parser_basic = subparsers.add_parser("basic",help="Provide basic functions to load, handle and visualize Hi-C data.")
+    parser_basic.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
+    parser_basic.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
+    parser_basic.add_argument('resolution', type=int,help="Resolution of input matrix")
+    parser_basic.add_argument("chromosome",type=str,help="Chromosome number.")
+    parser_basic.add_argument("-o","--outname",help="output name",type=str,default="defaultname")
+    parser_basic.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
+    parser_basic.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
+    parser_basic.add_argument('--gt',type=str,help="genome table",default="")
+    parser_basic.set_defaults(func=func_basic)
 
     #Function 2
     #=============================================================================
@@ -191,16 +203,48 @@ def CLI():
 
     #Function 6
     #=============================================================================
-    def func_call():
-        pass
-    parser_samples = subparsers.add_parser("call",help="Extract secondary information from metrics (dTAD, stripeTAD, et.al)",
-                                            description="Extract secondary information from metrics (dTAD, stripeTAD, et.al)")
-    parser_samples.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
-    parser_samples.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
-    parser_samples.add_argument('resolution', type=int,help="Resolution of input matrix")
-    parser_samples.add_argument("chromosome",type=str,help="Chromosome number.")
-    parser_samples.set_defaults(func=func_samples)
+    def func_call(args):
+        if args.datatype == "rawhic" and args.mode != "hubs":
+            path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+            if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+        else:
+            path = args.matrix
+            controlpath = args.controlmatrix
 
+        if args.mode == "TAD":
+            tad = TADcallIS(path,args.resolution,args.chromosome,squareSize=300000)
+            tad.to_csv(args.outname + "_TAD.csv", sep="\t", header=True, index=False)
+        elif args.mode == "dTAD":
+            if not args.controlmatrix: print("Error: DRF requires control data"); exit(1)
+            dt = DirectionalTAD(path,controlpath,args.resolution,args.chromosome)
+            leftdTAD,rightdTAD,_ = dt.extractRegion()
+            leftdTAD.to_csv(args.outname + "_leftdTAD.csv", sep="\t", header=True, index=False)
+            rightdTAD.to_csv(args.outname + "_rightdTAD.csv", sep="\t", header=True, index=False)
+        elif args.mode == "stripe":
+            st = stripeTAD(path,args.resolution,args.chromosome)
+            stripe = st.callStripe(squareSize=300000)
+            stripe.to_csv(args.outname + "_stripe.csv", sep="\t", header=True, index=False)
+        elif args.mode == "hubs":
+            if args.datatype != "rawhic": print("Error: hubs requires rawhic datatype"); exit(1)
+            IF = InteractionFrequency(path,args.resolution,args.chromosome,gt=args.gt).getIF()
+            thresh = np.percentile(IF.iloc[:,3],90)
+            hubregion = IF[IF.iloc[:,3]>thresh]
+            hubregion.to_csv(args.outname + "_hubs_IF.csv", sep="\t", header=True, index=False)
+            os.system("sed '1d' " + args.outname + "_hubs_IF.csv" + " |bedtools merge -i stdin > "+ args.outname + "_hubs.csv")
+        else:
+            print("unsupported model");exit(1)
+
+    parser_call = subparsers.add_parser("call",help="Extract secondary information from metrics (dTAD, stripeTAD, et.al)",
+                                            description="Extract secondary information from metrics (dTAD, stripeTAD, et.al)")
+    parser_call.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
+    parser_call.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
+    parser_call.add_argument('resolution', type=int,help="Resolution of input matrix")
+    parser_call.add_argument("chromosome",type=str,help="Chromosome number.")
+    parser_call.add_argument("-o","--outname",help="output name",type=str,default="defaultname")
+    parser_call.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
+    parser_call.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
+    parser_call.add_argument('--gt',type=str,help="genome table",default="")
+    parser_call.set_defaults(func=func_call)
 
     args = parser.parse_args()
     try: func = args.func

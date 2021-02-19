@@ -20,6 +20,7 @@ def loadWithNorm(filename,method= "RPM",log = False):
         return data
 
 def hic2matrix(path,res,chr,gt):
+    if not gt: print("rawhic require genome_table file");exit(1)
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
     juicer = codepath+"/jc/jctool_1.11.04.jar"
