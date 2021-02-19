@@ -13,16 +13,56 @@ def CLI():
 
     #Function 1
     def func_basic(args):
-        pass
+        if args.mode == "plot":
+            if args.datatype == "rawhic":
+                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+                if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+            else:
+                path = args.matrix
+                controlpath = args.controlmatrix
+
+            if args.plottype == "tri":
+                if not controlpath:
+                    PlotTri(path,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).draw()
+                elif controlpath:
+                    DiffDraw(path,controlpath,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).draw_tri()
+            elif args.plottype == "square":
+                if not controlpath:
+                    PlotSquare(path,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).draw()
+                elif controlpath:
+                    DiffDraw(path,controlpath,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).draw_square()
+            elif args.plottype == "tad":
+                if not controlpath:
+                    PlotTAD(path,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).drawTAD(squareSize=int(args.parameter))
+                elif controlpath:
+                    DiffDraw(path,controlpath,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).drawTAD(squareSize=int(args.parameter))
+            plt.savefig(args.outname+".pdf")
+        elif args.mode == "dump":
+            if args.datatype not in ["rawhic"] or not args.gt:
+                print("Error: dump requires rawhic file and genome_table file"); exit(1)
+            codepath = os.path.dirname(os.path.realpath(__file__))
+            makeIntra = codepath+"/extract/makeMatrixIntra.sh"
+            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            foldername = args.outname
+            os.system("sh "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
+                    str(args.resolution)+" "+args.gt+" "+juicer+" "+args.chromosome+" "+foldername)
+
+        else:
+            print("Unsupported mode"); exit(1)
     parser_basic = subparsers.add_parser("basic",help="Provide basic functions to load, handle and visualize Hi-C data.")
     parser_basic.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
     parser_basic.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
     parser_basic.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_basic.add_argument("chromosome",type=str,help="Chromosome number.")
-    parser_basic.add_argument("-o","--outname",help="output name",type=str,default="defaultname")
+    parser_basic.add_argument("-o","--outname",help="output name",type=str,default="basic")
     parser_basic.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
     parser_basic.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
     parser_basic.add_argument('--gt',type=str,help="genome table",default="")
+    parser_basic.add_argument('--plottype',type=str,help="genome table",default="tri")
+    parser_basic.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
+    parser_basic.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
+    parser_basic.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
+    parser_basic.add_argument("--normalize",type=str,help="Parameter for indicated metrics",default="KR")
     parser_basic.set_defaults(func=func_basic)
 
     #Function 2
