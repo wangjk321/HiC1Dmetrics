@@ -17,7 +17,8 @@ setup(
     long_description_content_type="text/markdown",
     packages=['h1d'],
     include_package_data=True,
-    install_requires=["pandas","numpy","scikit-learn",
+    install_requires=["pandas","numpy","scikit-learn","scipy",
+		"matplotlib","seaborn","multiprocess",
 		"fithic==2.0.7","statsmodels"],
     classifiers=[
         "Programming Language :: Python :: 3",

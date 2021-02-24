@@ -9,7 +9,7 @@ import os
 
 
 class PlotCommon(object):
-    def __init__(self,path,resolution,chr="",startSite=0,endSite=0,clmin=0,clmax=50, \
+    def __init__(self,path,resolution,chr="",startSite=0,endSite=0,clmin=0,clmax=None, \
                 title="",other_parameter=0,ndsmooth=None,datatype="matrix",gt=""):
         if datatype == "rawhic":
             codepath = os.path.dirname(os.path.realpath(__file__))
@@ -26,7 +26,7 @@ class PlotCommon(object):
         self.resolution = resolution
         self.startSite = startSite
         self.endSite = endSite
-        self.clim = (clmin,clmax)
+        #self.clim = (clmin,clmax)
         self.title = title
         sbin = int(startSite/resolution)
         ebin = int(endSite/resolution)
@@ -42,6 +42,11 @@ class PlotCommon(object):
             exit(1)
         else:
             self.matrixRegion = np.nan_to_num(self.matrix[sbin:ebin+1,sbin:ebin+1])
+
+        if clmax:
+            self.clim = (clmin,clmax)
+        else:
+            self.clim = (clmin,np.median(self.matrixRegion)*10)
 
         self.sbin = sbin
         self.ebin = ebin

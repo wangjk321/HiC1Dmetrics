@@ -6,8 +6,9 @@ from .MultiSampleScore import *
 from .callDirectionalTAD import *
 
 def CLI():
-    parser = argparse.ArgumentParser(description="HiC1Dmetrics is a easy to use tools to \
-                                                calculate, visualize, and analyze 1D metrics for Hi-C")
+    parser = argparse.ArgumentParser(description="HiC1Dmetrics is python3-based tools to \
+                                                calculate, visualize, and analyze 1D metrics for Hi-C data \n \
+                                                (https://github.com/wangjk321/HiC1Dmetrics) ")
     #parser.set_defaults(func=lambda args: parser.print_help())
     subparsers = parser.add_subparsers(help="Choose the mode to use sub-commands")
 
@@ -49,7 +50,7 @@ def CLI():
 
         else:
             print("Unsupported mode"); exit(1)
-    parser_basic = subparsers.add_parser("basic",help="Provide basic functions to load, handle and visualize Hi-C data.")
+    parser_basic = subparsers.add_parser("basic",help="Provide basic functions to visualize and handle Hi-C data.")
     parser_basic.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
     parser_basic.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
     parser_basic.add_argument('resolution', type=int,help="Resolution of input matrix")
@@ -89,20 +90,20 @@ def CLI():
             plt.savefig(args.outname+".pdf")
 
 
-    parser_one = subparsers.add_parser("one",help="1D metrics designed for one Hi-C sample",
-                                            description="1D metrics designed for one Hi-C sample")
-    parser_one.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF}')
-    parser_one.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
-    parser_one.add_argument('resolution', type=int,help="Resolution of input matrix")
+    parser_one = subparsers.add_parser("one",help="1D metrics designed for one Hi-C sample.",
+                                            description="1D metrics designed for one Hi-C sample.")
+    parser_one.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF}.')
+    parser_one.add_argument('matrix', type=str, help='Path of matrix or rawhic file.')
+    parser_one.add_argument('resolution', type=int,help="Resolution of input matrix.")
     parser_one.add_argument("chromosome",type=str,help="Chromosome number.")
-    parser_one.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
-    parser_one.add_argument("-o","--outname",help="output name (default metrics)",type=str,default="metrics")
-    parser_one.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region",default=False)
-    parser_one.add_argument('--start',type=int,help="Start sites for plotting",default=0)
-    parser_one.add_argument('--end',type=int,help="End sites for plotting",default=0)
-    parser_one.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
-    parser_one.add_argument('--gt',type=str,help="genome table",default="")
-    parser_one.add_argument('--allchr',action='store_true',help="Calculate metrics for multiple chromosomes",default=False)
+    parser_one.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics.",default=None)
+    parser_one.add_argument("-o","--outname",help="output name (default: 'metrics').",type=str,default="metrics")
+    parser_one.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region.",default=False)
+    parser_one.add_argument("-s",'--start',type=int,help="Start sites for plotting.",default=0)
+    parser_one.add_argument("-e",'--end',type=int,help="End sites for plotting.",default=0)
+    parser_one.add_argument('--datatype',type=str,help="Type of input data: matrix(default) or rawhic.",default="matrix")
+    parser_one.add_argument('--gt',type=str,help="genome_table file.",default="")
+    parser_one.add_argument('--allchr',action='store_true',help="Calculate metrics for multiple chromosomes.",default=False)
     parser_one.set_defaults(func=func_one)
 
     #Function 3
@@ -125,18 +126,18 @@ def CLI():
 
     parser_two = subparsers.add_parser("two",help="1D metrics designed for comparison of two Hi-C samples",
                                             description="1D metrics designed for comparison of two Hi-C samples")
-    parser_two.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
-    parser_two.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
-    parser_two.add_argument('controlmatrix', type=str, help='Path of control matrix file from JuicerResult')
+    parser_two.add_argument('type', type=str, help='Type of 1D metrics for two-sample comparison,should be one of {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
+    parser_two.add_argument('matrix', type=str, help='Path of treated file (matrix or rawhic).')
+    parser_two.add_argument('controlmatrix', type=str, help='Path of control file (matrix or rawhic).')
     parser_two.add_argument('resolution', type=int,help="Resolution of input matrix")
-    parser_two.add_argument("chromosome",type=str,help="Chromosome number.")
+    parser_two.add_argument("chromosome",type=str,help="Chromosome number ('chr21',i.e).")
     parser_two.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
-    parser_two.add_argument("-o","--outname",help="output name (default metrics)",type=str,default="metricsChange")
+    parser_two.add_argument("-o","--outname",help="output name (default: metricsChange)",type=str,default="metricsChange")
     parser_two.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region",default=False)
     parser_two.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_two.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_two.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
-    parser_two.add_argument('--gt',type=str,help="genome table",default="")
+    parser_two.add_argument('--gt',type=str,help="genome table file",default="")
     parser_two.set_defaults(func=func_two)
 
     #Function 4

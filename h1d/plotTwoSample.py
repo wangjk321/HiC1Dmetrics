@@ -53,6 +53,7 @@ class DiffDraw(object):
             print("The region you choosed is too small")
             exit(1)
         else:
+            self.plotall = False
             self.matrixRegion = self.matrix[sbin:ebin+1,sbin:ebin+1]
 
         self.sbin = sbin
@@ -150,7 +151,7 @@ class DiffDraw(object):
         plt.title(title,fontsize=20)
         plt.plot(scoreRegion,c='black')
         plt.xlim(self.sbin,self.ebin)
-        plt.plot([self.sbin,self.ebin],[score.mean(),score.mean()],"k--",linewidth=0.4)
+        plt.plot([self.sbin,self.ebin],[0,0],"k--",linewidth=0.4)
         if self.plotall: self.ebin = self.ebin-1
         plt.fill_between(np.arange(self.sbin,self.ebin+1,1),scoreRegion,\
                         where = scoreRegion >0,facecolor='#e9a3c9', alpha=0.5)
