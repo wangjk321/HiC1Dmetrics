@@ -162,7 +162,7 @@ class intraScoreChange(BasePara):
                 continue
 
             array[i] = np.log2(t/c)
-        return super().makeDF(array,"IntraTADscore Change")
+        return super().makeDF(array,"IntraTADscoreChange")
 
     def getCSV(self):
         super().makeCSV(self.getIntraSC())
@@ -184,7 +184,7 @@ class interScoreChange(BasePara):
                 continue
 
             array[i] = np.log2(t/c)
-        return super().makeDF(array,"InterTADscore Change")
+        return super().makeDF(array,"InterTADscoreChange")
 
     def getCSV(self):
         super().makeCSV(self.getInterSC())

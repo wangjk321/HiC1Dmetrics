@@ -143,7 +143,8 @@ def CLI():
     #Function 4
     #=============================================================================
     def func_types(args):
-        typelist = args.type.split(",")
+        args.matrix = args.data
+        typelist = args.typelist.split(",")
         parameterlist = args.parameter.split(",")
         if not args.controlmatrix:
             if not set(typelist).issubset(["IS","CI","DI","SS","DLR","PC1","IES","IAS","IF"]):
@@ -161,6 +162,10 @@ def CLI():
             if not set(typelist).issubset(["ISC","CIC","SSC","deltaDLR","CD","IESC","IASC","IFC","DRF"]):
                 print("Error: not supported"); exit(1)
             if "IFC" in typelist and args.datatype == "matrix": print("Error: IFC required rawhic datatype"); exit(1)
+            if "DRF" in typelist:
+                DRFpos = typelist.index("DRF")
+                parameterlist[DRFpos] = parameterlist[DRFpos].split("-")
+                print(parameterlist)
             ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
             if not args.draw:
                 score = ms.allTwoScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt)
@@ -174,8 +179,8 @@ def CLI():
 
     parser_types = subparsers.add_parser("multitypes",help="Various types of 1D metrics for the same sample",
                                             description="Various types of 1D metrics for the same sample")
-    parser_types.add_argument('type', type=str, help='Type of 1D metrics,should be {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF} or {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
-    parser_types.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
+    parser_types.add_argument('typelist', type=str, help='Type of 1D metrics,should be {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF} or {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
+    parser_types.add_argument('data', type=str, help='Path of matrix file or raw .hic file')
     parser_types.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_types.add_argument("chromosome",type=str,help="Chromosome number.")
     parser_types.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None,required=True)
@@ -225,10 +230,10 @@ def CLI():
     parser_samples = subparsers.add_parser("multisamples",help="The same metrics for muliple samples",
                                             description="The same metrics for muliple samples")
     parser_samples.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF} or {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
+    parser_samples.add_argument('data',type=str,help="a txt contain paths for all samples")
     parser_samples.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_samples.add_argument("chromosome",type=str,help="Chromosome number.")
     parser_samples.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
-    parser_samples.add_argument('--txt',type=str,help="a txt contain paths for all samples",default="matrix")
     parser_samples.add_argument('--samplelist', type=str, help='list of file path, can be rawhic or matrix')
     parser_samples.add_argument('--labels', type=str, help='list of file name')
     parser_samples.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
@@ -287,8 +292,13 @@ def CLI():
     parser_call.add_argument('--gt',type=str,help="genome table",default="")
     parser_call.set_defaults(func=func_call)
 
+    parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
-    try: func = args.func
+    if args.version:
+        print("h1d version 0.0.21")
+        exit(0)
+    try:
+        func = args.func
     except AttributeError:
         parser.error("too few arguments")
     func(args)

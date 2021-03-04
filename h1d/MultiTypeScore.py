@@ -43,10 +43,10 @@ class multiScore:
         elif mode == "DLR":
             if not parameter: parameter=3000000
             score = DistalToLocalRatio(self.path,self.res,self.chr,sizeDLR=int(parameter)).getDLR()
-        elif mode == "intraS":
+        elif mode == "IAS":
             if not parameter: parameter=300000
             score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = int(parameter))
-        elif mode == "interS":
+        elif mode == "IES":
             if not parameter: parameter=300000
             score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = int(parameter))
         elif mode == "PC1":
@@ -81,7 +81,7 @@ class multiScore:
             score.columns = ["chr","start","end",custom_name]
         elif mode == "stripe":
             score = stripeTAD(self.path,self.res,self.chr).callStripe(seg=parameter)
-        else: print("Error: Please use the right mode")
+        else: print("Error: Please use the right mode"); exit(1)
 
         return(score)
 
@@ -167,7 +167,7 @@ class multiScore:
         elif mode == "DRF":
             if not parameter: parameter=[200000,5000000]
             score = DirectionalRelativeFreq(self.path,self.control_path,self.res,self.chr,
-                                            start_distance=parameter[0], end_distance=parameter[1]).getDRF()
+                                            start_distance=int(parameter[0]), end_distance=int(parameter[1])).getDRF()
         elif mode == "CD":
             if not parameter: parameter="pearson"
             score = CorrelationDifference(self.path,self.control_path,self.res,self.chr,method=parameter).getCorrD()
