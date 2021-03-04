@@ -142,7 +142,7 @@ class repQC:
         plt.imshow(self.score.iloc[sbin:ebin,:].T,aspect="auto",interpolation='nearest',vmin=vmin,vmax=vmax)
         plt.colorbar()
 
-    def heatmap_tri(self,hic_path,start,end,clmax=100,heatmin=None,plottype="heat"):
+    def heatmap_tri(self,hic_path,start,end,clmax=None,heatmin=None,plottype="heat"):
         sbin = start//self.res
         ebin = end//self.res
         if ebin ==0: ebin = self.score.shape[0]

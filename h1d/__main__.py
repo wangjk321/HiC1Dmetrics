@@ -209,7 +209,8 @@ def CLI():
             ms.corr_plot()
             plt.savefig(args.outname+"_corr.pdf")
         elif args.line or args.heat:
-            ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
+            ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
+                        datatype=args.datatype,gt=args.gt)
             score = ms.score
             if args.datatype == "matrix":
                 plotpath= samplelist[0]
@@ -219,7 +220,7 @@ def CLI():
             if args.heat: plottype = "heat"
             elif args.line: plottype = "line"
 
-            ms.heatmap_tri(plotpath,args.start,args.end,clmax=100,heatmin=None,plottype=plottype)
+            ms.heatmap_tri(plotpath,args.start,args.end,clmax=args.clmax,heatmin=None,plottype=plottype)
             plt.savefig(args.outname+"_"+plottype+".pdf")
 
         score.to_csv(args.outname + ".csv", sep="\t", header=True, index=False)
@@ -244,6 +245,7 @@ def CLI():
     parser_samples.add_argument("--line",action='store_true',help="Plot line chart for all samples",default=False)
     parser_samples.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_samples.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
+    parser_samples.add_argument('--clmax',type=int,help="End sites for plotting",default=None)
 
     parser_samples.set_defaults(func=func_samples)
 
