@@ -197,7 +197,7 @@ def CLI():
     #=============================================================================
     def func_samples(args):
         if args.type == "IF" and args.datatype == "matrix": print("Error: IF required rawhic datatype"); exit(1)
-        datafile = pd.read_csv(args.txt,sep="\t",header=None)
+        datafile = pd.read_csv(args.data,sep="\t",header=None)
         labels = list(datafile.iloc[:,0])
         samplelist = list(datafile.iloc[:,1])
         if not args.corr and not args.heat and not args.line:
