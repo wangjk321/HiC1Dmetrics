@@ -153,12 +153,13 @@ class repQC:
         hp = PlotTAD(hic_path,self.res,self.chr,start,end,clmax=clmax)
         hp.draw()
 
-        plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
         df = self.score.iloc[sbin:ebin,3:].T
         if plottype == "heat":
+            plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=self.nScore//2,colspan=11)
             plt.imshow(df,aspect="auto",interpolation='none',cmap="Purples",vmin=heatmin)
             plt.yticks(range(len(self.namelist)),self.namelist)
         elif plottype == "line":
+            plt.subplot2grid((5+self.nScore,11),(5,0),rowspan=2,colspan=11)
             df.columns = range(df.shape[1])
             print(df.T)
             df.T.plot(ax=plt.gca())
