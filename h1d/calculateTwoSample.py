@@ -54,11 +54,11 @@ class TADScoreChange(BasePara):
         if mode == "IS":
             treat = InsulationScore(self.path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
             control = InsulationScore(self.control_path,self.resolution,self.chromosome,square_size=parameter).getIS().InsulationScore
-            title = "InsulationScore Change"
+            title = "InsulationScoreChange"
         elif mode == "CI":
             treat = ContrastIndex(self.path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
             control = ContrastIndex(self.control_path,self.resolution,self.chromosome,CI_size=parameter).getCI().ContrastIndex
-            title = "ContrastIndex Change"
+            title = "ContrastIndexChange"
         elif mode == "DI":
             treat = DirectionalityIndex(self.path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
             control = DirectionalityIndex(self.control_path,self.resolution,self.chromosome,DI_distance=parameter).getDI().DirectionalityIndex
@@ -66,7 +66,7 @@ class TADScoreChange(BasePara):
         elif mode == "TADss":
             treat = SeparationScore(self.path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
             control = SeparationScore(self.control_path,self.resolution,self.chromosome,TADss_size=parameter).getTADss().SeparationScore
-            title = "SeparationScore Change"
+            title = "SeparationScoreChange"
 
         change = np.array(treat - control)
         return super().makeDF(change,title)

@@ -191,7 +191,6 @@ class multiScore:
             score.index = range(score.shape[0])
         else: print("Error: Please specify the correct mode")
 
-        #if datatype == "rawhic" and mode != "IF": os.system("rm -rf MatrixTemp*")
         return(score,self.path,self.control_path)
 
     def allTwoScore(self,typelist=["ISC","CIC","DIC","SSC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],

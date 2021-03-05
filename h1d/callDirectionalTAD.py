@@ -4,67 +4,6 @@ from .plotMetrics import *
 from .plotTwoSample import *
 import sys
 
-'''
-def TADcallIS(matrixPath,resolution,chromosome,squareSize=300000,useNA=True):
-    ISbedgraph = InsulationScore(matrixPath,resolution,chromosome,square_size=squareSize,useNA=useNA).getIS()
-    ISoneNA = ISbedgraph.InsulationScore
-    ISone = pd.Series(np.nan_to_num(ISoneNA))
-
-    # local minimal
-    localMinPos = argrelextrema(np.array(ISone), np.less)
-    localMinIS = ISone.iloc[localMinPos]
-
-    # 0< IS <0.8
-    localMinIS = localMinIS[localMinIS!=0]
-    localMinIS = localMinIS[localMinIS< np.mean(ISoneNA)]
-
-    #Around TAD boundary
-    binNum = int(100000/resolution)
-    localMinAround = []
-    aroundZero=[]
-    diffrightleft=[]
-
-    for i in localMinIS.index:
-        # local minimal around 100kb
-        localMinAround.append(ISone.loc[i-binNum:i+binNum].min())
-
-        #IS_around !=0
-        aroundZero.append(ISone.loc[i-binNum*2:i+binNum*2].min())
-
-        #strong boundary
-        minusbin = ISone.loc[i-binNum] - ISone.loc[i]
-        plusbin = ISone.loc[i+binNum] - ISone.loc[i]
-        diffrightleft.append(minusbin+plusbin)
-
-    bool1 = (np.array(localMinIS)-np.array(localMinAround)) <= 0
-    bool2 = np.array(aroundZero)>0
-    bool3 = np.array(diffrightleft)>0.05
-    localMinIS = localMinIS[bool1 * bool2 * bool3]
-
-    # build a table as output
-    TADnumber = len(localMinIS)
-    chrlist = [chromosome] * (TADnumber-1)
-    TADstart = (np.array(localMinIS.index)[:-1])*resolution
-    TADend = (np.array(localMinIS.index)[1:])*resolution
-    TADout = pd.DataFrame()
-    TADout["chr"] = chrlist
-    TADout["TADstart"] = TADstart
-    TADout["TADend"] = TADend
-    #Maximum TAD size 5MB, Minimum 0.3MB
-    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])<=5000000]
-    TADout = TADout[(TADout["TADend"]-TADout["TADstart"])>=300000]
-
-    withNA=[]
-    for i in range(TADout.shape[0]):
-        s = np.array(TADout.TADstart)[i] // resolution
-        e = np.array(TADout.TADend)[i] // resolution
-        whetherNAIS = np.isnan(sum(ISoneNA[s:e+1]))
-        withNA.append(~whetherNAIS)
-    TADout = TADout[withNA]
-
-    return(TADout)
-'''
-
 class PlotTAD(PlotTri):
     def drawTAD(self,squareSize=300000,useNA=True):
         Tad = TADcallIS(self.path,self.resolution,self.chr,squareSize,useNA=useNA)

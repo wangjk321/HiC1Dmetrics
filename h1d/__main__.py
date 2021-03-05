@@ -4,6 +4,7 @@ from .plotMetrics import *
 from .plotTwoSample import *
 from .MultiSampleScore import *
 from .callDirectionalTAD import *
+from .calldTADAllchr import *
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is python3-based tools to \
@@ -14,6 +15,7 @@ def CLI():
 
     #Function 1
     def func_basic(args):
+        args.matrix = args.data
         if args.mode == "plot":
             if args.datatype == "rawhic":
                 path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
@@ -39,6 +41,11 @@ def CLI():
                     DiffDraw(path,controlpath,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).drawTAD(squareSize=int(args.parameter))
             plt.savefig(args.outname+".pdf")
         elif args.mode == "dump":
+            if args.chromosome == "all":
+                allJuicer(args.data,args.normalize,args.resolution,args.gt,args.outname,
+                        maxchr=args.maxchr,num=args.nProcesser)
+                exit(0)
+
             if args.datatype not in ["rawhic"] or not args.gt:
                 print("Error: dump requires rawhic file and genome_table file"); exit(1)
             codepath = os.path.dirname(os.path.realpath(__file__))
@@ -47,30 +54,42 @@ def CLI():
             foldername = args.outname
             os.system("sh "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
                     str(args.resolution)+" "+args.gt+" "+juicer+" "+args.chromosome+" "+foldername)
-
+        elif args.mode == "gd":
+            codepath = os.path.dirname(os.path.realpath(__file__))
+            gdcode = codepath+"/gd/makeDensity.sh"
+            os.system("sh "+gdcode+" -r "+str(args.resolution)+" -g "+args.data+" -t "+args.chromosome+" -o "+args.outname)
         else:
             print("Unsupported mode"); exit(1)
     parser_basic = subparsers.add_parser("basic",help="Provide basic functions to visualize and handle Hi-C data.")
-    parser_basic.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
-    parser_basic.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
+    parser_basic.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dump,plot}')
+    parser_basic.add_argument('data', type=str, help='Path of matrix file from JuicerResult')
     parser_basic.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_basic.add_argument("chromosome",type=str,help="Chromosome number.")
-    parser_basic.add_argument("-o","--outname",help="output name",type=str,default="basic")
+    parser_basic.add_argument("-o","--outname",help="output name",type=str,default="unname")
     parser_basic.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
     parser_basic.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
     parser_basic.add_argument('--gt',type=str,help="genome table",default="")
-    parser_basic.add_argument('--plottype',type=str,help="genome table",default="tri")
+    parser_basic.add_argument('--plottype',type=str,help="Type of plot, could be one of {tri,square,tad}",default="tri")
     parser_basic.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_basic.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_basic.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
-    parser_basic.add_argument("--normalize",type=str,help="Parameter for indicated metrics",default="KR")
+    parser_basic.add_argument("--normalize",type=str,help="Normalize methods {NONE/VC/VC_SQRT/KR}",default="KR")
+    parser_basic.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
+    parser_basic.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
     parser_basic.set_defaults(func=func_basic)
 
     #Function 2
     #=============================================================================
     def func_one(args):
-        if args.allchr:
-            if datatype not in ["folder","rawhic"]: print("Error: not supported"); exit(1)
+        args.matrix = args.data
+        if args.chromosome == "all":
+            if not args.maxchr: print("Please sepcify the maximum chromosome"); exit(1)
+            if not os.path.exists(args.data):
+                print("path not exist"); exit(1)
+            scoreAll =oneScoreAllchr(args.data,args.resolution,args.type,args.parameter,
+                                    maxchr=args.maxchr,prefix=args.prefix,num=args.nProcesser)
+            scoreAll.to_csv(args.outname+"_"+args.type+"_allchr.csv",sep="\t",index=False)
+            exit(0)
 
         if args.parameter and args.type not in ["PC1","IF"]:
             args.parameter = int(args.parameter)
@@ -93,22 +112,36 @@ def CLI():
     parser_one = subparsers.add_parser("one",help="1D metrics designed for one Hi-C sample.",
                                             description="1D metrics designed for one Hi-C sample.")
     parser_one.add_argument('type', type=str, help='Type of 1D metrics,,should be one of {IS,CI,DI,SS,DLR,PC1,IES,IAS,IF}.')
-    parser_one.add_argument('matrix', type=str, help='Path of matrix or rawhic file.')
+    parser_one.add_argument('data', type=str, help='Path of matrix or rawhic file.')
     parser_one.add_argument('resolution', type=int,help="Resolution of input matrix.")
     parser_one.add_argument("chromosome",type=str,help="Chromosome number.")
     parser_one.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics.",default=None)
-    parser_one.add_argument("-o","--outname",help="output name (default: 'metrics').",type=str,default="metrics")
+    parser_one.add_argument("-o","--outname",help="output name (default: 'metrics').",type=str,default="unname")
     parser_one.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region.",default=False)
     parser_one.add_argument("-s",'--start',type=int,help="Start sites for plotting.",default=0)
     parser_one.add_argument("-e",'--end',type=int,help="End sites for plotting.",default=0)
     parser_one.add_argument('--datatype',type=str,help="Type of input data: matrix(default) or rawhic.",default="matrix")
     parser_one.add_argument('--gt',type=str,help="genome_table file.",default="")
-    parser_one.add_argument('--allchr',action='store_true',help="Calculate metrics for multiple chromosomes.",default=False)
+    parser_one.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
+    parser_one.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
+    parser_one.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
     parser_one.set_defaults(func=func_one)
 
     #Function 3
     #=============================================================================
     def func_two(args):
+        args.matrix = args.data
+        args.controlmatrix = args.controldata
+
+        if args.chromosome == "all":
+            if not args.maxchr: print("Please sepcify the maximum chromosome"); exit(1)
+            if not os.path.exists(args.data):
+                print("path not exist"); exit(1)
+            scoreAll =twoScoreAllchr(args.data,args.controldata,args.resolution,args.type,args.parameter,
+                                    maxchr=args.maxchr,prefix=args.prefix)
+            scoreAll.to_csv(args.outname+"_"+args.type+"_allchr.csv",sep="\t",index=False)
+            exit(0)
+
         ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
         score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt)
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
@@ -127,8 +160,8 @@ def CLI():
     parser_two = subparsers.add_parser("two",help="1D metrics designed for comparison of two Hi-C samples",
                                             description="1D metrics designed for comparison of two Hi-C samples")
     parser_two.add_argument('type', type=str, help='Type of 1D metrics for two-sample comparison,should be one of {ISC,CIC,SSC,deltaDLR,CD,IESC,IASC,IFC,DRF}')
-    parser_two.add_argument('matrix', type=str, help='Path of treated file (matrix or rawhic).')
-    parser_two.add_argument('controlmatrix', type=str, help='Path of control file (matrix or rawhic).')
+    parser_two.add_argument('data', type=str, help='Path of treated file (matrix or rawhic).')
+    parser_two.add_argument('controldata', type=str, help='Path of control file (matrix or rawhic).')
     parser_two.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_two.add_argument("chromosome",type=str,help="Chromosome number ('chr21',i.e).")
     parser_two.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None)
@@ -138,6 +171,9 @@ def CLI():
     parser_two.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_two.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
     parser_two.add_argument('--gt',type=str,help="genome table file",default="")
+    parser_two.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
+    parser_two.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
+    parser_two.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
     parser_two.set_defaults(func=func_two)
 
     #Function 4
@@ -252,6 +288,7 @@ def CLI():
     #Function 6
     #=============================================================================
     def func_call(args):
+        args.matrix = args.data
         if args.datatype == "rawhic" and args.mode != "hubs":
             path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
             if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
@@ -260,11 +297,17 @@ def CLI():
             controlpath = args.controlmatrix
 
         if args.mode == "TAD":
-            tad = TADcallIS(path,args.resolution,args.chromosome,squareSize=300000)
+            if not args.parameter: args.parameter = 300000
+            tad = TADcallIS(path,args.resolution,args.chromosome,squareSize=int(args.parameter))
             tad.to_csv(args.outname + "_TAD.csv", sep="\t", header=True, index=False)
         elif args.mode == "dTAD":
+            if args.parameter:
+                parameter = args.parameter.split("-")
+            else:
+                parameter = [200000,5000000]
             if not args.controlmatrix: print("Error: DRF requires control data"); exit(1)
-            dt = DirectionalTAD(path,controlpath,args.resolution,args.chromosome)
+            dt = DirectionalTAD(path,controlpath,args.resolution,args.chromosome,
+                                startDRF=int(parameter[0]), sizeDRF=int(parameter[1]))
             leftdTAD,rightdTAD,_ = dt.extractRegion()
             leftdTAD.to_csv(args.outname + "_leftdTAD.csv", sep="\t", header=True, index=False)
             rightdTAD.to_csv(args.outname + "_rightdTAD.csv", sep="\t", header=True, index=False)
@@ -284,20 +327,21 @@ def CLI():
 
     parser_call = subparsers.add_parser("call",help="Extract secondary information from metrics (dTAD, stripeTAD, et.al)",
                                             description="Extract secondary information from metrics (dTAD, stripeTAD, et.al)")
-    parser_call.add_argument('mode', type=str, help='Type of 1D metrics,,should be one of {dTAD,stripe,PC1,TAD,hubs}')
-    parser_call.add_argument('matrix', type=str, help='Path of matrix file from JuicerResult')
+    parser_call.add_argument('mode', type=str, help='Running mode,,should be one of {dTAD,stripe,TAD,hubs}')
+    parser_call.add_argument('data', type=str, help='Path of matrix file or raw .hic file')
     parser_call.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_call.add_argument("chromosome",type=str,help="Chromosome number.")
     parser_call.add_argument("-o","--outname",help="output name",type=str,default="defaultname")
     parser_call.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
     parser_call.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
     parser_call.add_argument('--gt',type=str,help="genome table",default="")
+    parser_call.add_argument("-p","--parameter",type=str,help="Parameter for indicated mode",default=None)
     parser_call.set_defaults(func=func_call)
 
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.0.21")
+        print("h1d version 0.1.0")
         exit(0)
     try:
         func = args.func
@@ -305,6 +349,7 @@ def CLI():
         parser.error("too few arguments")
     func(args)
     os.system("rm -rf MatrixTemp*")
+    os.system("rm -rf info.txt")
 
 if __name__ == '__main__':
     CLI()

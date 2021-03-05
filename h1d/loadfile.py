@@ -25,6 +25,6 @@ def hic2matrix(path,res,chr,gt):
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
     juicer = codepath+"/jc/jctool_1.11.04.jar"
     foldername = "./MatrixTemp"+str(random.random())
-    os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername)
+    os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername + "> info.txt")
     matrixpath = foldername+"/"+str(res)+"/observed.KR."+chr+".matrix.gz"
     return(matrixpath)

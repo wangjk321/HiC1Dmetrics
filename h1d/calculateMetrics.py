@@ -51,7 +51,7 @@ class InteractionFrequency:
         soft = codepath+"/InteractionFreq.sh"
         juicer = codepath+"/jc/jctool_1.11.04.jar"
         chrnum = chromosome.split("chr")[1]
-        os.system("sh '"+soft+"' '"+juicer+"' "+path+" "+chrnum+" "+str(resolution)+" "+gt+" "+"IF_"+chromosome) #in case of space
+        os.system("sh '"+soft+"' '"+juicer+"' "+path+" "+chrnum+" "+str(resolution)+" "+gt+" "+"IF_"+chromosome+"> info.txt") #in case of space
         score = pd.read_csv("IF_"+chromosome+".bedGraph",sep="\t",header=None)
         if normIF:
             beforlog = score[3].copy()
