@@ -132,7 +132,7 @@ def oneJuicer(chrom,data,normalize,resolution,gt,outname):
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
     juicer = codepath+"/jc/jctool_1.11.04.jar"
     foldername = outname
-    os.system("sh "+makeIntra+" "+normalize+" "+"."+" "+data+" "+
+    os.system("bash "+makeIntra+" "+normalize+" "+"."+" "+data+" "+
             str(resolution)+" "+gt+" "+juicer+" "+chrom+" "+foldername + "> info.txt")
     try: os.system("rm info.txt")
     except: pass
