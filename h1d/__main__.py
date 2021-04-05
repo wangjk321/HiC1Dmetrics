@@ -99,7 +99,7 @@ def CLI():
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
         if args.draw:
-            if args.allchr: print("Error: not supported"); exit(1)
+            if args.chromosome=="all": print("Error: not supported"); exit(1)
             if args.type == "IF":
                 args.parameter = args.outname + ".bedGraph"
             print("==========output figure==========")
