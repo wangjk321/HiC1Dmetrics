@@ -246,12 +246,12 @@ def CLI():
             ms.corr_plot()
             plt.savefig(args.outname+"_corr.pdf")
         elif args.discrete:
-
             if args.datatype == "rawhic":
                 print("not supported");exit(1)
             msd = multiSampleDiscrete(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter)
             plotpath= samplelist[0]
             msd.plotMultiDiscrete(plotpath,args.start,args.end)
+            plt.savefig(args.outname+"_discrete.pdf")
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                         datatype=args.datatype,gt=args.gt)
