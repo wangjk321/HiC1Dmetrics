@@ -1,9 +1,0 @@
-pandas
-numpy
-scikit-learn
-scipy
-matplotlib
-seaborn
-multiprocess
-fithic==2.0.7
-statsmodels
