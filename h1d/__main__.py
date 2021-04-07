@@ -252,6 +252,7 @@ def CLI():
             plotpath= samplelist[0]
             msd.plotMultiDiscrete(plotpath,args.start,args.end)
             plt.savefig(args.outname+"_discrete.pdf")
+            exit(0)
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                         datatype=args.datatype,gt=args.gt)
