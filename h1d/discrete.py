@@ -66,6 +66,9 @@ def getDiscrete(path,res,chr,mode,parameter,control_path="",label=True):
         score = IS
         score.iloc[:,3] =state
         score.columns=["chr","start","end","TADborder"]
+    else:
+        print("Only support PC1|border")
+        exit(1)
 
     return(score)
 
