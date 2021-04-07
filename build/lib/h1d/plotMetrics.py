@@ -15,8 +15,9 @@ class PlotCommon(object):
             codepath = os.path.dirname(os.path.realpath(__file__))
             makeIntra = codepath+"/extract/makeMatrixIntra.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
-            os.system("sh "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr)
-            path = "./MatrixTemp/"+str(resolution)+"/observed.KR."+chr+".matrix.gz"
+            foldername = "./MatrixTemp"+str(random.random())
+            os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr+" "+foldername+ ">> info.txt")
+            path = foldername+"/"+str(resolution)+"/observed.KR."+chr+".matrix.gz"
         matrix = loadDenseMatrix(path).values
 
         self.path = path
@@ -32,7 +33,7 @@ class PlotCommon(object):
         ebin = int(endSite/resolution)
         self.chr = chr
         self.other_parameter = other_parameter
-        self.datatype = datatype
+        self.datatype = "matrix"
 
         if endSite == 0:
             self.matrixRegion = np.nan_to_num(self.matrix.copy())

@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: h1d
+Version: 0.1.5
+Summary: HiC1Dmetrics pip version
+Home-page: https://github.com/wangjk321/HiC1Dmetrics
+Author: wangjiankng
+Author-email: wangjk321@gmail.com
+License: UNKNOWN
+Description: # HiC1Dmetrics
+        This repository contain code and basic tutorial for "HiC1Dmetrics"
+        
+        ![figure1](https://github.com/wangjk321/HiC1Dmetrics/blob/master/IMG/Figure1.png)
+        
+        # Installation
+        
+        HiC1Dmetrics was based on `python3` and released on [PyPI](https://pypi.org/project/h1d/), it could be installed by
+        
+        ```python
+        pip install h1d
+        ```
+        After installation, try:
+        ```
+        $ h1d -V
+        h1d version 0.1.0
+        ```
+        
+        # Documents
+        
+        For detailed usage, please refer to [h1d Documents](https://h1d.readthedocs.io/en/latest/)
+        
+        # Web application
+        
+        Please click [hic1d webapp](http://hic1d.herokuapp.com)
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

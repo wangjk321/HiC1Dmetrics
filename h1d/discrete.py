@@ -1,5 +1,5 @@
-from MultiTypeScore import *
-from calculateMetrics import *
+from .MultiTypeScore import *
+from .calculateMetrics import *
 import os
 
 def getDiscrete(path,res,chr,mode,parameter,control_path="",label=True):

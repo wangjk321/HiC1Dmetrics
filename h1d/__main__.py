@@ -5,6 +5,7 @@ from .plotTwoSample import *
 from .MultiSampleScore import *
 from .callDirectionalTAD import *
 from .calldTADAllchr import *
+from .discrete import *
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is python3-based tools to \
@@ -236,7 +237,7 @@ def CLI():
         datafile = pd.read_csv(args.data,sep="\t",header=None)
         labels = list(datafile.iloc[:,0])
         samplelist = list(datafile.iloc[:,1])
-        if not args.corr and not args.heat and not args.line:
+        if not args.corr and not args.heat and not args.line and not args.discrete:
             score = getMultiSamplesScore(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                                         datatype=args.datatype,gt=args.gt)
         elif args.corr:
@@ -244,6 +245,13 @@ def CLI():
             score = ms.score
             ms.corr_plot()
             plt.savefig(args.outname+"_corr.pdf")
+        elif args.discrete:
+
+            if args.datatype == "rawhic":
+                print("not supported");exit(1)
+            msd = multiSampleDiscrete(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter)
+            plotpath= samplelist[0]
+            msd.plotMultiDiscrete(plotpath,args.start,args.end)
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                         datatype=args.datatype,gt=args.gt)
@@ -279,6 +287,7 @@ def CLI():
     parser_samples.add_argument("--corr",action='store_true',help="Plot correlation for all samples",default=False)
     parser_samples.add_argument("--heat",action='store_true',help="Plot raw heatmap for all samples",default=False)
     parser_samples.add_argument("--line",action='store_true',help="Plot line chart for all samples",default=False)
+    parser_samples.add_argument("--discrete",action='store_true',help="Plot discrete heatmap for all samples",default=False)
     parser_samples.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_samples.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_samples.add_argument('--clmax',type=int,help="End sites for plotting",default=None)

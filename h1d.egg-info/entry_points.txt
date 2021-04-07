@@ -1,0 +1,3 @@
+[console_scripts]
+h1d = h1d.__main__:CLI
+
