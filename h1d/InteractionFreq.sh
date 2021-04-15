@@ -36,7 +36,7 @@ zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|
 zcat < FitHiC.spline_pass1.res$res.significances.txt.gz|awk '$7<0.05{print $0}'|cut -f 4 >> Anchor.txt
 
 awk '{print "'$chromosome'""\t"$1"\t"$1+"'$res'"}' Anchor.txt > Anchor.bed
-bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > $outname.bedgraph
+bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > $outname.bedGraph
 
 rm dump.temp.txt start end fragment.temp.gz fithic.temp.gz
 rm FitHiC.fithic* FitHiC.spline_pass1.*.significances.txt.gz
