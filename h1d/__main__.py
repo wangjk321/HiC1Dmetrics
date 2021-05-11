@@ -351,7 +351,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.0")
+        print("h1d version 0.1.8")
         exit(0)
     try:
         func = args.func
