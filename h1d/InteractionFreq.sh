@@ -28,7 +28,7 @@ seq $res $res $endlength > end2
 paste start end2 |awk -v ch=$chromosome '{printf "%s\t%d\t%d\n", ch,$1,$2}'  > genome.split
 
 #step4 run Fit-Hi-C
-fithic -i fithic.temp.gz -f fragment.temp.gz -r 50000 -o .
+fithic -i fithic.temp.gz -f fragment.temp.gz -r $res -o .
 
 #step5 extract significant interactions
 touch Anchor.txt
