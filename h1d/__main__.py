@@ -126,6 +126,7 @@ def CLI():
     parser_one.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
     parser_one.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
     parser_one.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
+    parser_one.add_argument("-t","--TADfile",type=str,help="Give a TAD file, instead of using building-in TAD calling method",default=None)
     parser_one.set_defaults(func=func_one)
 
     #Function 3
