@@ -96,7 +96,7 @@ def CLI():
             args.parameter = int(args.parameter)
 
         score = multiScore(args.matrix,args.resolution,args.chromosome,
-                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt)
+                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
         if args.draw:
@@ -352,7 +352,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.9")
+        print("h1d version 0.1.11")
         exit(0)
     try:
         func = args.func

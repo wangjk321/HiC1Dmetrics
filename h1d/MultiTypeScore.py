@@ -22,7 +22,7 @@ class multiScore:
 
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix"):
+                        custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None):
         if datatype == "rawhic" and not gt: raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
@@ -45,10 +45,10 @@ class multiScore:
             score = DistalToLocalRatio(self.path,self.res,self.chr,sizeDLR=int(parameter)).getDLR()
         elif mode == "IAS":
             if not parameter: parameter=300000
-            score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = int(parameter))
+            score = intraTADscore(self.path,self.res,self.chr).getIntraS(IS_size = int(parameter),TADfile=TADfile)
         elif mode == "IES":
             if not parameter: parameter=300000
-            score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = int(parameter))
+            score = interTADscore(self.path,self.res,self.chr).getInterS(IS_size = int(parameter),TADfile=TADfile)
         elif mode == "PC1":
             if not parameter:
                 warnings.warn("The sign of eigenvector is arbitrary unless specify a geneDensity file")

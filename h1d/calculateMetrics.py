@@ -392,12 +392,16 @@ class CompartmentPC1(BasePara):
         super.makeCSV(self.getPC1())
 
 class intraTADscore(CompartmentPC1):
-    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True):   #this useNA is for TAD calling
+    def getIntraS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,smooth=False,normTAD=True,TADfile=None):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
 
-        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+        if TADfile:
+            alltad=pd.read_csv(TADfile,sep="\t",header=None,names=['chr','TADstart','TADend'])
+            tad=alltad[alltad.chr==self.chromosome]
+        else:
+            tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
@@ -432,12 +436,16 @@ class intraTADscore(CompartmentPC1):
 
 class interTADscore(CompartmentPC1):
     def getInterS(self,IS_size=300000,useNA=True,TADpath=None,useOE=True,
-                logOE=False,smooth=False,normTAD=True,smoothScore=0.8):   #this useNA is for TAD calling
+                logOE=False,smooth=False,normTAD=True,smoothScore=0.8,TADfile=None):   #this useNA is for TAD calling
         if TADpath:
             usedPath = TADpath
         else:usedPath = self.path
 
-        tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
+        if TADfile:
+            alltad=pd.read_csv(TADfile,sep="\t",header=None,names=['chr','TADstart','TADend'])
+            tad=alltad[alltad.chr==self.chromosome]
+        else:
+            tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution
         array = self.blankarray
