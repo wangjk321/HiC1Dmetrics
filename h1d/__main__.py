@@ -261,7 +261,7 @@ def CLI():
             score = ms.score
             plist = ms.anova_like(args.start,args.end)
             df = pd.DataFrame()
-            df["chr"] = [args.chromosome]* score.shape[0]
+            df["chr"] = [args.chromosome]* len(range(args.start,args.end,args.resolution))
             df["start"] = list(range(args.start,args.end,args.resolution))
             df["end"] = df["start"] + args.resolution
             df['pvalue'] = plist
