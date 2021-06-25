@@ -265,7 +265,7 @@ def CLI():
             df["start"] = list(range(args.start,args.end,args.resolution))
             df["end"] = df["start"] + args.resolution
             df['pvalue'] = plist
-            df.to_csv(args.outname+"_anova.txt")
+            df.to_csv(args.outname+"_anova.txt",sep="\t",index=None)
 
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,

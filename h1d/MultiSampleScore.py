@@ -170,9 +170,7 @@ class repQC:
     def anova_like(self,start,end):
         sbin = start//self.res
         ebin = end//self.res
-        print(self.score)
         df = self.score.iloc[sbin:ebin,3:].T
-        print(df)
 
         nLoci = df.shape[1]
         nScore = df.shape[0]
@@ -181,7 +179,6 @@ class repQC:
             if (i-2)<0 or (i+2)>=nLoci: continue
             df_i = df.iloc[:,i-2:i+3]
             df_ilist = [df_i.iloc[j] for j in range(nScore)]
-            print(df_ilist)
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
 
