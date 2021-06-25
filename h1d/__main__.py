@@ -258,6 +258,7 @@ def CLI():
             if args.end == 0:
                 print("Please specify a region to calculate p-value");exit(1)
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
+            score = ms.score
             plist = ms.anova_like(args.start,args.end)
             df = pd.DataFrame()
             df["chr"] = args.chromosome
