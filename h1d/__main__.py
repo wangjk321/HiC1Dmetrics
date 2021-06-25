@@ -238,7 +238,7 @@ def CLI():
         datafile = pd.read_csv(args.data,sep="\t",header=None)
         labels = list(datafile.iloc[:,0])
         samplelist = list(datafile.iloc[:,1])
-        if not args.corr and not args.heat and not args.line and not args.discrete:
+        if not args.corr and not args.heat and not args.line and not args.discrete and not args.anova:
             score = getMultiSamplesScore(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                                         datatype=args.datatype,gt=args.gt)
         elif args.corr:
@@ -254,6 +254,18 @@ def CLI():
             msd.plotMultiDiscrete(plotpath,args.start,args.end)
             plt.savefig(args.outname+"_discrete.pdf")
             exit(0)
+        elif args.anova:
+            if args.end == 0:
+                print("Please specify a region to calculate p-value");exit(1)
+            ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
+            plist = ms.anova_like(args.start,args.end)
+            df = pd.DataFrame()
+            df["chr"] = args.chromosome
+            df["start"] = list(range(args.start,args.end,args.resolution))
+            df["end"] = df["start"] + self.resolution
+            df['pvalue'] = plist
+            df.to_csv(args.outname+"_anova.txt")
+
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                         datatype=args.datatype,gt=args.gt)
@@ -289,6 +301,7 @@ def CLI():
     parser_samples.add_argument("--corr",action='store_true',help="Plot correlation for all samples",default=False)
     parser_samples.add_argument("--heat",action='store_true',help="Plot raw heatmap for all samples",default=False)
     parser_samples.add_argument("--line",action='store_true',help="Plot line chart for all samples",default=False)
+    parser_samples.add_argument("--anova",action='store_true',help="Plot line chart for all samples",default=False)
     parser_samples.add_argument("--discrete",action='store_true',help="Plot discrete heatmap for all samples",default=False)
     parser_samples.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_samples.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
