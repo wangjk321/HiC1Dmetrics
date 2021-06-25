@@ -171,7 +171,7 @@ class repQC:
         sbin = start//self.res
         ebin = end//self.res
         print(self.score)
-        df = self.score.iloc[sbin:ebin,:].T
+        df = self.score.iloc[sbin:ebin,3:].T
         print(df)
 
         nLoci = df.shape[1]
