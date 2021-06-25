@@ -171,6 +171,7 @@ class repQC:
         sbin = start//self.res
         ebin = end//self.res
         df = self.score.iloc[sbin:ebin,:].T
+        print(df)
 
         nLoci = df.shape[1]
         nScore = df.shape[0]
@@ -179,6 +180,7 @@ class repQC:
             if (i-2)<0 or (i+2)>=nLoci: continue
             df_i = df.iloc[:,i-2:i+3]
             df_ilist = [df_i.iloc[j] for j in range(nScore)]
+            print(df_ilist)
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
 
