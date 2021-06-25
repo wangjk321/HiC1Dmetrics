@@ -170,6 +170,7 @@ class repQC:
     def anova_like(self,start,end):
         sbin = start//self.res
         ebin = end//self.res
+        print(self.score)
         df = self.score.iloc[sbin:ebin,:].T
         print(df)
 
