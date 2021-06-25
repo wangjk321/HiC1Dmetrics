@@ -262,7 +262,7 @@ def CLI():
             df = pd.DataFrame()
             df["chr"] = args.chromosome
             df["start"] = list(range(args.start,args.end,args.resolution))
-            df["end"] = df["start"] + self.resolution
+            df["end"] = df["start"] + args.resolution
             df['pvalue'] = plist
             df.to_csv(args.outname+"_anova.txt")
 
