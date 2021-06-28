@@ -183,7 +183,8 @@ class repQC:
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
         qvalue = multipletests(pvalue, method='fdr_bh')[1]
-
+        print(qvalue)
+        print(len(qvalue))
         return(arrays,qvalue)
 
         #from statsmodels.sandbox.stats.multicomp import multipletests
