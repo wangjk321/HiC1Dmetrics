@@ -259,12 +259,13 @@ def CLI():
                 print("Please specify a region to calculate p-value");exit(1)
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
             score = ms.score
-            plist = ms.anova_like(args.start,args.end)
+            plist,qlist = ms.anova_like(args.start,args.end)
             df = pd.DataFrame()
             df["chr"] = [args.chromosome]* len(range(args.start,args.end,args.resolution))
             df["start"] = list(range(args.start,args.end,args.resolution))
             df["end"] = df["start"] + args.resolution
             df['pvalue'] = plist
+            df['qvalue'] = qlist
             df.to_csv(args.outname+"_anova.txt",sep="\t",index=False)
 
         elif args.line or args.heat:

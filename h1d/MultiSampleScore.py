@@ -2,6 +2,7 @@ from .calculateMetrics import *
 import seaborn as sns
 from .loadfile import *
 import matplotlib.pyplot as plt
+from statsmodels.sandbox.stats.multicomp import multipletests
 
 def readIF(parameter,chr,normIF=True,custom_name="InteractionFrequency"):
     all = pd.read_csv(parameter,sep="\t",header=None)
@@ -181,8 +182,9 @@ class repQC:
             df_ilist = [df_i.iloc[j] for j in range(nScore)]
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
+        qvalue = multipletests(pvalue, method='fdr_bh')[1]
 
-        return(arrays)
+        return(arrays,qvalue)
 
         #from statsmodels.sandbox.stats.multicomp import multipletests
         #qvalue=multipletests(arrays, method='fdr_bh')
