@@ -185,8 +185,6 @@ class repQC:
 
         qvalue = np.zeros(nLoci)*np.NaN
         qvalue[~np.isnan(arrays)] = multipletests(arrays[~np.isnan(arrays)], method='fdr_bh')[1]
-        print(qvalue)
-        print(len(qvalue))
         return(arrays,qvalue)
 
         #from statsmodels.sandbox.stats.multicomp import multipletests
