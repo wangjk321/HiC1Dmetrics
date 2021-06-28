@@ -182,7 +182,7 @@ class repQC:
             df_ilist = [df_i.iloc[j] for j in range(nScore)]
             pvalue = stats.f_oneway(*df_ilist)[1]
             arrays[i] = pvalue
-        qvalue = multipletests(arrays[!np.isnan(arrays)], method='fdr_bh')[1]
+        qvalue = multipletests(arrays[~np.isnan(arrays)], method='fdr_bh')[1]
         print(qvalue)
         print(len(qvalue))
         return(arrays,qvalue)
