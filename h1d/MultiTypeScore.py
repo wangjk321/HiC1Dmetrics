@@ -29,6 +29,7 @@ class multiScore:
             self.path = hic2matrix(self.path,self.res,self.chr,gt)
         elif datatype == "cool" and mode != "IF":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
+            print(self.path)
 
         if mode == "IS":
             if not parameter: parameter=300000
