@@ -36,3 +36,4 @@ def cool2matrix(path,res,chr,gt):
     foldername = "./MatrixTemp"+str(random.random())
     os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt")
     matrixpath = foldername+"/"+str(res)+"/"+chr+".matrix.gz"
+    return(matrixpath)
