@@ -121,7 +121,7 @@ def CLI():
     parser_one.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region.",default=False)
     parser_one.add_argument("-s",'--start',type=int,help="Start sites for plotting.",default=0)
     parser_one.add_argument("-e",'--end',type=int,help="End sites for plotting.",default=0)
-    parser_one.add_argument('--datatype',type=str,help="Type of input data: matrix(default) or rawhic.",default="matrix")
+    parser_one.add_argument('--datatype',type=str,help="Type of input data: [matrix(default),rawhic,cool].",default="matrix")
     parser_one.add_argument('--gt',type=str,help="genome_table file.",default="")
     parser_one.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
     parser_one.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)

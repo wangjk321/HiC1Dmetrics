@@ -398,9 +398,11 @@ class intraTADscore(CompartmentPC1):
         else:usedPath = self.path
 
         if TADfile:
+            print('Use custom TAD region')
             alltad=pd.read_csv(TADfile,sep="\t",header=None,names=['chr','TADstart','TADend'])
             tad=alltad[alltad.chr==self.chromosome]
         else:
+            print('Use bulit-in TAD calling')
             tad = TADcallIS(usedPath,self.resolution,self.chromosome,squareSize=IS_size,useNA=useNA)
         leftBorder =  np.array(tad.TADstart) // self.resolution
         rightBorder = np.array(tad.TADend) // self.resolution

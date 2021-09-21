@@ -28,3 +28,11 @@ def hic2matrix(path,res,chr,gt):
     os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername + "> info.txt")
     matrixpath = foldername+"/"+str(res)+"/observed.KR."+chr+".matrix.gz"
     return(matrixpath)
+
+def cool2matrix(path,res,chr,gt):
+    if not gt: print("cool require genome_table file");exit(1)
+    codepath = os.path.dirname(os.path.realpath(__file__))
+    makeIntra = codepath+"/extract/coolerdump.sh"
+    foldername = "./MatrixTemp"+str(random.random())
+    os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt")
+    matrixpath = foldername+"/"+str(res)+"/"+chr+".matrix.gz"

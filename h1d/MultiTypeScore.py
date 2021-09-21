@@ -1,14 +1,14 @@
 from .calculateMetrics import *
 from .calculateTwoSample import *
-#from hmmlearn import hmm
 import matplotlib.pyplot as plt
 import seaborn as sns
 from .plotTwoSample import *
-#from plotMetrics import *
 from scipy import stats
 import os
 import subprocess
 #from callDirectionalTAD import *
+#from plotMetrics import *
+#from hmmlearn import hmm
 
 class multiScore:
     def __init__(self,path,res,chr,control_path=""):
@@ -27,6 +27,8 @@ class multiScore:
 
         if datatype == "rawhic" and mode != "IF":
             self.path = hic2matrix(self.path,self.res,self.chr,gt)
+        elif datatype == "cool" and mode != "IF":
+            self.path = cool2matrix(self.path,self.res,self.chr,gt)
 
         if mode == "IS":
             if not parameter: parameter=300000
