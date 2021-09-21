@@ -32,3 +32,4 @@ bedtools coverage -a genome.split -b Anchor.bed|cut -f 1-4 > $outname.bedGraph
 
 rm -rf looptemp
 rm end2 genome.split Anchor.bed Anchor.txt
+rm start end fragment.temp.gz
