@@ -6,6 +6,7 @@ from .MultiSampleScore import *
 from .callDirectionalTAD import *
 from .calldTADAllchr import *
 from .discrete import *
+from .stripe import *
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is python3-based tools to \
@@ -338,9 +339,13 @@ def CLI():
             leftdTAD,rightdTAD,_ = dt.extractRegion()
             leftdTAD.to_csv(args.outname + "_leftdTAD.csv", sep="\t", header=True, index=False)
             rightdTAD.to_csv(args.outname + "_rightdTAD.csv", sep="\t", header=True, index=False)
-        elif args.mode == "stripe":
+        elif args.mode == "stripeTAD":
             st = stripeTAD(path,args.resolution,args.chromosome)
-            stripe = st.callStripe(squareSize=300000)
+            stripeTAD = st.callStripe(squareSize=300000)
+            stripeTAD.to_csv(args.outname + "_stripeTAD.csv", sep="\t", header=True, index=False)
+        elif args.mode == "stripe":
+            st = call_stripe(path,args.resolution,args.chromosome)
+            stripe = st.callStripe(squareSize=300000,strong_thresh=0.2)
             stripe.to_csv(args.outname + "_stripe.csv", sep="\t", header=True, index=False)
         elif args.mode == "hubs":
             if args.datatype != "rawhic": print("Error: hubs requires rawhic datatype"); exit(1)
@@ -354,7 +359,7 @@ def CLI():
 
     parser_call = subparsers.add_parser("call",help="Extract secondary information from metrics (dTAD, stripeTAD, et.al)",
                                             description="Extract secondary information from metrics (dTAD, stripeTAD, et.al)")
-    parser_call.add_argument('mode', type=str, help='Running mode,,should be one of {dTAD,stripe,TAD,hubs}')
+    parser_call.add_argument('mode', type=str, help='Running mode,,should be one of {dTAD,stripe,stripeTAD,TAD,hubs}')
     parser_call.add_argument('data', type=str, help='Path of matrix file or raw .hic file')
     parser_call.add_argument('resolution', type=int,help="Resolution of input matrix")
     parser_call.add_argument("chromosome",type=str,help="Chromosome number.")
