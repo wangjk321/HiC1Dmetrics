@@ -34,6 +34,4 @@ class call_stripe(BasePara):
         localMaxIAS = localMaxIAS[bool1*bool2]
 
         outDF = iasDF.loc[localMaxIAS.index]
-
-        print(localMaxIAS)
         return outDF

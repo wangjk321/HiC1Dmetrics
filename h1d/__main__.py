@@ -346,7 +346,7 @@ def CLI():
         elif args.mode == "stripe":
             st = call_stripe(path,args.resolution,args.chromosome)
             stripe = st.callStripe(squareSize=300000,strong_thresh=0.2)
-            stripe.to_csv(args.outname + "_stripe.csv", sep="\t", header=True, index=False)
+            stripe.to_csv(args.outname + "_stripes.csv", sep="\t", header=True, index=False)
         elif args.mode == "hubs":
             if args.datatype != "rawhic": print("Error: hubs requires rawhic datatype"); exit(1)
             IF = InteractionFrequency(path,args.resolution,args.chromosome,gt=args.gt).getIF()
@@ -373,7 +373,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.11")
+        print("h1d version 0.1.13")
         exit(0)
     try:
         func = args.func
