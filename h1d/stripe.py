@@ -31,8 +31,9 @@ class call_stripe(BasePara):
 
         bool1 = (np.array(localMaxIAS)-np.array(localMaxAround)) >= 0
         bool2 = np.array(diffrightleft) > strong_thresh
-
         localMaxIAS = localMaxIAS[bool1*bool2]
-        
+
+        outDF = iasDF.loc[localMaxIAS.index]
+
         print(localMaxIAS)
-        return localMaxIAS
+        return outDF
