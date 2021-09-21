@@ -96,7 +96,7 @@ def CLI():
             args.parameter = int(args.parameter)
 
         score = multiScore(args.matrix,args.resolution,args.chromosome,
-                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
+                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,TADfile=args.TADfile,msi=args.msi)
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
         if args.draw:
@@ -122,6 +122,7 @@ def CLI():
     parser_one.add_argument("-s",'--start',type=int,help="Start sites for plotting.",default=0)
     parser_one.add_argument("-e",'--end',type=int,help="End sites for plotting.",default=0)
     parser_one.add_argument('--datatype',type=str,help="Type of input data: [matrix(default),rawhic,cool].",default="matrix")
+    parser_one.add_argument('--msi',type=str,help="Method for significant interactions: [fithic2,hiccups]",default="fithic2")
     parser_one.add_argument('--gt',type=str,help="genome_table file.",default="")
     parser_one.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
     parser_one.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)

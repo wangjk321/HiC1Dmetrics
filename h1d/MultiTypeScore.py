@@ -22,7 +22,8 @@ class multiScore:
 
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
-                        custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None):
+                        custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None,
+                        msi='fithic2'):
         if datatype == "rawhic" and not gt: raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
@@ -60,10 +61,16 @@ class multiScore:
             if not gt:
                 raise ValueError("Genometable is required for the calculation of IF")
             codepath = os.path.dirname(os.path.realpath(__file__))
-            soft = codepath+"/InteractionFreq.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             chrnum = self.chr.split("chr")[1]
-            os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+gt+" "+"IF_"+self.chr) #in case of space
+
+            if msi == 'hiccups':
+                soft = codepath+"/extract/hiccup.sh"
+                os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+gt+" "+"IF_"+self.chr)
+            else:
+                soft = codepath+"/InteractionFreq.sh"
+                os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+gt+" "+"IF_"+self.chr) #in case of space
+                
             score = pd.read_csv("IF_"+self.chr+".bedGraph",sep="\t",header=None)
             if normIF:
                 beforlog = score[3].copy()
