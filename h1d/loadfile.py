@@ -5,7 +5,11 @@ import random
 
 def loadDenseMatrix(filename,log=False):
     #print(filename)
-    data = pd.read_csv(filename, delimiter='\t', index_col=0)
+    try:
+        data = pd.read_csv(filename, delimiter='\t', index_col=0)
+    except:
+        raise ValueError('Error input matrix, please check https://h1d.readthedocs.io/en/latest/overview.html#input-format')
+        
     if log == True:
         return(np.log1p(data))
     else: return data
@@ -26,11 +30,11 @@ def hic2matrix(path,res,chr,gt):
         gtfile = pd.read_csv(gt,sep="\t",header=None)
         if not isinstance(gtfile.iloc[0,1],int):
             print("Wrong genome_table file.")
-            print("Please use the check your genome_table file. Is it tab separated ?")
+            print("Please check your genome_table file. Is it tab separated ?")
             exit(1)
     except:
         print("Wrong genome_table file.")
-        print("Please use the check your genome_table file. Is it tab separated ?")
+        print("Please check your genome_table file. Is it tab separated ?")
         exit(1)
 
     codepath = os.path.dirname(os.path.realpath(__file__))
