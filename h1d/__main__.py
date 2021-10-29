@@ -98,6 +98,7 @@ def CLI():
 
         score = multiScore(args.matrix,args.resolution,args.chromosome,
                             ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,TADfile=args.TADfile,msi=args.msi)
+        print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
         if args.draw:
@@ -148,6 +149,7 @@ def CLI():
 
         ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
         score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt)
+        print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
         if args.draw:

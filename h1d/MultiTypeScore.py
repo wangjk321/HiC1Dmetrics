@@ -32,6 +32,7 @@ class multiScore:
         elif datatype == "cool" and mode != "IF":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
 
+        print("Calculating 1D metrics for one sample")
         if mode == "IS":
             if not parameter: parameter=300000
             score = InsulationScore(self.path,self.res,self.chr,square_size=int(parameter)).getIS()
@@ -93,6 +94,7 @@ class multiScore:
             score = stripeTAD(self.path,self.res,self.chr).callStripe(seg=parameter)
         else: print("Error: Please use the right mode"); exit(1)
 
+        print("Finished calculating")
         return(score)
 
     def allOneScore(self,typelist=["IS","CI","DI","TADss","DLR","intraS","interS","PC1","custom"],
@@ -156,6 +158,7 @@ class multiScore:
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
             self.control_path = cool2matrix(self.control_path,self.res,self.chr,gt)
 
+        print("Calculating 1D metrics for one sample")
         if mode == "ISC":
             if not parameter: parameter=300000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",int(parameter))
@@ -205,6 +208,7 @@ class multiScore:
             score.index = range(score.shape[0])
         else: print("Error: Please specify the correct mode")
 
+        print("Finished calculating")
         return(score,self.path,self.control_path)
 
     def allTwoScore(self,typelist=["ISC","CIC","DIC","SSC","deltaDLR","intraSC","interSC","DRF","CorrD","PC1C"],
