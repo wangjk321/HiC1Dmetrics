@@ -12,7 +12,7 @@ chrnum=$(echo $chr |sed 's/chr//g')
 chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
 echo $chrlen
 
-if [ $chrlen > 3 ]
+if [ $chrlen -gt 3 ]
 then
   echo 'chang'
   cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
