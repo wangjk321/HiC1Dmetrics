@@ -11,7 +11,7 @@ chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
 pwd=$(cd $(dirname $0) && pwd)
 chrnum=$(echo $chr |sed 's/chr//g')
 
-if [$chrlen>3]
+if [ $chrlen > 3 ]
 then
   cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
 else
