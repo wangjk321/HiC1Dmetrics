@@ -54,7 +54,7 @@ def CLI():
             makeIntra = codepath+"/extract/makeMatrixIntra.sh"
             juicer = codepath+"/jc/jctool_1.11.04.jar"
             foldername = args.outname
-            os.system("sh "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
+            os.system("bash "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
                     str(args.resolution)+" "+args.gt+" "+juicer+" "+args.chromosome+" "+foldername)
         elif args.mode == "gd":
             codepath = os.path.dirname(os.path.realpath(__file__))
