@@ -20,7 +20,19 @@ def loadWithNorm(filename,method= "RPM",log = False):
         return data
 
 def hic2matrix(path,res,chr,gt):
-    if not gt: print("rawhic require genome_table file");exit(1)
+    if not gt:
+        print("rawhic require genome_table file");exit(1)
+    try:
+        gtfile = pd.read_csv(gt,sep="\t",header=None)
+        if not isinstance(gtfile.iloc[0,1],int):
+            print("Wrong genome_table file.")
+            print("Please use the check your genome_table file. Is it tab separated ?")
+            exit(1)
+    except:
+        print("Wrong genome_table file.")
+        print("Please use the check your genome_table file. Is it tab separated ?")
+        exit(1)
+
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
     juicer = codepath+"/jc/jctool_1.11.04.jar"
