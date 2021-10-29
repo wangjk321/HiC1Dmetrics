@@ -5,6 +5,10 @@ import random
 
 def loadDenseMatrix(filename,log=False):
     #print(filename)
+    if not os.path.exists(filename):
+        print("File does not exist, please check your file path")
+        exit(1)
+
     try:
         data = pd.read_csv(filename, delimiter='\t', index_col=0)
     except:
