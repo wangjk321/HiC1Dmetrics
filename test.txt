@@ -1,6 +1,0 @@
-Control1	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/untreated_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz
-Control2	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/untreated_synchronized_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz
-Treat1	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/treated_20min_withdraw_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz
-Treat2	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/treated_40min_withdraw_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz
-Treat3	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/treated_60min_withdraw_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz
-Treat4	/work/WangData_accordionWork/publicHiCforDRF/GSE104334_humanRad21AID/treated_180min_withdraw_combined/Matrix/intrachromosomal/50000/observed.KR.chr21.matrix.gz

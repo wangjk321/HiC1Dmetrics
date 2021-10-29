@@ -1,0 +1,9 @@
+CN1	./test_data/multisample2/CN1.chr19.matrix.gz
+CN2	./test_data/multisample2/CN2.chr19.matrix.gz
+CN3	./test_data/multisample2/CN3.chr19.matrix.gz
+ES1	./test_data/multisample2/ES1.chr19.matrix.gz
+ES2	./test_data/multisample2/ES2.chr19.matrix.gz
+ES3	./test_data/multisample2/ES3.chr19.matrix.gz
+NPC1	./test_data/multisample2/NPC1.chr19.matrix.gz
+NPC2	./test_data/multisample2/NPC2.chr19.matrix.gz
+NPC3	./test_data/multisample2/NPC3.chr19.matrix.gz
