@@ -6,15 +6,17 @@ chr=$3
 gt=$4
 outname=$5
 
-chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
 
 pwd=$(cd $(dirname $0) && pwd)
 chrnum=$(echo $chr |sed 's/chr//g')
+chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
 
 if [ $chrlen > 3 ]
 then
+  echo 'chang'
   cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
 else
+  echo 'duan'
   cooler dump -r $chrnum --join $cool | cut -f 2,5,7  > sparse.temp
 fi
 
