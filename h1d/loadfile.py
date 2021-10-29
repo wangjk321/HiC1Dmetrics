@@ -51,6 +51,6 @@ def cool2matrix(path,res,chr,gt):
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/coolerdump.sh"
     foldername = "./MatrixTemp"+str(random.random())
-    os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt") != 0:
+    os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt")
     matrixpath = foldername+"/"+str(res)+"/"+chr+".matrix.gz"
     return(matrixpath)
