@@ -6,13 +6,17 @@ chr=$3
 gt=$4
 outname=$5
 
-pwd=$(cd $(dirname $0) && pwd)
+chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
 
-echo Start dump matrix
-#chrnum=$(echo $chr |sed 's/chr//g')
-cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
-#|| cooler dump -r $chrnum --join $cool | cut -f 2,5,7 > sparse.temp
-echo Finish dump matrix
+pwd=$(cd $(dirname $0) && pwd)
+chrnum=$(echo $chr |sed 's/chr//g')
+
+if [$chrlen>3]
+then
+  cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
+else
+  cooler dump -r $chrnum --join $cool | cut -f 2,5,7  > sparse.temp
+fi
 
 mkdir -p $outname/${binsize}
 
