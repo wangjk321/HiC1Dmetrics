@@ -24,13 +24,13 @@ class multiScore:
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
                         custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None,
                         msi='fithic2'):
-        if datatype == "rawhic" and not gt: raise ValueError("rawhic requires Genometable")
+        if datatype in ["rawhic",'cool'] and not gt:
+            raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
             self.path = hic2matrix(self.path,self.res,self.chr,gt)
         elif datatype == "cool" and mode != "IF":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
-            print(self.path)
 
         if mode == "IS":
             if not parameter: parameter=300000
@@ -70,7 +70,7 @@ class multiScore:
             else:
                 soft = codepath+"/InteractionFreq.sh"
                 os.system("sh '"+soft+"' '"+juicer+"' "+self.path+" "+chrnum+" "+str(self.res)+" "+gt+" "+"IF_"+self.chr) #in case of space
-                
+
             score = pd.read_csv("IF_"+self.chr+".bedGraph",sep="\t",header=None)
             if normIF:
                 beforlog = score[3].copy()
@@ -152,6 +152,9 @@ class multiScore:
         if datatype == "rawhic" and mode != "IFC":
             self.path = hic2matrix(self.path,self.res,self.chr,gt)
             self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt)
+        elif datatype == "cool" and mode != "IFC":
+            self.path = cool2matrix(self.path,self.res,self.chr,gt)
+            self.control_path = cool2matrix(self.control_path,self.res,self.chr,gt)
 
         if mode == "ISC":
             if not parameter: parameter=300000
@@ -185,7 +188,8 @@ class multiScore:
             score = PC1change(self.path,self.control_path,self.res,self.chr,corr_file=parameter,smoothPC = smoothPC, logPC=logPC).getPC1change()
         elif mode == "IFC":
             if not gt: raise ValueError("Genometable is required for the calculation of IF")
-            if datatype=="matrix": raise ValueError("Calculation of IF require rawhic not matrix")
+            if datatype in ["matrix",'cool']:
+                raise ValueError("Calculation of IF only support rawhic")
             score = InteractionFrequencyChange(self.path,self.control_path,self.res,self.chr,gt=gt,datatype=datatype,normIF=normIF).getIFC()
         elif mode == "IFCback":
             scoreTreat = pd.read_csv(parameter[0],sep="\t",header=None)

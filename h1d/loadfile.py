@@ -46,7 +46,8 @@ def hic2matrix(path,res,chr,gt):
     return(matrixpath)
 
 def cool2matrix(path,res,chr,gt):
-    if not gt: print("cool require genome_table file");exit(1)
+    if not gt:
+        print("cool require genome_table file");exit(1)
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/coolerdump.sh"
     foldername = "./MatrixTemp"+str(random.random())
