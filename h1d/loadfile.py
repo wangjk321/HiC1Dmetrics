@@ -28,9 +28,7 @@ def hic2matrix(path,res,chr,gt):
         print("rawhic require genome_table file");exit(1)
     try:
         gtfile = pd.read_csv(gt,sep="\t",header=None)
-        if not isinstance(gtfile.iloc[0,1],int):
-            print("Wrong genome_table file.")
-            print("Please check your genome_table file. Is it tab separated ?")
+        if not int(gtfile.iloc[0,1]):
             exit(1)
     except:
         print("Wrong genome_table file.")
