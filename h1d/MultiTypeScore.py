@@ -105,7 +105,7 @@ class multiScore:
                 multiType = self.obtainOneScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
                                                 datatype=datatype,gt=gt)
             else:
-                if datatype=="rawhic" and self.path !=self.rawpath:
+                if datatype in ["rawhic",'cool'] and self.path !=self.rawpath:
                     datatype2="matrix"
                 else: datatype2 =datatype
                 if typelist[i] == "IF":
@@ -158,7 +158,7 @@ class multiScore:
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
             self.control_path = cool2matrix(self.control_path,self.res,self.chr,gt)
 
-        print("Calculating 1D metrics for one sample")
+        print("Calculating 1D metrics for two sample")
         if mode == "ISC":
             if not parameter: parameter=300000
             score = TADScoreChange(self.path,self.control_path,self.res,self.chr).getChange("IS",int(parameter))

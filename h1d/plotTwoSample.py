@@ -23,7 +23,7 @@ class DiffDraw(object):
             self.path = hic2matrix(path,resolution,chr,gt)
             self.control_path = hic2matrix(control_path,resolution,chr,gt)
         else: print("Error, please use the matrix or rawhic datatype")
-        print(self.path,"diff")
+        
         treat = loadWithNorm(self.path,log = True).values
         control = loadWithNorm(self.control_path,log = True).values
         smooth = 2

@@ -191,14 +191,13 @@ def CLI():
         if not args.controlmatrix:
             if not set(typelist).issubset(["IS","CI","DI","SS","DLR","PC1","IES","IAS","IF"]):
                 print("Error: not supported"); exit(1)
-            if "IF" in typelist and args.datatype == "matrix": print("Error: IF required rawhic datatype"); exit(1)
+            if "IF" in typelist and args.datatype != "rawhic": print("Error: IF required rawhic datatype"); exit(1)
             ms = multiScore(args.matrix,args.resolution,args.chromosome)
             if not args.draw:
                 score = ms.allOneScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt)
             elif args.draw:
                 score = ms.plotOneScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt,start=args.start,end=args.end)
                 plt.savefig(args.outname+".pdf")
-            print(score.iloc[550:650,:])
             score.to_csv(args.outname + ".csv", sep="\t", header=True, index=False)
         elif args.controlmatrix:
             if not set(typelist).issubset(["ISC","CIC","SSC","deltaDLR","CD","IESC","IASC","IFC","DRF"]):
@@ -214,7 +213,6 @@ def CLI():
             elif args.draw:
                 score = ms.plotTwoScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt,start=args.start,end=args.end)
                 plt.savefig(args.outname+".pdf")
-            print(score.iloc[550:650,:])
             score.to_csv(args.outname + ".csv", sep="\t", header=True, index=False)
 
         os.system("rm -rf MatrixTemp*")
@@ -228,7 +226,7 @@ def CLI():
     parser_types.add_argument("-p","--parameter",type=str,help="Parameter for indicated metrics",default=None,required=True)
     parser_types.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
     parser_types.add_argument("-o","--outname",help="output name (default metrics)",type=str,default="multitypes_metrics")
-    parser_types.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
+    parser_types.add_argument('--datatype',type=str,help="Type of input data: [matrix(default),rawhic,cool].",default="matrix")
     parser_types.add_argument('--gt',type=str,help="genome table",default="")
     parser_types.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region",default=False)
     parser_types.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
