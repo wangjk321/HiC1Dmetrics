@@ -8,7 +8,8 @@ outname=$5
 
 pwd=$(cd $(dirname $0) && pwd)
 
-cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp
+chrnum=$(echo $chr |sed 's/chr//g')
+cooler dump -r $chr --join $cool | cut -f 2,5,7  > sparse.temp || cooler dump -r $chrnum --join $cool | cut -f 2,5,7
 
 mkdir -p $outname/${binsize}
 
