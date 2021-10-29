@@ -1,9 +1,0 @@
-CN1	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/CN_rep1/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-CN2	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/CN_rep2/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-CN3	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/CN_rep3/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-ES1	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/ES_rep1/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-ES2	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/ES_rep2/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-ES3	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/ES_rep3/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-NPC1	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/NPC_rep1/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-NPC2	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/NPC_rep2/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
-NPC3	/work/WangData_accordionWork/publicHiCforDRF/GSE96107_mouseES/NPC_rep3/Matrix/intrachromosomal/50000/observed.KR.chr19.matrix.gz
