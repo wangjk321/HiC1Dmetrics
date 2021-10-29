@@ -8,8 +8,8 @@ def loadDenseMatrix(filename,log=False):
     try:
         data = pd.read_csv(filename, delimiter='\t', index_col=0)
     except:
-        raise ValueError('Error input matrix, please check https://h1d.readthedocs.io/en/latest/overview.html#input-format')
-        
+        print('Error input matrix, please check https://h1d.readthedocs.io/en/latest/overview.html#input-format')
+        exit(1)
     if log == True:
         return(np.log1p(data))
     else: return data
