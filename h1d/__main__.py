@@ -7,6 +7,7 @@ from .callDirectionalTAD import *
 from .calldTADAllchr import *
 from .discrete import *
 from .stripe import *
+import os
 
 def CLI():
     parser = argparse.ArgumentParser(description="HiC1Dmetrics is python3-based tools to \
@@ -17,6 +18,7 @@ def CLI():
 
     #Function 1
     def func_basic(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         args.matrix = args.data
         if args.mode == "plot":
             if args.datatype == "rawhic":
@@ -59,7 +61,7 @@ def CLI():
         elif args.mode == "gd":
             codepath = os.path.dirname(os.path.realpath(__file__))
             gdcode = codepath+"/gd/makeDensity.sh"
-            os.system("sh "+gdcode+" -r "+str(args.resolution)+" -g "+args.data+" -t "+args.chromosome+" -o "+args.outname)
+            os.system("bash "+gdcode+" -r "+str(args.resolution)+" -g "+args.data+" -t "+args.chromosome+" -o "+args.outname)
         else:
             print("Unsupported mode"); exit(1)
     parser_basic = subparsers.add_parser("basic",help="Provide basic functions to visualize and handle Hi-C data.")
@@ -83,6 +85,7 @@ def CLI():
     #Function 2
     #=============================================================================
     def func_one(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         args.matrix = args.data
         if args.chromosome == "all":
             if not args.maxchr: print("Please sepcify the maximum chromosome"); exit(1)
@@ -135,6 +138,7 @@ def CLI():
     #Function 3
     #=============================================================================
     def func_two(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         args.matrix = args.data
         args.controlmatrix = args.controldata
 
@@ -185,6 +189,7 @@ def CLI():
     #Function 4
     #=============================================================================
     def func_types(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         args.matrix = args.data
         typelist = args.typelist.split(",")
         parameterlist = args.parameter.split(",")
@@ -236,6 +241,7 @@ def CLI():
     #Function 5
     #=============================================================================
     def func_samples(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         if args.type == "IF" and args.datatype == "matrix": print("Error: IF required rawhic datatype"); exit(1)
         datafile = pd.read_csv(args.data,sep="\t",header=None)
         labels = list(datafile.iloc[:,0])
@@ -316,6 +322,7 @@ def CLI():
     #Function 6
     #=============================================================================
     def func_call(args):
+        if not os.path.exists(args.data):print("File does not exist");exit(1)
         args.matrix = args.data
         if args.datatype in ["rawhic",'cool'] and args.mode != "hubs":
             if args.datatype == "rawhic":
