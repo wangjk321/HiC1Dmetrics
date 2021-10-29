@@ -51,6 +51,11 @@ def cool2matrix(path,res,chr,gt):
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/coolerdump.sh"
     foldername = "./MatrixTemp"+str(random.random())
-    os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt" + " || "+"bash "+makeIntra+" "+path+" "+str(res)+" "+chr.replace("chr",'')+" "+gt+" "+foldername + "> info.txt")
+    try:
+        os.system("bash "+makeIntra+" "+path+" "+str(res)+" "+chr+" "+gt+" "+foldername + "> info.txt")
+    except:
+        print("Error input cool file")
+        print("Is the chromosome name 'chr21' or '21'?")
+        exit(1)
     matrixpath = foldername+"/"+str(res)+"/"+chr+".matrix.gz"
     return(matrixpath)
