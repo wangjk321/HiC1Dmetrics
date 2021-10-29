@@ -17,13 +17,20 @@ def readIF(parameter,chr,normIF=True,custom_name="InteractionFrequency"):
 
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=None,smoothPC=True,logPC=False,
                         datatype="matrix",gt=None):
-    if datatype == "rawhic" and not gt: raise ValueError("rawhic requires Genometable")
-    if datatype == "rawhic" and mode != "IF":
-        newlist = []
-        for rawpath in sampleList:
-            newpath = hic2matrix(rawpath,res,chr,gt)
-            newlist.append(newpath)
-        sampleList = newlist
+    if datatype in ["rawhic",'cool'] and not gt: raise ValueError("rawhic and cool requires Genometable")
+    if mode != "IF":
+        if datatype == "rawhic":
+            newlist = []
+            for rawpath in sampleList:
+                newpath = hic2matrix(rawpath,res,chr,gt)
+                newlist.append(newpath)
+            sampleList = newlist
+        elif datatype == "cool":
+            newlist = []
+            for rawpath in sampleList:
+                newpath = cool2matrix(rawpath,res,chr,gt)
+                newlist.append(newpath)
+            sampleList = newlist
 
     if mode == 'IS':
         if not UniqueParameter: UniqueParameter=300000

@@ -219,7 +219,7 @@ class multiScore:
                 multiType,_,_ = self.obtainTwoScore(mode=typelist[i],parameter=parameterlist[i],smoothPC=smoothPC,logPC=logPC,
                                                     datatype=datatype,gt=gt)
             else:
-                if datatype=="rawhic" and self.path !=self.rawpath:
+                if datatype in ["rawhic",'cool'] and self.path !=self.rawpath:
                     datatype2="matrix"
                 else: datatype2 =datatype
                 if typelist[i] == "IFC":

@@ -317,9 +317,13 @@ def CLI():
     #=============================================================================
     def func_call(args):
         args.matrix = args.data
-        if args.datatype == "rawhic" and args.mode != "hubs":
-            path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
-            if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+        if args.datatype in ["rawhic",'cool'] and args.mode != "hubs":
+            if args.datatype == "rawhic":
+                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+                if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+            elif args.datatype == "cool":
+                path = cool2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+                if args.controlmatrix: controlpath = cool2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
         else:
             path = args.matrix
             controlpath = args.controlmatrix
@@ -341,8 +345,8 @@ def CLI():
             rightdTAD.to_csv(args.outname + "_rightdTAD.csv", sep="\t", header=True, index=False)
         elif args.mode == "stripeTAD":
             st = stripeTAD(path,args.resolution,args.chromosome)
-            stripeTAD = st.callStripe(squareSize=300000)
-            stripeTAD.to_csv(args.outname + "_stripeTAD.csv", sep="\t", header=True, index=False)
+            sTAD = st.callStripe(squareSize=300000)
+            sTAD.to_csv(args.outname + "_stripeTAD.csv", sep="\t", header=True, index=False)
         elif args.mode == "stripe":
             st = call_stripe(path,args.resolution,args.chromosome)
             stripe = st.callStripe(squareSize=300000,strong_thresh=0.2)
@@ -365,7 +369,7 @@ def CLI():
     parser_call.add_argument("chromosome",type=str,help="Chromosome number.")
     parser_call.add_argument("-o","--outname",help="output name",type=str,default="defaultname")
     parser_call.add_argument('-c','--controlmatrix', type=str, help='Path of control matrix file from JuicerResult',default=None)
-    parser_call.add_argument('--datatype',type=str,help="matrix or rawhic",default="matrix")
+    parser_call.add_argument('--datatype',type=str,help="Type of input data: [matrix(default),rawhic,cool].",default="matrix")
     parser_call.add_argument('--gt',type=str,help="genome table",default="")
     parser_call.add_argument("-p","--parameter",type=str,help="Parameter for indicated mode",default=None)
     parser_call.set_defaults(func=func_call)
@@ -373,7 +377,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.19")
+        print("h1d version 0.1.20")
         exit(0)
     try:
         func = args.func
