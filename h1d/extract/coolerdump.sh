@@ -10,6 +10,7 @@ outname=$5
 pwd=$(cd $(dirname $0) && pwd)
 chrnum=$(echo $chr |sed 's/chr//g')
 chrlen=$(cooler dump -t chroms $cool |head -1 |cut -f 1 |awk '{print length}')
+echo $chrlen
 
 if [ $chrlen > 3 ]
 then
