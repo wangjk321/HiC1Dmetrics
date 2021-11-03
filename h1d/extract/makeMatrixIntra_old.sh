@@ -20,14 +20,10 @@ chrlist=$7
 outname=$8
 
 pwd=$(cd $(dirname $0) && pwd)
-juicertool="java -Xms512m -Xmx600480m -jar $juicer"
+juicertool="java -Xms512m -Xmx20480m -jar $juicer"
 gt=$build
 #chrlist=`cut -f 1 $gt`
 #chrlist=$(/work/git/script_rnakato/getchr_from_genometable.sh $gt)
-length=`awk '$1 == "'$chrlist'" {print $2}' $gt`
-seq 0 $binsize $length > rowname.temp
-cat rowname.temp|  tr '\n' '\t' > colname.temp
-sed '1{x;p;x}' rowname.temp > rowname2.temp
 
 dir=$matrixdir/${outname}/$binsize
 mkdir -p $dir
@@ -40,14 +36,12 @@ do
     for type in observed #oe
     do
 	tempfile=$dir/$type.$norm.chr$chr.txt
-        $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile -d
+        $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile
 	if test -s $tempfile; then
-		cat colname.temp $tempfile > pluscol.temp
-		paste rowname2.temp pluscol.temp |gzip > $dir/$type.$norm.chr$chr.matrix.gz
-            #$pwd/convert_JuicerDump_to_dense.py \
-	#	$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
+            $pwd/convert_JuicerDump_to_dense.py \
+		$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
 	fi
-        rm *temp $tempfile
+        rm $tempfile
     done
 #    for type in expected norm
 #    do

@@ -9,19 +9,26 @@ def loadDenseMatrix(filename,log=False):
         print("File does not exist, please check your file path")
         exit(1)
 
+    print("loading data...")
     try:
         data = pd.read_csv(filename, delimiter='\t', index_col=0)
     except:
         print('Error input matrix, please check https://h1d.readthedocs.io/en/latest/overview.html#input-format')
         exit(1)
+    print("loading finished")
+
     if log == True:
         return(np.log1p(data))
-    else: return data
+    else:
+        return data
 
 def loadWithNorm(filename,method= "RPM",log = False):
+    print("loading data...")
     data = pd.read_csv(filename, delimiter='\t', index_col=0)
     if method == "RPM":
         data = (10000000 * data) / np.nansum(data)
+    print("loading finished")
+    
     if log:
         return np.log1p(data)
     else:
