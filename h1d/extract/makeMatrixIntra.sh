@@ -20,7 +20,7 @@ chrlist=$7
 outname=$8
 
 pwd=$(cd $(dirname $0) && pwd)
-juicertool="java -Xms512m -Xmx600480m -jar $juicer"
+juicertool="java -Xms512m -Xmx20480m -jar $juicer"
 gt=$build
 #chrlist=`cut -f 1 $gt`
 #chrlist=$(/work/git/script_rnakato/getchr_from_genometable.sh $gt)
