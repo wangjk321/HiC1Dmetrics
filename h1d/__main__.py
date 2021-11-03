@@ -293,7 +293,7 @@ def CLI():
 
         score.to_csv(args.outname + ".csv", sep="\t", header=True, index=False)
 
-        print(score.iloc[550:650,:])
+        #print(score.iloc[550:650,:])
         os.system("rm -rf MatrixTemp*")
 
     parser_samples = subparsers.add_parser("multisamples",help="The same metrics for muliple samples",
@@ -384,7 +384,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.22")
+        print("h1d version 0.1.27")
         exit(0)
     try:
         func = args.func

@@ -22,8 +22,12 @@ class DiffDraw(object):
                 raise ValueError("Genometable is required for the calculation of IF")
             self.path = hic2matrix(path,resolution,chr,gt)
             self.control_path = hic2matrix(control_path,resolution,chr,gt)
-        else: print("Error, please use the matrix or rawhic datatype")
-        
+        elif datatype == "cool":
+            self.path = cool2matrix(path,resolution,chr,gt)
+            self.control_path = cool2matrix(control_path,resolution,chr,gt)
+        else:
+            print("Error, please use the matrix or rawhic datatype")
+
         treat = loadWithNorm(self.path,log = True).values
         control = loadWithNorm(self.control_path,log = True).values
         smooth = 2

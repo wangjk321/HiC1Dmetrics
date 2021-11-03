@@ -26,8 +26,8 @@ gt=$build
 #chrlist=$(/work/git/script_rnakato/getchr_from_genometable.sh $gt)
 length=`awk '$1 == "'$chrlist'" {print $2}' $gt`
 seq 0 $binsize $length > rowname.temp
-cat rowname.temp|  tr '\n' '\t' > colname.temp
-sed '1{x;p;x}' rowname.temp > rowname2.temp
+cat rowname.temp|  tr '\n' '\t'|sed "s/^/\t/g"| sed "s/$/\n/g" > colname.temp
+#sed '1{x;p;x}' rowname.temp > rowname2.temp
 
 dir=$matrixdir/${outname}/$binsize
 mkdir -p $dir
@@ -42,8 +42,8 @@ do
 	tempfile=$dir/$type.$norm.chr$chr.txt
         $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile -d
 	if test -s $tempfile; then
-		cat colname.temp $tempfile > pluscol.temp
-		paste rowname2.temp pluscol.temp |gzip > $dir/$type.$norm.chr$chr.matrix.gz
+		paste rowname.temp $tempfile > pluscol.temp
+		cat colname.temp pluscol.temp |sed 's/\t$//g'| gzip > $dir/$type.$norm.chr$chr.matrix.gz
             #$pwd/convert_JuicerDump_to_dense.py \
 	#	$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
 	fi

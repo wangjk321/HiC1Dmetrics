@@ -18,6 +18,8 @@ class PlotCommon(object):
             foldername = "./MatrixTemp"+str(random.random())
             os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr+" "+foldername+ ">> info.txt")
             path = foldername+"/"+str(resolution)+"/observed.KR."+chr+".matrix.gz"
+        elif datatype == 'cool':
+            path = cool2matrix(path,resolution,chr,gt)
         matrix = loadDenseMatrix(path).values
 
         self.path = path
