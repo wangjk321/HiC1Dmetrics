@@ -23,3 +23,7 @@ For detailed usage, please refer to [h1d Documents](https://h1d.readthedocs.io/e
 # Web application
 
 Please click [hic1d webapp](http://hic1d.herokuapp.com)
+
+# Citation
+
+Wang J, Nakato R. HiC1Dmetrics: framework to extract various one-dimensional features from chromosome structure data. *Briefings in Bioinformatics*, bbab509,2021.
