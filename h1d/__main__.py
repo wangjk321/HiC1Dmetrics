@@ -23,7 +23,10 @@ def CLI():
         if args.mode == "plot":
             if args.datatype == "rawhic":
                 path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
-                if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+                if args.controlmatrix:
+                    controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+                else:
+                    controlpath = None
             else:
                 path = args.matrix
                 controlpath = args.controlmatrix
@@ -248,7 +251,7 @@ def CLI():
         samplelist = list(datafile.iloc[:,1])
         if not args.corr and not args.heat and not args.line and not args.discrete and not args.anova:
             score = getMultiSamplesScore(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
-                                        datatype=args.datatype,gt=args.gt)
+                                        datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
         elif args.corr:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
             score = ms.score
@@ -316,6 +319,7 @@ def CLI():
     parser_samples.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_samples.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_samples.add_argument('--clmax',type=int,help="End sites for plotting",default=None)
+    parser_samples.add_argument("-t","--TADfile",type=str,help="Give a TAD file, instead of using building-in TAD calling method",default=None)
 
     parser_samples.set_defaults(func=func_samples)
 

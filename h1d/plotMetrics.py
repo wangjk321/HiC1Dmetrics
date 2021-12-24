@@ -48,6 +48,8 @@ class PlotCommon(object):
 
         if clmax:
             self.clim = (clmin,clmax)
+        elif np.median(self.matrixRegion) == 0:
+            self.clim = (clmin,10)
         else:
             self.clim = (clmin,np.median(self.matrixRegion)*10)
 

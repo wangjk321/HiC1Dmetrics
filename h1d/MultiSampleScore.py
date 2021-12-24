@@ -16,7 +16,7 @@ def readIF(parameter,chr,normIF=True,custom_name="InteractionFrequency"):
     return(score)
 
 def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=None,smoothPC=True,logPC=False,
-                        datatype="matrix",gt=None):
+                        datatype="matrix",gt=None,TADfile=None):
     if datatype in ["rawhic",'cool'] and not gt: raise ValueError("rawhic and cool requires Genometable")
     if mode != "IF":
         if datatype == "rawhic":
@@ -99,9 +99,9 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=Non
     elif mode == "IAS":
         if not UniqueParameter: UniqueParameter=300000
         for i,path in enumerate(sampleList):
-            if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter)
+            if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter,TADfile=TADfile)
             else:
-                next = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter).iloc[:,3:4]
+                next = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter,TADfile=TADfile).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == "IF":
