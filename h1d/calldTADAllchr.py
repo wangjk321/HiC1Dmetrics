@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 from .callDirectionalTAD import *
 from .MultiTypeScore import *
-import os
+import os,random
 
 # calculate each dTAD of chromosome separately
 class paralfunc(object):
@@ -128,13 +128,14 @@ class paralfunJuicer(object):
 def oneJuicer(chrom,data,normalize,resolution,gt,outname):
     print("Input data: ", data)
     print("Dumping contact " +chrom+ " matrix from .hic file ......")
+    randomindex=''.join(random.sample(string.ascii_letters + string.digits, 8))
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
     juicer = codepath+"/jc/jctool_1.11.04.jar"
     foldername = outname
     os.system("bash "+makeIntra+" "+normalize+" "+"."+" "+data+" "+
-            str(resolution)+" "+gt+" "+juicer+" "+chrom+" "+foldername + "> info.txt")
-    try: os.system("rm info.txt")
+            str(resolution)+" "+gt+" "+juicer+" "+chrom+" "+foldername + "> info.txt"+randomindex)
+    try: os.system("rm info.txt"+randomindex)
     except: pass
     print("Dump finished, output is in ./"+outname)
 

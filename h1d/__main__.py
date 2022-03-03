@@ -253,7 +253,8 @@ def CLI():
             score = getMultiSamplesScore(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
                                         datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
         elif args.corr:
-            ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,datatype=args.datatype,gt=args.gt)
+            ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
+                        datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
             score = ms.score
             ms.corr_plot()
             plt.savefig(args.outname+"_corr.pdf")
@@ -388,7 +389,7 @@ def CLI():
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
     args = parser.parse_args()
     if args.version:
-        print("h1d version 0.1.27")
+        print("h1d version 0.1.29")
         exit(0)
     try:
         func = args.func

@@ -18,8 +18,6 @@ build=$5
 juicer=$6
 chrlist=$7
 outname=$8
-randomstr=`date +%s%N | md5sum | head -c 8 #`
-uniqID=$chrlist$randomstr
 
 pwd=$(cd $(dirname $0) && pwd)
 juicertool="java -Xms512m -Xmx20480m -jar $juicer"
@@ -27,8 +25,8 @@ gt=$build
 #chrlist=`cut -f 1 $gt`
 #chrlist=$(/work/git/script_rnakato/getchr_from_genometable.sh $gt)
 length=`awk '$1 == "'$chrlist'" {print $2}' $gt`
-seq 0 $binsize $length > rowname.$uniqID.temp
-cat rowname.$uniqID.temp|  tr '\n' '\t'|sed "s/^/\t/g"| sed "s/$/\n/g" > colname.$uniqID.temp
+seq 0 $binsize $length > rowname.temp
+cat rowname.temp|  tr '\n' '\t'|sed "s/^/\t/g"| sed "s/$/\n/g" > colname.temp
 #sed '1{x;p;x}' rowname.temp > rowname2.temp
 
 dir=$matrixdir/${outname}/$binsize
@@ -44,12 +42,12 @@ do
 	tempfile=$dir/$type.$norm.chr$chr.txt
         $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile -d
 	if test -s $tempfile; then
-		paste rowname.$uniqID.temp $tempfile > pluscol.$uniqID.temp
-		cat colname.$uniqID.temp pluscol.$uniqID.temp |sed 's/\t$//g'| gzip > $dir/$type.$norm.chr$chr.matrix.gz
+		paste rowname.temp $tempfile > pluscol.temp
+		cat colname.temp pluscol.temp |sed 's/\t$//g'| gzip > $dir/$type.$norm.chr$chr.matrix.gz
             #$pwd/convert_JuicerDump_to_dense.py \
 	#	$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
 	fi
-        rm rowname.$uniqID.temp pluscol.$uniqID.temp colname.$uniqID.temp $tempfile
+        rm *temp $tempfile
     done
 #    for type in expected norm
 #    do

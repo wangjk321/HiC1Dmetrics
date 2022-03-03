@@ -91,12 +91,12 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=Non
     elif mode == "IAS":
         if not UniqueParameter: UniqueParameter=300000
         for i,path in enumerate(sampleList):
-            if i==0: metricMT = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter)
+            if i==0: metricMT = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter,TADfile=TADfile)
             else:
-                next = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter).iloc[:,3:4]
+                next = intraTADscore(path,res,chr).getIntraS(IS_size = UniqueParameter,TADfile=TADfile).iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
-    elif mode == "IAS":
+    elif mode == "IES":
         if not UniqueParameter: UniqueParameter=300000
         for i,path in enumerate(sampleList):
             if i==0: metricMT = interTADscore(path,res,chr).getInterS(IS_size = UniqueParameter,TADfile=TADfile)
@@ -120,7 +120,7 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=Non
     return metricMT
 
 class repQC:
-    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter,method="pearson",smoothPC=True,logPC=False,gt=None,datatype="matrix"):
+    def __init__(self,pathlist,namelist,res,chr,mode,UniqueParameter,method="pearson",smoothPC=True,logPC=False,gt=None,datatype="matrix",TADfile=None):
         self.pathlist = pathlist
         self.namelist = namelist
         self.res = res
@@ -131,7 +131,7 @@ class repQC:
 
         self.score = getMultiSamplesScore(self.pathlist,namelist,res=res,chr=chr,mode=mode,
                                         UniqueParameter=UniqueParameter,smoothPC=smoothPC,logPC=logPC,
-                                        gt=gt,datatype=datatype)
+                                        gt=gt,datatype=datatype,TADfile=TADfile)
         self.corrMT = self.score.iloc[:,3:].corr(method=method)
 
     def corr_plot(self):
