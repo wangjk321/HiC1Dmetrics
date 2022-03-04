@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 from .callDirectionalTAD import *
 from .MultiTypeScore import *
-import os,random
+import os,random, string
 
 # calculate each dTAD of chromosome separately
 class paralfunc(object):
