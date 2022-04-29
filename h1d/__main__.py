@@ -282,7 +282,7 @@ def CLI():
 
         elif args.line or args.heat:
             ms = repQC(samplelist,labels,args.resolution,args.chromosome,args.type,args.parameter,
-                        datatype=args.datatype,gt=args.gt)
+                        datatype=args.datatype,gt=args.gt,TADfile=args.TADfile)
             score = ms.score
             if args.datatype == "matrix":
                 plotpath= samplelist[0]

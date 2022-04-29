@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='h1d',
-    version='0.2.1',
+    version='0.2.2',
     author='wangjiankng',
     author_email='wangjk321@gmail.com',
     url='https://github.com/wangjk321/HiC1Dmetrics',
