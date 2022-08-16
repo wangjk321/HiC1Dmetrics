@@ -57,7 +57,10 @@ def CLI():
                 print("Error: dump requires rawhic file and genome_table file"); exit(1)
             codepath = os.path.dirname(os.path.realpath(__file__))
             makeIntra = codepath+"/extract/makeMatrixIntra.sh"
-            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            if not args.juicertool:
+                juicer = codepath+"/jc/jctool_1.11.04.jar"
+            else:
+                juicer = args.juicertool
             foldername = args.outname
             os.system("bash "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
                     str(args.resolution)+" "+args.gt+" "+juicer+" "+args.chromosome+" "+foldername)
@@ -83,6 +86,7 @@ def CLI():
     parser_basic.add_argument("--normalize",type=str,help="Normalize methods {NONE/VC/VC_SQRT/KR}",default="KR")
     parser_basic.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
     parser_basic.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
+    parser_basic.add_argument('--juicertool',type=int,help="Specify juicertool with different version.",default=None)
     parser_basic.set_defaults(func=func_basic)
 
     #Function 2
