@@ -35,9 +35,9 @@ def getMultiSamplesScore(sampleList, labels, res, chr, mode, UniqueParameter=Non
     if mode == 'IS':
         if not UniqueParameter: UniqueParameter=300000
         for i,path in enumerate(sampleList):
-            if i==0: metricMT = InsulationScore(path,res,chr,square_size=UniqueParameter).getIS()
+            if i==0: metricMT = InsulationScore(path,res,chr,square_size=int(UniqueParameter)).getIS()
             else:
-                next = InsulationScore(path,res,chr,square_size=UniqueParameter).getIS().iloc[:,3:4]
+                next = InsulationScore(path,res,chr,square_size=int(UniqueParameter)).getIS().iloc[:,3:4]
                 metricMT = pd.concat([metricMT,next],axis=1)
 
     elif mode == 'raw':
