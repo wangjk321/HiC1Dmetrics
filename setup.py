@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='h1d',
-    version='0.2.3',
+    version='0.2.5',
     author='wangjiankng',
     author_email='wangjk321@gmail.com',
     url='https://github.com/wangjk321/HiC1Dmetrics',
@@ -19,7 +19,7 @@ setup(
     include_package_data=True,
     install_requires=["pandas","numpy","scikit-learn","scipy",
 		"matplotlib","seaborn","multiprocess",
-		"fithic==2.0.7","statsmodels",'cooler==0.8.*'],
+		"fithic==2.0.7","statsmodels",'cooler==0.9.*'],
     classifiers=[
         "Programming Language :: Python :: 3",
 	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
