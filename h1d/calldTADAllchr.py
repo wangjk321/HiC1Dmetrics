@@ -113,7 +113,7 @@ class paralfunJuicer(object):
         self.myfun = myfun
         self.num_processer = num_processer
 
-    def run(self,data,normalize,resolution,gt,outname,maxchr=22):
+    def run(self,data,normalize,resolution,gt,outname,juicer,maxchr=22):
         chrlist= list(range(1,maxchr+1)); chrlist.append("X")
         chrolist = ["chr"+str(a) for a in chrlist]
         self.chrolist = chrolist
@@ -121,17 +121,19 @@ class paralfunJuicer(object):
         resultlist=[]
         p = Pool(self.num_processer)
         for r in self.chrolist:
-            p.apply_async(self.myfun, args=(r,data,normalize,resolution,gt,outname,))
+            p.apply_async(self.myfun, args=(r,data,normalize,resolution,gt,outname,juicer))
         p.close()
         p.join()
 
-def oneJuicer(chrom,data,normalize,resolution,gt,outname):
+def oneJuicer(chrom,data,normalize,resolution,gt,outname,juicer=None):
     print("Input data: ", data)
     print("Dumping contact " +chrom+ " matrix from .hic file ......")
     randomindex=''.join(random.sample(string.ascii_letters + string.digits, 8))
+
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
-    juicer = codepath+"/jc/jctool_1.11.04.jar"
+    if not juicer:
+        juicer = codepath+"/jc/jctool_1.11.04.jar"
     foldername = outname
     os.system("bash "+makeIntra+" "+normalize+" "+"."+" "+data+" "+
             str(resolution)+" "+gt+" "+juicer+" "+chrom+" "+foldername + "> info.txt"+randomindex)
@@ -139,8 +141,8 @@ def oneJuicer(chrom,data,normalize,resolution,gt,outname):
     except: pass
     print("Dump finished, output is in ./"+outname)
 
-def allJuicer(data,normalize,resolution,gt,outname,maxchr=22,num=20):
-    paralfunJuicer(oneJuicer,num).run(data,normalize,resolution,gt,outname,maxchr=maxchr)
+def allJuicer(data,normalize,resolution,gt,outname,juicer,maxchr=22,num=30):
+    paralfunJuicer(oneJuicer,num).run(data,normalize,resolution,gt,outname,juicer,maxchr=maxchr)
 
 #========================
 

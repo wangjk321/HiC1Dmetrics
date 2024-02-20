@@ -48,19 +48,24 @@ def CLI():
                     DiffDraw(path,controlpath,args.resolution,args.chromosome,startSite=args.start,endSite=args.end).drawTAD(squareSize=int(args.parameter))
             plt.savefig(args.outname+".pdf")
         elif args.mode == "dump":
-            if args.chromosome == "all":
-                allJuicer(args.data,args.normalize,args.resolution,args.gt,args.outname,
-                        maxchr=args.maxchr,num=args.nProcesser)
-                exit(0)
 
-            if args.datatype not in ["rawhic"] or not args.gt:
-                print("Error: dump requires rawhic file and genome_table file"); exit(1)
             codepath = os.path.dirname(os.path.realpath(__file__))
             makeIntra = codepath+"/extract/makeMatrixIntra.sh"
             if not args.juicertool:
                 juicer = codepath+"/jc/jctool_1.11.04.jar"
             else:
                 juicer = args.juicertool
+
+            if args.chromosome == "all":
+                allJuicer(args.data,args.normalize,args.resolution,args.gt,args.outname,juicer,
+                        maxchr=args.maxchr,num=args.nProcesser)
+                exit(0)
+
+            if args.datatype not in ["rawhic"] or not args.gt:
+                print("Error: dump requires rawhic file and genome_table file"); exit(1)
+
+
+
             foldername = args.outname
             os.system("bash "+makeIntra+" "+args.normalize+" "+"."+" "+args.matrix+" "+
                     str(args.resolution)+" "+args.gt+" "+juicer+" "+args.chromosome+" "+foldername)
