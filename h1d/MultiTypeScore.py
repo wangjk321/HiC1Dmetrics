@@ -23,12 +23,12 @@ class multiScore:
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
                         custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None,
-                        msi='fithic2'):
+                        msi='fithic2',juicer=None):
         if datatype in ["rawhic",'cool'] and not gt:
             raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
-            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+            self.path = hic2matrix(self.path,self.res,self.chr,gt,juicer)
         elif datatype == "cool" and mode != "IF":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
 

@@ -28,13 +28,13 @@ def loadWithNorm(filename,method= "RPM",log = False):
     if method == "RPM":
         data = (10000000 * data) / np.nansum(data)
     print("loading finished")
-    
+
     if log:
         return np.log1p(data)
     else:
         return data
 
-def hic2matrix(path,res,chr,gt):
+def hic2matrix(path,res,chr,gt,juicer=None):
     if not gt:
         print("rawhic require genome_table file");exit(1)
     try:
@@ -49,7 +49,10 @@ def hic2matrix(path,res,chr,gt):
     print("Start dump matrix from hic file")
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
-    juicer = codepath+"/jc/jctool_1.11.04.jar"
+    
+    if not juicer:
+        juicer = codepath+"/jc/jctool_1.11.04.jar"
+
     foldername = "./MatrixTemp"+str(random.random())
     os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername + "> info.txt")
     matrixpath = foldername+"/"+str(res)+"/observed.KR."+chr+".matrix.gz"

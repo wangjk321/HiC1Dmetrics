@@ -58,7 +58,7 @@ class paralfuncOneSample(object):
         self.myfun = myfun
         self.num_processer = num_processer
 
-    def run(self,pathName,resolution,maxchr=22,type=None,parameter=None,prefix="/observed.KR.",controlpath=None):
+    def run(self,pathName,resolution,maxchr=22,type=None,parameter=None,prefix="/observed.KR.",controlpath=None,juicer=None):
         chrlist= list(range(1,maxchr+1)); chrlist.append("X")
         chrolist = ["chr"+str(a) for a in chrlist]
         self.chrolist = chrolist
@@ -66,7 +66,7 @@ class paralfuncOneSample(object):
         resultlist=[]
         p = Pool(self.num_processer)
         for r in self.chrolist:
-            result = p.apply_async(self.myfun, args=(r,pathName,resolution,type,parameter,prefix,controlpath))
+            result = p.apply_async(self.myfun, args=(r,pathName,resolution,type,parameter,prefix,controlpath,juicer))
             resultlist.append(result)
         p.close()
         p.join()
@@ -86,13 +86,13 @@ def runTAD1sample(pathName,resolution,outname="allTAD",maxchr=22):
     tad = paralfuncOneSample(TAD1sample,30).run(pathName,resolution,maxchr)
     tad.to_csv(outname+"_TAD.csv",sep="\t",index=False)
 
-def oneScoreSinglechr(chrom,pathName,resolution,type,parameter,prefix="observed.KR.",controlpath=None):
+def oneScoreSinglechr(chrom,pathName,resolution,type,parameter,prefix="observed.KR.",controlpath=None,juicer=None):
     filename = pathName+"/"+prefix+chrom+".matrix.gz"
-    score = multiScore(filename,resolution,chrom).obtainOneScore(type,parameter)
+    score = multiScore(filename,resolution,chrom).obtainOneScore(type,parameter,juicer=juicer)
     return(score)
 
-def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=22,prefix="observed.KR.",num=10):
-    allscore = paralfuncOneSample(oneScoreSinglechr,num).run(pathName,resolution,maxchr,type,parameter,prefix)
+def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=22,prefix="observed.KR.",num=30,juicer=None):
+    allscore = paralfuncOneSample(oneScoreSinglechr,num).run(pathName,resolution,maxchr,type,parameter,prefix,juicer=juicer)
     return(allscore)
     #allscore.to_csv(outname+"_"+type+".csv",sep="\t",index=False)
 

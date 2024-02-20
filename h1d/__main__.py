@@ -112,7 +112,8 @@ def CLI():
             args.parameter = int(args.parameter)
 
         score = multiScore(args.matrix,args.resolution,args.chromosome,
-                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,TADfile=args.TADfile,msi=args.msi)
+                            ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,
+                            gt=args.gt,TADfile=args.TADfile,msi=args.msi,juicer=args.juicertool)
         print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
@@ -123,7 +124,7 @@ def CLI():
             print("==========output figure==========")
             PlotBedGraph(args.matrix,args.resolution,args.chromosome,startSite=args.start,
                         endSite=args.end,datatype=args.datatype,
-                        gt=args.gt).draw(args.type,UniqueParameter=args.parameter)
+                        gt=args.gt,juicer=args.juicertool).draw(args.type,UniqueParameter=args.parameter)
             plt.savefig(args.outname+".pdf")
 
 
@@ -145,6 +146,7 @@ def CLI():
     parser_one.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
     parser_one.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
     parser_one.add_argument("-t","--TADfile",type=str,help="Give a TAD file, instead of using building-in TAD calling method",default=None)
+    parser_one.add_argument('--juicertool',type=str,help="Specify juicertool with different version.",default=None)
     parser_one.set_defaults(func=func_one)
 
     #Function 3
@@ -164,7 +166,7 @@ def CLI():
             exit(0)
 
         ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
-        score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt)
+        score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,juicer=args.juicertool)
         print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
@@ -196,6 +198,7 @@ def CLI():
     parser_two.add_argument('--prefix',type=str,help="${prefix}chr1.matrix.gz",default="observed.KR.")
     parser_two.add_argument('--maxchr',type=int,help="Maximum index of chromosome (human genome is 22,i.e.)",default=None)
     parser_two.add_argument("-n","--nProcesser",type=int,help="Number of processors",default=10)
+    parser_two.add_argument('--juicertool',type=str,help="Specify juicertool with different version.",default=None)
     parser_two.set_defaults(func=func_two)
 
     #Function 4

@@ -10,11 +10,12 @@ import os
 
 class PlotCommon(object):
     def __init__(self,path,resolution,chr="",startSite=0,endSite=0,clmin=0,clmax=None, \
-                title="",other_parameter=0,ndsmooth=None,datatype="matrix",gt=""):
+                title="",other_parameter=0,ndsmooth=None,datatype="matrix",gt="",juicer=None):
         if datatype == "rawhic":
             codepath = os.path.dirname(os.path.realpath(__file__))
             makeIntra = codepath+"/extract/makeMatrixIntra.sh"
-            juicer = codepath+"/jc/jctool_1.11.04.jar"
+            if not juicer:
+                juicer = codepath+"/jc/jctool_1.11.04.jar"
             foldername = "./MatrixTemp"+str(random.random())
             os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(resolution)+" "+gt+" "+juicer+" "+chr+" "+foldername+ ">> info.txt")
             path = foldername+"/"+str(resolution)+"/observed.KR."+chr+".matrix.gz"

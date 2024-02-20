@@ -12,7 +12,7 @@ cmap= LinearSegmentedColormap.from_list("custom2",['#1310cc', '#FFFFFF', '#d10a3
 
 class DiffDraw(object):
     def __init__(self,path,control_path,resolution,chr="",startSite=0,endSite=0,clmin=-2,clmax=2, \
-                title="", startDRF=500000,sizeDRF=2000000,sizeIS=300000,sizeDCI=300000,datatype="matrix",gt=None):
+                title="", startDRF=500000,sizeDRF=2000000,sizeIS=300000,sizeDCI=300000,datatype="matrix",gt=None,juicer=None):
 
         if datatype == "matrix":
             self.path = path
@@ -20,8 +20,8 @@ class DiffDraw(object):
         elif datatype == "rawhic":
             if not gt:
                 raise ValueError("Genometable is required for the calculation of IF")
-            self.path = hic2matrix(path,resolution,chr,gt)
-            self.control_path = hic2matrix(control_path,resolution,chr,gt)
+            self.path = hic2matrix(path,resolution,chr,gt,juicer=juicer)
+            self.control_path = hic2matrix(control_path,resolution,chr,gt,juicer=juicer)
         elif datatype == "cool":
             self.path = cool2matrix(path,resolution,chr,gt)
             self.control_path = cool2matrix(control_path,resolution,chr,gt)
