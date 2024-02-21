@@ -41,14 +41,26 @@ do
     echo "chr$chr"
     for type in observed #oe
     do
-	tempfile=$dir/$type.$norm.chr$chr.txt
-        $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile -d
-	if test -s $tempfile; then
-		paste rowname.$uniqID.temp $tempfile > pluscol.$uniqID.temp
-		cat colname.$uniqID.temp pluscol.$uniqID.temp |sed 's/\t$//g'| gzip > $dir/$type.$norm.chr$chr.matrix.gz
+	     tempfile=$dir/$type.$norm.chr$chr.txt
+
+       $juicertool dump $type $norm $hic $chr $chr BP $binsize $tempfile -d
+       if [ $? -ne 0 ]; then
+       #if ! test -s $tempfile; then
+         echo try to use "chr1,chr2..." instead of "1,2..."
+         # 如果执行错误，则执行第二个命令
+         $juicertool dump $type $norm $hic chr$chr chr$chr BP $binsize $tempfile -d
+       fi
+
+       if [ $? -ne 0 ]; then
+         echo "Are you using the correct version of Juicertools ??"
+       fi
+
+       if test -s $tempfile; then
+		       paste rowname.$uniqID.temp $tempfile > pluscol.$uniqID.temp
+		       cat colname.$uniqID.temp pluscol.$uniqID.temp |sed 's/\t$//g'| gzip > $dir/$type.$norm.chr$chr.matrix.gz
             #$pwd/convert_JuicerDump_to_dense.py \
-	#	$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
-	fi
+	           #	$tempfile $dir/$type.$norm.chr$chr.matrix.gz $gt chr$chr $binsize
+      fi
         rm rowname.$uniqID.temp pluscol.$uniqID.temp colname.$uniqID.temp $tempfile
     done
 #    for type in expected norm
