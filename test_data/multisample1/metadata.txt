@@ -1,6 +1,6 @@
-Control1	./test_data/multisample1/Control1.chr21.matrix.gz
-Control2	./test_data/multisample1/Control2.chr21.matrix.gz
-Treat1	./test_data/multisample1/Treat1.chr21.matrix.gz
-Treat2	./test_data/multisample1/Treat2.chr21.matrix.gz
-Treat3	./test_data/multisample1/Treat3.chr21.matrix.gz
-Treat4	./test_data/multisample1/Treat4.chr21.matrix.gz
+Control1	./multisample1/Control1.chr21.matrix.gz
+Control2	./multisample1/Control2.chr21.matrix.gz
+Treat1	./multisample1/Treat1.chr21.matrix.gz
+Treat2	./multisample1/Treat2.chr21.matrix.gz
+Treat3	./multisample1/Treat3.chr21.matrix.gz
+Treat4	./multisample1/Treat4.chr21.matrix.gz
