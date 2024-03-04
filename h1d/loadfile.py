@@ -49,9 +49,12 @@ def hic2matrix(path,res,chr,gt,juicer=None):
     print("Start dump matrix from hic file")
     codepath = os.path.dirname(os.path.realpath(__file__))
     makeIntra = codepath+"/extract/makeMatrixIntra.sh"
-    
+
     if not juicer:
+        print("Use built-in juicertool v1.11.04")
         juicer = codepath+"/jc/jctool_1.11.04.jar"
+    else:
+        print("Use customized juicertool")
 
     foldername = "./MatrixTemp"+str(random.random())
     os.system("bash "+makeIntra+" "+"KR"+" "+"."+" "+path+" "+str(res)+" "+gt+" "+juicer+" "+chr+" "+foldername + "> info.txt")
