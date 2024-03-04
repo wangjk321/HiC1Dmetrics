@@ -11,24 +11,25 @@ import subprocess
 #from hmmlearn import hmm
 
 class multiScore:
-    def __init__(self,path,res,chr,control_path=""):
+    def __init__(self,path,res,chr,control_path="",juicer=None):
         self.rawpath = path # store for IF
         self.path = path
         self.res = res
         self.chr = chr
         self.rawcontrol = control_path
         self.control_path = control_path
+        self.juicer = juicer
 
 
 
     def obtainOneScore(self,mode,parameter=None,smoothPC=True,logPC=False,
                         custom_name="InteractionFrequency",normIF=True,gt=None,datatype="matrix",TADfile=None,
-                        msi='fithic2',juicer=None):
+                        msi='fithic2'):
         if datatype in ["rawhic",'cool'] and not gt:
             raise ValueError("rawhic requires Genometable")
 
         if datatype == "rawhic" and mode != "IF":
-            self.path = hic2matrix(self.path,self.res,self.chr,gt,juicer)
+            self.path = hic2matrix(self.path,self.res,self.chr,gt,self.juicer)
         elif datatype == "cool" and mode != "IF":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
 
@@ -130,7 +131,7 @@ class multiScore:
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
 
         if datatype=="rawhic" and typelist[-1] == "IF":
-            self.path = hic2matrix(self.path,self.res,self.chr,gt)
+            self.path = hic2matrix(self.path,self.res,self.chr,gt,self.juicer)
         hp = PlotTAD(self.path,self.res,self.chr,start,end,clmax=clmax)
         if plotTAD == True:
             hp.drawTAD()
@@ -152,8 +153,8 @@ class multiScore:
 
     def obtainTwoScore(self,mode,parameter,smoothPC=True,logPC=False,normIF=True,gt=None,datatype="matrix"):
         if datatype == "rawhic" and mode != "IFC":
-            self.path = hic2matrix(self.path,self.res,self.chr,gt)
-            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt)
+            self.path = hic2matrix(self.path,self.res,self.chr,gt,self.juicer)
+            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt,self.juicer)
         elif datatype == "cool" and mode != "IFC":
             self.path = cool2matrix(self.path,self.res,self.chr,gt)
             self.control_path = cool2matrix(self.control_path,self.res,self.chr,gt)
@@ -252,8 +253,8 @@ class multiScore:
         plt.subplot2grid((5+nScore,11),(0,0),rowspan=5,colspan=10)
 
         if datatype=="rawhic" and typelist[-1] == "IFC":
-            self.path = hic2matrix(self.path,self.res,self.chr,gt)
-            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt)
+            self.path = hic2matrix(self.path,self.res,self.chr,gt,self.juicer)
+            self.control_path = hic2matrix(self.control_path,self.res,self.chr,gt,self.juicer)
 
         hp = DiffDraw(self.path,self.control_path,self.res,startSite=start,endSite=end,clmax=clmax)
         if plotTAD == True:

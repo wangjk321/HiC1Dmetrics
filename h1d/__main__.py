@@ -22,9 +22,9 @@ def CLI():
         args.matrix = args.data
         if args.mode == "plot":
             if args.datatype == "rawhic":
-                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt,args.juicertool)
                 if args.controlmatrix:
-                    controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
+                    controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt,args.juicertool)
                 else:
                     controlpath = None
             else:
@@ -111,9 +111,9 @@ def CLI():
         if args.parameter and args.type not in ["PC1","IF"]:
             args.parameter = int(args.parameter)
 
-        score = multiScore(args.matrix,args.resolution,args.chromosome,
+        score = multiScore(args.matrix,args.resolution,args.chromosome,juicer=args.juicertool
                             ).obtainOneScore(args.type,parameter=args.parameter,datatype=args.datatype,
-                            gt=args.gt,TADfile=args.TADfile,msi=args.msi,juicer=args.juicertool)
+                            gt=args.gt,TADfile=args.TADfile,msi=args.msi)
         print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
@@ -165,8 +165,8 @@ def CLI():
             scoreAll.to_csv(args.outname+"_"+args.type+"_allchr.csv",sep="\t",index=False)
             exit(0)
 
-        ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
-        score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt,juicer=args.juicertool)
+        ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix,juicer=args.juicertool)
+        score,path,control_path = ms.obtainTwoScore(args.type,parameter=args.parameter,datatype=args.datatype,gt=args.gt)
         print("Saving...")
         score.to_csv(args.outname + ".bedGraph", sep="\t", header=False, index=False)
 
@@ -212,7 +212,7 @@ def CLI():
             if not set(typelist).issubset(["IS","CI","DI","SS","DLR","PC1","IES","IAS","IF"]):
                 print("Error: not supported"); exit(1)
             if "IF" in typelist and args.datatype != "rawhic": print("Error: IF required rawhic datatype"); exit(1)
-            ms = multiScore(args.matrix,args.resolution,args.chromosome)
+            ms = multiScore(args.matrix,args.resolution,args.chromosome,juicer=args.juicertool)
             if not args.draw:
                 score = ms.allOneScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt)
             elif args.draw:
@@ -227,7 +227,7 @@ def CLI():
                 DRFpos = typelist.index("DRF")
                 parameterlist[DRFpos] = parameterlist[DRFpos].split("-")
                 print(parameterlist)
-            ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix)
+            ms = multiScore(args.matrix,args.resolution,args.chromosome,control_path=args.controlmatrix,juicer=args.juicertool)
             if not args.draw:
                 score = ms.allTwoScore(typelist,parameterlist,datatype=args.datatype,gt=args.gt)
             elif args.draw:
@@ -251,6 +251,7 @@ def CLI():
     parser_types.add_argument("-d","--draw",action='store_true',help="Plot figure for candidate region",default=False)
     parser_types.add_argument('-s','--start',type=int,help="Start sites for plotting",default=0)
     parser_types.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
+    parser_types.add_argument('--juicertool',type=str,help="Specify juicertool with different version.",default=None)
     parser_types.set_defaults(func=func_types)
 
     #Function 5
@@ -299,7 +300,7 @@ def CLI():
             if args.datatype == "matrix":
                 plotpath= samplelist[0]
             elif args.datatype == "rawhic":
-                plotpath = hic2matrix(samplelist[0],args.resolution,args.chromosome,args.gt)
+                plotpath = hic2matrix(samplelist[0],args.resolution,args.chromosome,args.gt,args.juicertool)
 
             if args.heat: plottype = "heat"
             elif args.line: plottype = "line"
@@ -333,6 +334,7 @@ def CLI():
     parser_samples.add_argument('-e','--end',type=int,help="End sites for plotting",default=0)
     parser_samples.add_argument('--clmax',type=int,help="End sites for plotting",default=None)
     parser_samples.add_argument("-t","--TADfile",type=str,help="Give a TAD file, instead of using building-in TAD calling method",default=None)
+    parser_samples.add_argument('--juicertool',type=str,help="Specify juicertool with different version.",default=None)
 
     parser_samples.set_defaults(func=func_samples)
 
@@ -343,7 +345,7 @@ def CLI():
         args.matrix = args.data
         if args.datatype in ["rawhic",'cool'] and args.mode != "hubs":
             if args.datatype == "rawhic":
-                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
+                path = hic2matrix(args.matrix,args.resolution,args.chromosome,args.gt,args.juicertool)
                 if args.controlmatrix: controlpath = hic2matrix(args.controlmatrix,args.resolution,args.chromosome,args.gt)
             elif args.datatype == "cool":
                 path = cool2matrix(args.matrix,args.resolution,args.chromosome,args.gt)
@@ -396,6 +398,7 @@ def CLI():
     parser_call.add_argument('--datatype',type=str,help="Type of input data: [matrix(default),rawhic,cool].",default="matrix")
     parser_call.add_argument('--gt',type=str,help="genome table",default="")
     parser_call.add_argument("-p","--parameter",type=str,help="Parameter for indicated mode",default=None)
+    parser_call.add_argument('--juicertool',type=str,help="Specify juicertool with different version.",default=None)
     parser_call.set_defaults(func=func_call)
 
     parser.add_argument("-V","--version",help="Show h1d version",action='store_true',default=False)
