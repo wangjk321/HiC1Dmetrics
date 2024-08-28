@@ -104,7 +104,7 @@ def CLI():
             if not os.path.exists(args.data):
                 print("path not exist"); exit(1)
             scoreAll =oneScoreAllchr(args.data,args.resolution,args.type,args.parameter,
-                                    maxchr=args.maxchr,prefix=args.prefix,num=args.nProcesser)
+                                    maxchr=args.maxchr,prefix=args.prefix,num=args.nProcesser,juicer=args.juicertool)
             scoreAll.to_csv(args.outname+"_"+args.type+"_allchr.csv",sep="\t",index=False)
             exit(0)
 
