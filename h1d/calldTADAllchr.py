@@ -88,7 +88,7 @@ def runTAD1sample(pathName,resolution,outname="allTAD",maxchr=22):
 
 def oneScoreSinglechr(chrom,pathName,resolution,type,parameter,prefix="observed.KR.",controlpath=None,juicer=None):
     filename = pathName+"/"+prefix+chrom+".matrix.gz"
-    score = multiScore(filename,resolution,chrom).obtainOneScore(type,parameter,juicer=juicer)
+    score = multiScore(filename,resolution,chrom,juicer=juicer).obtainOneScore(type,parameter)
     return(score)
 
 def oneScoreAllchr(pathName,resolution,type,parameter,outname="OneScore",maxchr=22,prefix="observed.KR.",num=30,juicer=None):
